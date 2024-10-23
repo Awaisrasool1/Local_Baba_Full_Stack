@@ -8,8 +8,8 @@ import (
 
 func SetUpRoutes() *gin.Engine {
 	router := gin.Default()
-	router.POST("SignUp", handlers.SignUp)
-	router.POST("SignIn", handlers.SignIn)
+	router.POST("Auth/user-signup", handlers.SignUp)
+	router.POST("Auth/login", handlers.SignIn)
 
 	//categories
 	router.GET("GetCategories", handlers.GetCategories)

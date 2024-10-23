@@ -85,11 +85,7 @@ const InputText: FC<InputTextProps> = props => {
             <Image
               style={styles.imageIcon}
               resizeMode={'contain'}
-              // source={
-              //   props.secure
-              //     // ? Theme.icons.icEyePassword
-              //     // : Theme.icons.icEyeOffPassword
-              // }
+              source={props.secure ? Theme.icons.eye : Theme.icons.eye_off}
             />
           </TouchableOpacity>
         ) : null}

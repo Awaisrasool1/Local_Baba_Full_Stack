@@ -2,7 +2,7 @@ import {RFValue} from 'react-native-responsive-fontsize';
 
 const Theme = {
   colors: {
-    appColor: '#310676',
+    appColor: '#242B47',
     white: '#FFFFFF',
     black: '#000000',
     disabled: '#BFBFBF',
@@ -23,9 +23,9 @@ const Theme = {
     bgColor12: '#F7DDD6',
     bgColor13: '#ECFBEE',
     bgColor14: '#F7F1FF',
-    bgColor15:'#FFFFFF82',
-    bgColor16:'#FFF3F0',
-    bgColor17:'#D3D3D3',
+    bgColor15: '#FFFFFF82',
+    bgColor16: '#FFF3F0',
+    bgColor17: '#D3D3D3',
 
     textColor1: '#FFFFFF',
     textColor2: '#787878',
@@ -42,7 +42,7 @@ const Theme = {
     textColor13: '#0A4A2B',
     textColor14: '#4B5A54',
     textColor15: '#666867',
-    textColor16: '#310676',
+    textColor16: '#646982',
     TextColor17: '#1D201F',
     textColor18: '#666666',
     textColor19: '#606262',
@@ -54,7 +54,7 @@ const Theme = {
     textColor25: '#248995',
     textColor26: '#B93513',
     textColor27: '#6D6D6D',
-    
+
     borderColor1: '#310676',
     borderColor2: '#E4E0E9',
     borderColor3: '#310676',
@@ -62,8 +62,6 @@ const Theme = {
     borderColor5: '#E8DDF8',
     borderColor6: '#D1C3E4',
     borderColor7: '#E6E6E6',
-    
-
 
     gradColor1: 'transparent',
     gradColor2: '#3D3D3D',
@@ -163,6 +161,12 @@ const Theme = {
     size350: RFValue(350),
   },
   icons: {
+    splash_Logo: require('../resource/images/logo.png'),
+    eye: require('../resource/images/eye.png'),
+    eye_off: require('../resource/images/eyeOff.png'),
+    back_Arrow: require('../resource/images/Back.png'),
+    loginBgImage: require('../resource/images/loginBgImage.png'),
+    loginBgImage1: require('../resource/images/loginBgImage1.png'),
   },
 };
 export default Theme;

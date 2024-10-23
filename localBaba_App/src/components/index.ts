@@ -1,5 +1,5 @@
 import {CustomButton} from './customButton';
 import {InputText} from './customInputText';
-import {BottomSheet} from './bottomSheet';
+import {LoginBg} from './loginBg';
 
-export {CustomButton, InputText, BottomSheet};
+export {CustomButton, InputText, LoginBg};

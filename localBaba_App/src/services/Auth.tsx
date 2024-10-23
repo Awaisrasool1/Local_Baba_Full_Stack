@@ -1,7 +1,7 @@
 import {API} from '../api/api';
 
-async function SignIn(cred: any) {
-  const res = await API.post('Auth/login', cred);
+async function SignIn(data: any) {
+  const res = await API.post('Auth/login', data);
   return res;
 }
 

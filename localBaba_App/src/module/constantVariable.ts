@@ -27,13 +27,9 @@ const AppConstants = {
     },
   },
   AsyncKeyLiterals: {
-    dataMain: 'dataMain',
     isLoggedIn: 'isLoggedIn',
     loginToken: 'loginToken',
-    userEmail: 'userEmail',
     userId: 'userId',
-    userDap: 'userDap',
-    userDapAge: 'userDapAge'
   },
 };
 

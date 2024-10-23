@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: Theme.responsiveSize.size8,
-    backgroundColor: Theme.colors.bgColor1,
+    backgroundColor: Theme.colors.appColor,
     paddingVertical: Theme.responsiveSize.size10,
   },
   viewSvg: {

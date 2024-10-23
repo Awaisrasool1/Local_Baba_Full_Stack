@@ -5,21 +5,14 @@ const styles = StyleSheet.create({
   mainContainer: {
     height: '100%',
     width: '100%',
-    backgroundColor: Theme.colors.white,
+    backgroundColor: Theme.colors.appColor,
   },
   viewContainer: {
     flex: 1,
   },
-  imageMain: {
-    alignSelf: 'center',
-    height: Theme.responsiveSize.size80,
-    width: Theme.responsiveSize.size80,
-    marginVertical: Theme.responsiveSize.size30,
-  },
   viewCenter: {
-    paddingHorizontal: Theme.responsiveSize.size15,
-    marginTop: Theme.responsiveSize.size55,
-    paddingBottom: Theme.responsiveSize.size60,
+    backgroundColor: Theme.colors.white,
+    paddingHorizontal: Theme.responsiveSize.size10,
   },
   textTitle: {
     color: Theme.colors.textColor11,
@@ -35,6 +28,16 @@ const styles = StyleSheet.create({
   viewButton: {
     marginVertical: Theme.responsiveSize.size15,
     marginHorizontal: Theme.responsiveSize.size15,
+  },
+  dontText:{
+    fontSize:Theme.responsiveSize.size13,
+    color:Theme.colors.textColor16,
+    textAlign:'center'
+  },
+  SignUpText:{
+    fontSize:Theme.responsiveSize.size13,
+    color:Theme.colors.black,
+    fontWeight:'bold'
   }
 });
 

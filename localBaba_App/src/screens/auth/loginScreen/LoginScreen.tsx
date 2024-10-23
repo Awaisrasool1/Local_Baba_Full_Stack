@@ -1,10 +1,22 @@
 import React, {useState} from 'react';
-import {Image, SafeAreaView, StatusBar, Text, View} from 'react-native';
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  Text,
+  View,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import styles from './styles';
-import {Validations} from '../../../constants';
+import {Constants, Validations} from '../../../constants';
 import Theme from '../../../theme/Theme';
-import {CustomButton, InputText} from '../../../components';
+import {CustomButton, InputText, LoginBg} from '../../../components';
+import {isNetworkAvailable} from '../../../api';
+import {SignIn} from '../../../services';
+import {saveToken} from '../../../api/api';
+import {saveDataToCachedWithKey} from '../../../module/cacheData';
+import {AppConstants} from '../../../module';
 
 const LoginScreen = (props: any) => {
   // All States
@@ -35,7 +47,39 @@ const LoginScreen = (props: any) => {
 
     return isValid;
   };
-
+  const doLogin = async () => {
+    const isConnected: boolean = await isNetworkAvailable();
+    if (isConnected) {
+      try {
+        let data = {
+          Email: textEmail,
+          Password: textPassword,
+        };
+        const res = await SignIn(data);
+        if (res.status == 200) {
+          saveToken(res.data.token);
+          saveDataToCachedWithKey(
+            AppConstants.AsyncKeyLiterals.loginToken,
+            res.data.token,
+          );
+          saveDataToCachedWithKey(
+            AppConstants.AsyncKeyLiterals.isLoggedIn,
+            true,
+          );
+          saveDataToCachedWithKey(
+            AppConstants.AsyncKeyLiterals.userId,
+            res.data.userId,
+          );
+          // props.navigation.reset({
+          //   index: 0,
+          //   routes: [{name: Constants.COMPLETED_DAP_SCREEN}],
+          // });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
   return (
     <>
       <StatusBar
@@ -45,17 +89,10 @@ const LoginScreen = (props: any) => {
       />
       <SafeAreaView style={styles.mainContainer}>
         <View style={styles.viewContainer}>
-          <Image
-            source={Theme.icons.FullIcon}
-            style={styles.imageMain}
-            resizeMode={'contain'}
-          />
-          <KeyboardAwareScrollView
-            style={{flex: 1}}
-            contentContainerStyle={styles.viewCenter}
-            showsVerticalScrollIndicator={false}>
-            <Text style={styles.textTitle}>{'Sign In'}</Text>
+          <LoginBg />
+          <ScrollView style={styles.viewCenter}>
             <View style={styles.marginV8}>
+              <View style={styles.marginV5} />
               <InputText
                 value={textEmail}
                 title={'Email'}
@@ -65,6 +102,7 @@ const LoginScreen = (props: any) => {
                 viewMainStyle={styles.marginV5}
                 placeholder={'Enter your email'}
               />
+              <View style={styles.marginV5} />
               <InputText
                 value={textPassword}
                 title={'Password'}
@@ -79,15 +117,21 @@ const LoginScreen = (props: any) => {
                 placeholder={'Enter your password'}
               />
             </View>
-          </KeyboardAwareScrollView>
-          <CustomButton
-            title={'Continue'}
-            bgStyle={styles.viewButton}
-            onClick={() => {
-              if (isAllValid()) {
-              }
-            }}
-          />
+            <CustomButton
+              title={'Log In'}
+              bgStyle={styles.viewButton}
+              onClick={() => {
+                if (isAllValid()) {
+                  doLogin();
+                }
+              }}
+            />
+            <View style={styles.marginV5} />
+            <Text style={styles.dontText}>
+              {'Don’t have an account?'}
+              <Text style={styles.SignUpText}>{' Sign Up'}</Text>
+            </Text>
+          </ScrollView>
         </View>
       </SafeAreaView>
     </>

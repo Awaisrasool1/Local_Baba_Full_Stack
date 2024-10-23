@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     height: '100%',
     width: '100%',
-    backgroundColor: Theme.colors.white,
+    backgroundColor: Theme.colors.appColor,
   },
   viewMainContainer: {
     height: '100%',
