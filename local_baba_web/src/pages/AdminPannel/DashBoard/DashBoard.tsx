@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '../../../context/AuthProvider';
 
-const HomeScreen: React.FC = () => {
+const DashBoard: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   return (
@@ -16,4 +16,4 @@ const HomeScreen: React.FC = () => {
   );
 };
 
-export default HomeScreen;
+export default DashBoard;

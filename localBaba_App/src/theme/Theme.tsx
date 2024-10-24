@@ -167,6 +167,13 @@ const Theme = {
     back_Arrow: require('../resource/images/Back.png'),
     loginBgImage: require('../resource/images/loginBgImage.png'),
     loginBgImage1: require('../resource/images/loginBgImage1.png'),
+    addToCart: require('../resource/images/addCart.png'),
+    leftArrowBg: require('../resource/images/leftArrowBg.png'),
+    mapIcon: require('../resource/images/mapIcon.png'),
+    mapLogo: require('../resource/images/mapLogo.png'),
+    Menu: require('../resource/images/Menu.png'),
+    rightArrow: require('../resource/images/rightArrow.png'),
+    Search: require('../resource/images/Search.png'),
   },
 };
 export default Theme;
