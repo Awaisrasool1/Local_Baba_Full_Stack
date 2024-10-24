@@ -40,7 +40,7 @@ const LoginScreen = (props: any) => {
       setErrorEmail('*Please enter valid email!');
     } else if (!Validations.isValidPassword(textPassword)) {
       isValid = false;
-      setErrorEmail(
+      setErrorPassword(
         '*Password must have 8 characters with 1 speacial character 1 capital 1 small and 1 number!',
       );
     }
@@ -70,10 +70,10 @@ const LoginScreen = (props: any) => {
             AppConstants.AsyncKeyLiterals.userId,
             res.data.userId,
           );
-          // props.navigation.reset({
-          //   index: 0,
-          //   routes: [{name: Constants.COMPLETED_DAP_SCREEN}],
-          // });
+          props.navigation.reset({
+            index: 0,
+            routes: [{name: Constants.LOCATION_ACCESS_SCREEN}],
+          });
         }
       } catch (err) {
         console.log(err);

@@ -12,7 +12,7 @@ func SetUpRoutes() *gin.Engine {
 	router.POST("Auth/login", handlers.SignIn)
 
 	//categories
-	router.GET("GetCategories", handlers.GetCategories)
+	router.GET("Categories/get-All-Categories", handlers.GetCategories)
 
 	//restaurant
 	router.POST("AddRestaurant", handlers.AddRestaurant)

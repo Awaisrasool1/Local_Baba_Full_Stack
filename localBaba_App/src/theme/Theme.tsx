@@ -52,7 +52,7 @@ const Theme = {
     textColor23: '#5A5A5A',
     textColor24: '#1D6629',
     textColor25: '#248995',
-    textColor26: '#B93513',
+    textColor26: '#32343E',
     textColor27: '#6D6D6D',
 
     borderColor1: '#310676',

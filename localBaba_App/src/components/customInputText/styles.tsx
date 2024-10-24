@@ -18,30 +18,30 @@ const styles = StyleSheet.create({
   },
 
   // New input text
-  textSubTitle:{
+  textSubTitle: {
     color: Theme.colors.textColor11,
     fontSize: Theme.responsiveSize.size11,
-    fontWeight: '500'
+    fontWeight: '500',
   },
   viewBgInputText: {
     flexDirection: 'row',
     alignItems: 'center',
     height: Theme.responsiveSize.size45,
     marginTop: Theme.responsiveSize.size3,
-    backgroundColor: Theme.colors.bgColor10,
+    backgroundColor: Theme.colors.white,
     borderColor: Theme.colors.borderColor5,
     borderWidth: Theme.responsiveSize.size1,
     borderRadius: Theme.responsiveSize.size8,
     paddingHorizontal: Theme.responsiveSize.size12,
   },
-  textInput:{
-    color:Theme.colors.textColor6,
-    fontSize:Theme.responsiveSize.size13,
-    fontWeight: '500'
+  textInput: {
+    color: Theme.colors.textColor6,
+    fontSize: Theme.responsiveSize.size13,
+    fontWeight: '500',
   },
-  textInput1:{
-    color:Theme.colors.textColor6,
-    fontSize:Theme.responsiveSize.size13,
+  textInput1: {
+    color: Theme.colors.textColor6,
+    fontSize: Theme.responsiveSize.size13,
     fontWeight: '500',
     paddingVertical: Theme.responsiveSize.size10,
   },
@@ -50,11 +50,11 @@ const styles = StyleSheet.create({
     width: Theme.responsiveSize.size17,
     tintColor: Theme.colors.textColor2,
   },
-  textError:{
+  textError: {
     color: Theme.colors.textColor5,
-    marginTop:Theme.responsiveSize.size2,
+    marginTop: Theme.responsiveSize.size2,
     fontSize: Theme.responsiveSize.size11,
-    fontWeight: '400'
+    fontWeight: '400',
   },
 });
 

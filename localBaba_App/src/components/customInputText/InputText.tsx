@@ -25,6 +25,7 @@ interface InputTextProps extends TextInputProps {
   multiline?: boolean;
   isEditable?: boolean;
   numberOfLines?: number;
+  img?: any;
 
   viewMainStyle?: StyleProp<ViewStyle>;
   bgStyle?: StyleProp<ViewStyle>;
@@ -47,6 +48,7 @@ const InputText: FC<InputTextProps> = props => {
         </Text>
       ) : null}
       <View style={[styles.viewBgInputText, props.bgStyle]}>
+        {props.img && <Image source={props.img} />}
         {props.isEditable === false ? (
           <Text
             numberOfLines={props.numberOfLines}
