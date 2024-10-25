@@ -1,11 +1,11 @@
 import {View, Text, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {CategorieCard, Header, InputText, SeeAllBtn} from '../../components';
-import styles from './styles';
-import Theme from '../../theme/Theme';
-import {isNetworkAvailable} from '../../api';
-import {get_categories} from '../../services';
 import {Categories} from './type';
+import { CategorieCard, Header, InputText, SeeAllBtn } from '../../../components';
+import Theme from '../../../theme/Theme';
+import { get_categories } from '../../../services';
+import { isNetworkAvailable } from '../../../api';
+import styles from './styles';
 
 const HomeScreen = () => {
   const [categorieData, setCategorieData] = useState<Categories[]>([]);

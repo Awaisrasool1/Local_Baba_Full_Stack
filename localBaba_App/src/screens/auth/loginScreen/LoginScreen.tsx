@@ -22,8 +22,8 @@ const LoginScreen = (props: any) => {
   // All States
   const [isSecure, setIsSecure] = useState<boolean>(false);
   // Main States
-  const [textEmail, setTextEmail] = useState<string>('');
-  const [textPassword, setTextPassword] = useState<string>('');
+  const [textEmail, setTextEmail] = useState<string>('ar30781871@gmail.com');
+  const [textPassword, setTextPassword] = useState<string>('Helo*1234');
   // Error States
   const [errorEmail, setErrorEmail] = useState<string>('');
   const [errorPassword, setErrorPassword] = useState<string>('');
