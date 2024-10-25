@@ -1,4 +1,4 @@
 import {LoginScreen, SplashScreen,LocationAccess} from './auth';
-import {HomeScreen} from './userPannel';
+import {HomeScreen,SeeAllRestaurant} from './userPannel';
 
-export {HomeScreen, LoginScreen, SplashScreen,LocationAccess};
+export {HomeScreen, LoginScreen, SplashScreen,LocationAccess,SeeAllRestaurant};

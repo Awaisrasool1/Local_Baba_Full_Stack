@@ -13,7 +13,7 @@ const Header = (props: Props) => {
     <View style={styles.container}>
       {props.isBack ? (
         <View style={styles.flexRow}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={props.onBack}>
             <Image source={Theme.icons.leftArrowBg} />
           </TouchableOpacity>
           <Text style={styles.isBackText}>{props.isBackTitle}</Text>

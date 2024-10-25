@@ -1,15 +1,31 @@
 import {View, Text, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Categories} from './type';
-import { CategorieCard, Header, InputText, SeeAllBtn } from '../../../components';
+import {
+  CategorieCard,
+  Header,
+  InputText,
+  RestaurantCard,
+  SeeAllBtn,
+} from '../../../components';
 import Theme from '../../../theme/Theme';
-import { get_categories } from '../../../services';
-import { isNetworkAvailable } from '../../../api';
+import {
+  get_all_restaurants,
+  get_categories,
+  get_nearby_restaurants,
+} from '../../../services';
+import {isNetworkAvailable} from '../../../api';
 import styles from './styles';
+import {Constants} from '../../../constants';
+import {Categories, Restaurants} from '../../../constants/type';
 
-const HomeScreen = () => {
+const HomeScreen = (props: any) => {
   const [categorieData, setCategorieData] = useState<Categories[]>([]);
-
+  const [allRestaurants, setAllRestaurants] = useState<Restaurants[]>([]);
+  const [nearbyRestaurants, setNearbyRestaurants] = useState<Restaurants[]>([]);
+  //filter states
+  const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurants[]>(
+    [],
+  );
   useEffect(() => {
     getData();
   }, []);
@@ -24,11 +40,29 @@ const HomeScreen = () => {
           isActive: index == 0,
         }));
         setCategorieData(newArry);
+        const allRestaurant = await get_all_restaurants();
+        setAllRestaurants(allRestaurant);
+        setFilteredRestaurants(allRestaurant);
+        // const nearbyRestaurant = await get_nearby_restaurants();
+        // setNearbyRestaurants(nearbyRestaurant);
       } catch (err) {
         console.log(err);
       }
     }
   };
+
+  const filter = (name: string) => {
+    if (name.toUpperCase() === 'ALL') {
+      setFilteredRestaurants(allRestaurants);
+    } else {
+      const filtered = allRestaurants.filter(
+        (restaurant: Restaurants) =>
+          restaurant.serviesType?.toLowerCase() === name?.toLowerCase(),
+      );
+      setFilteredRestaurants(filtered);
+    }
+  };
+
   const rendercategories = (item: Categories, index: number) => {
     return (
       <CategorieCard
@@ -41,7 +75,20 @@ const HomeScreen = () => {
             isActive: item.ID == _item.ID,
           }));
           setCategorieData(newArry);
+          filter(item.Name);
         }}
+      />
+    );
+  };
+  const renderRestaurants = (item: Restaurants, index: number) => {
+    return (
+      <RestaurantCard
+        key={index}
+        image={item.image}
+        name={item.name}
+        serviesType={item.serviesType}
+        rating={item.rating}
+        onPress={() => {}}
       />
     );
   };
@@ -65,6 +112,23 @@ const HomeScreen = () => {
       <SeeAllBtn title="Categories" onPress={() => {}} />
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {categorieData.map(rendercategories)}
+      </ScrollView>
+      <View style={styles.marginV5} />
+      <SeeAllBtn
+        title="All Restaurants"
+        onPress={() => {
+          props.navigation.navigate(Constants.SEE_ALL_RESTAURANT, {
+            data: allRestaurants,
+            flag: 'All Restaurants',
+          });
+        }}
+      />
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {filteredRestaurants.length > 0 ? (
+          filteredRestaurants?.map(renderRestaurants)
+        ) : (
+          <Text style={styles.noDataText}>{'No Restaurants Found !'}</Text>
+        )}
       </ScrollView>
     </ScrollView>
   );

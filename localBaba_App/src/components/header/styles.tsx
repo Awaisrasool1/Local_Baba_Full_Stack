@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingTop:Theme.responsiveSize.size10
   },
   topHeading: {
     fontSize: Theme.responsiveSize.size14,

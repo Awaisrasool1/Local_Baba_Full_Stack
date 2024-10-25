@@ -2,7 +2,13 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native';
 import {Constants} from '../constants';
-import {SplashScreen, LoginScreen, HomeScreen,LocationAccess} from '../screens';
+import {
+  SplashScreen,
+  LoginScreen,
+  HomeScreen,
+  LocationAccess,
+  SeeAllRestaurant,
+} from '../screens';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +36,11 @@ const AuthStackNavigation = () => {
         <Stack.Screen
           name={Constants.HOME_SCREEN}
           component={HomeScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Constants.SEE_ALL_RESTAURANT}
+          component={SeeAllRestaurant}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

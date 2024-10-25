@@ -15,9 +15,9 @@ func SetUpRoutes() *gin.Engine {
 	router.GET("Categories/get-All-Categories", handlers.GetCategories)
 
 	//restaurant
-	router.POST("AddRestaurant", handlers.AddRestaurant)
-	router.GET("GetAllRestaurant", handlers.GetAllRestaurant)
-	router.GET("/GetNearbyRestaurants", handlers.GetNearbyRestaurants)
+	router.POST("Restaurants/Add-Restaurant", handlers.AddRestaurant)
+	router.GET("Restaurant/Get-All-Restaurant", handlers.GetAllRestaurant)
+	router.GET("Restaurants/Get-Nearby-Restaurants", handlers.GetNearbyRestaurants)
 
 	//product
 	router.POST("AddProduct/:id", handlers.AddProduct)

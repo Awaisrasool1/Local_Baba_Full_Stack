@@ -14,22 +14,13 @@ const styles = StyleSheet.create({
   marginV5: {
     marginVertical: Theme.responsiveSize.size5,
   },
-  MorningText: {
-    fontSize: Theme.responsiveSize.size14,
-    fontWeight: 'bold',
-    color: Theme.colors.black,
-  },
-  userNmae: {
-    fontSize: Theme.responsiveSize.size13,
-    color: Theme.colors.black,
-  },
-  noDataText: {
-    fontSize: Theme.responsiveSize.size14,
-    color: Theme.colors.black,
-    fontWeight: 'bold',
-    marginTop: Theme.responsiveSize.size10,
-    marginLeft: Theme.responsiveSize.size10,
-  },
+  noDataText:{
+    fontSize:Theme.responsiveSize.size16,
+    color:Theme.colors.black,
+    fontWeight:'bold',
+    marginTop:Theme.responsiveSize.size10,
+    textAlign:'center'
+  }
 });
 
 export default styles;

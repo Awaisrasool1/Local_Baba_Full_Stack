@@ -51,7 +51,7 @@ const Theme = {
     textColor22: '#79787A',
     textColor23: '#5A5A5A',
     textColor24: '#1D6629',
-    textColor25: '#248995',
+    textColor25: '#A0A5BA',
     textColor26: '#32343E',
     textColor27: '#6D6D6D',
 
@@ -174,6 +174,8 @@ const Theme = {
     Menu: require('../resource/images/Menu.png'),
     rightArrow: require('../resource/images/rightArrow.png'),
     Search: require('../resource/images/Search.png'),
+    star: require('../resource/images/Star.png'),
+
   },
 };
 export default Theme;
