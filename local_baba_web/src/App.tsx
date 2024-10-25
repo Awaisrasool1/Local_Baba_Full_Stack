@@ -1,13 +1,13 @@
 import React from 'react';
-import AppNavigator from './navigation/AppNavigator';
 import { AuthProvider } from './context';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import AuthNavigation from './navigation/AuthNavigation';
 
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <AppNavigator />
+      <AuthNavigation />
     </AuthProvider>
   );
 };

@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import {
   DashBoard,
-  LoginScreen,
   OrderList,
   OrderHistory,
   Restaurants,
@@ -10,7 +9,7 @@ import {
 } from "../pages";
 import Sidebar from "../components/SideBar.tsx/SideBar";
 
-const App = () => {
+const AppNavigation = () => {
   return (
     <Router>
       <div style={{ display: "flex" }}>
@@ -31,4 +30,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default AppNavigation;
