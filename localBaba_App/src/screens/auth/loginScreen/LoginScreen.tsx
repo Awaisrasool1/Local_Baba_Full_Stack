@@ -57,7 +57,7 @@ const LoginScreen = (props: any) => {
         };
         const res = await SignIn(data);
         if (res.status == 200) {
-          saveToken(res.data.token);
+          saveToken(res.data.token,'',res.data.name);
           saveDataToCachedWithKey(
             AppConstants.AsyncKeyLiterals.loginToken,
             res.data.token,
@@ -69,6 +69,10 @@ const LoginScreen = (props: any) => {
           saveDataToCachedWithKey(
             AppConstants.AsyncKeyLiterals.userId,
             res.data.userId,
+          );
+          saveDataToCachedWithKey(
+            AppConstants.AsyncKeyLiterals.userName,
+            res.data.name,
           );
           props.navigation.reset({
             index: 0,

@@ -5,6 +5,7 @@ import {cacheData} from '../module';
 const API_BASE_URL = 'http://192.168.100.91:8080/';
 let token: any;
 let role: any;
+let name: any;
 
 export const API = axios.create({
   baseURL: API_BASE_URL,
@@ -63,9 +64,10 @@ export const apiError = (error: any) => {
   }
 };
 
-export const saveToken = (data?: any, Role?: any) => {
+export const saveToken = (data?: any, Role?: any, Name?: any) => {
   token = data;
   role = Role;
+  name = Name;
 };
 
 export const getRole = () => {
@@ -74,6 +76,9 @@ export const getRole = () => {
 
 export const getToken = () => {
   return token;
+};
+export const getName = () => {
+  return name;
 };
 
 export const isNetworkAvailable = async () => {

@@ -5,6 +5,8 @@ import {Header} from './header';
 import {SeeAllBtn} from './seeAllBtn';
 import {CategorieCard} from './categorieCard';
 import {RestaurantCard} from './restaurantCard';
+import {FoodCard} from './foodCard';
+
 
 export {
   CustomButton,
@@ -14,4 +16,5 @@ export {
   SeeAllBtn,
   CategorieCard,
   RestaurantCard,
+  FoodCard
 };

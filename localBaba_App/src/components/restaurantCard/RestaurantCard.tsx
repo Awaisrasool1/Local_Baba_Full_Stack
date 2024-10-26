@@ -1,4 +1,11 @@
-import {View, Text, Image, StyleProp, ViewStyle} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleProp,
+  ViewStyle,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import styles from './styles';
 import Theme from '../../theme/Theme';
@@ -14,7 +21,9 @@ interface Props {
 }
 const RestaurantCard = (props: Props) => {
   return (
-    <View style={[styles.container,props.bgStyle]}>
+    <TouchableOpacity
+      style={[styles.container, props.bgStyle]}
+      onPress={props.onPress}>
       <Image source={{uri: props?.image}} style={styles.image} />
       <View style={styles.contentContainer}>
         <Text numberOfLines={1} style={styles.nameText}>
@@ -26,7 +35,7 @@ const RestaurantCard = (props: Props) => {
           <Text style={styles.typeText}>{props.rating}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

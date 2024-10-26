@@ -1,5 +1,3 @@
-import {LoginScreen} from './loginScreen';
-import {SplashScreen} from './splashScreen';
-import {LocationAccess} from './locationAccess';
-
-export {LoginScreen, SplashScreen, LocationAccess};
+export { default as LocationAccess } from './locationAccess';
+export { default as LoginScreen } from './loginScreen';
+export { default as SplashScreen } from './splashScreen';

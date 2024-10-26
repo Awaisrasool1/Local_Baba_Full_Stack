@@ -15,4 +15,14 @@ async function get_nearby_restaurants() {
   return res.data;
 }
 
-export {get_categories, get_nearby_restaurants, get_all_restaurants};
+async function get_all_product(id: string) {
+  const res = await API.get(`Product/GetAllProduct/${id}`);
+  return res.data;
+}
+
+export {
+  get_categories,
+  get_nearby_restaurants,
+  get_all_restaurants,
+  get_all_product,
+};

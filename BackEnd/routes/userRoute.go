@@ -21,7 +21,7 @@ func SetUpRoutes() *gin.Engine {
 
 	//product
 	router.POST("AddProduct/:id", handlers.AddProduct)
-	router.GET("GetAllProduct/:id", handlers.GetAllProducts)
+	router.GET("Product/GetAllProduct/:id", handlers.GetAllProducts)
 
 	//cart
 	router.POST("AddToCart", handlers.AddToCart)

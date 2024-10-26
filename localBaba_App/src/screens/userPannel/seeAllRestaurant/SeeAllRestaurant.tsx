@@ -5,13 +5,13 @@ import {get_categories} from '../../../services';
 import {Categories, Restaurants} from '../../../constants/type';
 import styles from './styles';
 import {CategorieCard, Header, RestaurantCard} from '../../../components';
+import {Constants} from '../../../constants';
 
 const SeeAllRestaurant = (props: any) => {
   const {data, flag} = props?.route?.params;
   const [categorieData, setCategorieData] = useState<Categories[]>([]);
   const [allRestaurants, setAllRestaurants] = useState<Restaurants[]>([]);
   //filter states
-  console.log(props);
   const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurants[]>(
     [],
   );
@@ -36,6 +36,7 @@ const SeeAllRestaurant = (props: any) => {
       }
     }
   };
+
   const filter = (name: string) => {
     if (name.toUpperCase() === 'ALL') {
       setFilteredRestaurants(allRestaurants);
@@ -82,7 +83,12 @@ const SeeAllRestaurant = (props: any) => {
             name={item.name}
             serviesType={item.serviesType}
             rating={item.rating}
-            onPress={() => {}}
+            onPress={() => {
+              props.navigation.navigate(Constants.SEE_ALL_FOOD, {
+                id: item.id,
+                name: item.name,
+              });
+            }}
             bgStyle={{width: '100%'}}
           />
         ))

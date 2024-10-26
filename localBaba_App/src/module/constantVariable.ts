@@ -30,6 +30,7 @@ const AppConstants = {
     isLoggedIn: 'isLoggedIn',
     loginToken: 'loginToken',
     userId: 'userId',
+    userName:'userName'
   },
 };
 

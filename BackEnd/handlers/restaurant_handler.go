@@ -96,7 +96,7 @@ func AddProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": err.Error()})
 		return
 	}
-	c.JSON(http.StatusBadRequest, gin.H{"status": "sucess", "data": product})
+	c.JSON(http.StatusOK, gin.H{"status": "sucess", "data": product})
 }
 
 func GetAllProducts(c *gin.Context) {

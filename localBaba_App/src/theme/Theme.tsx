@@ -175,6 +175,7 @@ const Theme = {
     rightArrow: require('../resource/images/rightArrow.png'),
     Search: require('../resource/images/Search.png'),
     star: require('../resource/images/Star.png'),
+    Delivery_Truk: require('../resource/images/DeliveryTruk.png'),
 
   },
 };

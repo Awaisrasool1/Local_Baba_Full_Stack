@@ -84,5 +84,5 @@ func SignIn(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": tokenString, "userId": user.ID, "Status": "success", "message": "user Login"})
+	c.JSON(http.StatusOK, gin.H{"Status": "success", "message": "user Login", "token": tokenString, "userId": user.ID, "name": user.Name})
 }

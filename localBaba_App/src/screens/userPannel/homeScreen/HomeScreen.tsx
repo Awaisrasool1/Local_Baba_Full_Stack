@@ -17,6 +17,7 @@ import {isNetworkAvailable} from '../../../api';
 import styles from './styles';
 import {Constants} from '../../../constants';
 import {Categories, Restaurants} from '../../../constants/type';
+import { getName } from '../../../api/api';
 
 const HomeScreen = (props: any) => {
   const [categorieData, setCategorieData] = useState<Categories[]>([]);
@@ -88,7 +89,12 @@ const HomeScreen = (props: any) => {
         name={item.name}
         serviesType={item.serviesType}
         rating={item.rating}
-        onPress={() => {}}
+        onPress={() => {
+          props.navigation.navigate(Constants.SEE_ALL_FOOD, {
+            id: item.id,
+            name:item.name
+          });
+        }}
       />
     );
   };
@@ -99,8 +105,8 @@ const HomeScreen = (props: any) => {
       </View>
       <View style={styles.marginV10} />
       <Text style={styles.userNmae}>
-        {'Hii John,'}
-        <Text style={styles.MorningText}>{' Good Morning!'}</Text>
+        {getName()?.toUpperCase()}
+        <Text style={styles.MorningText}>{', Good Morning!'}</Text>
       </Text>
       <View style={styles.marginV5} />
       <InputText

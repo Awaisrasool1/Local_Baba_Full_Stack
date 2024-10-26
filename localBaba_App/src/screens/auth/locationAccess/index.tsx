@@ -1,3 +1,3 @@
 import LocationAccess from './LocationAccess'
 
-export{LocationAccess}
+export default LocationAccess

@@ -1,4 +1,5 @@
-import {LoginScreen, SplashScreen,LocationAccess} from './auth';
-import {HomeScreen,SeeAllRestaurant} from './userPannel';
+export * from './auth';
+export * from './userPannel';
+// export * from './riderPannel';
 
-export {HomeScreen, LoginScreen, SplashScreen,LocationAccess,SeeAllRestaurant};
+

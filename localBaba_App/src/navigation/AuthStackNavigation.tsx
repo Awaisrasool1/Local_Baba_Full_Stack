@@ -8,6 +8,7 @@ import {
   HomeScreen,
   LocationAccess,
   SeeAllRestaurant,
+  SeeAllFood,
 } from '../screens';
 
 const Stack = createNativeStackNavigator();
@@ -41,6 +42,11 @@ const AuthStackNavigation = () => {
         <Stack.Screen
           name={Constants.SEE_ALL_RESTAURANT}
           component={SeeAllRestaurant}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Constants.SEE_ALL_FOOD}
+          component={SeeAllFood}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
