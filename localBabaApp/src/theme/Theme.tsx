@@ -26,6 +26,7 @@ const Theme = {
     bgColor15: '#FFFFFF82',
     bgColor16: '#FFF3F0',
     bgColor17: '#D3D3D3',
+    bgColor18: '#C5D0FF26',
 
     textColor1: '#FFFFFF',
     textColor2: '#787878',
@@ -182,7 +183,8 @@ const Theme = {
     delete_icon:require('../resource/images/delete.png'),
     marker:require('../resource/images/marker.png'),
     vector:require('../resource/images/Vector.png'),
-
+    home:require('../resource/images/home.png'),
+    setting:require('../resource/images/setting.png'),
   },
 };
 export default Theme;

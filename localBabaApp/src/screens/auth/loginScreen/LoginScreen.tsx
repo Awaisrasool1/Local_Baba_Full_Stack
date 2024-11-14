@@ -90,15 +90,14 @@ const LoginScreen = (props: any) => {
     },
     onError: (error: any) => {
       showToast(error.response.data.message, 'error', 'bottom', 1000);
-      // console.error('Login failed:', error.response.data.message);
+      console.error('Login failed:', error.response.data.message);
     },
   });
 
   const handleLogin = () => {
-    showToast('welCome', 'error', 'top', 1000);
-    // if (isAllValid()) {
-    //   loginMutation.mutate({Email: textEmail, Password: textPassword});
-    // }
+    if (isAllValid()) {
+      loginMutation.mutate({Email: textEmail, Password: textPassword});
+    }
   };
 
   return (
