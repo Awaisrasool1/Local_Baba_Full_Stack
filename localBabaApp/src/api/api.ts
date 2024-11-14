@@ -2,7 +2,7 @@ import NetInfo from '@react-native-community/netinfo';
 import axios from 'axios';
 import {cacheData} from '../module';
 
-const API_BASE_URL = 'http://192.168.100.10:8080/';
+const API_BASE_URL = 'http://192.168.100.105:8080/';
 let token: any;
 let role: any;
 let name: any;
