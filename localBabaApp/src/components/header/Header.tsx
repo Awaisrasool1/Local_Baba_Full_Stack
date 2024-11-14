@@ -25,7 +25,9 @@ const Header = (props: Props) => {
           <Text style={styles.isBackText}>{props.isBackTitle}</Text>
         </View>
       ) : (
-        <Image source={Theme.icons.Menu} />
+        <TouchableOpacity onPress={() => nav.openDrawer()}>
+          <Image source={Theme.icons.Menu} />
+        </TouchableOpacity>
       )}
       {!props.isBack && (
         <View>

@@ -49,6 +49,26 @@ const AuthStackNavigation = () => {
           component={DrawerNavigation}
           options={{headerShown: false}}
         />
+         <Stack.Screen
+          name={Constants.SEE_ALL_RESTAURANT}
+          component={SeeAllRestaurant}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Constants.SEE_ALL_FOOD}
+          component={SeeAllFood}
+          options={{headerShown: false}}
+        />
+         <Stack.Screen
+          name={Constants.ADDRESS_SCREEN}
+          component={AddressScreen}
+          options={{headerShown: false}}
+        />
+         <Stack.Screen
+          name={Constants.FOOD_DETAIL}
+          component={FoodDetail}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </SafeAreaView>
   );

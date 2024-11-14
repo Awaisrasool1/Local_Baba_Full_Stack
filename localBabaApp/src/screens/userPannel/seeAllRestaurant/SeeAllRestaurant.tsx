@@ -24,7 +24,7 @@ const SeeAllRestaurant = (props: any) => {
     if (isConnected) {
       try {
         const categorieResp = await get_categories();
-        const newArry = categorieResp.map((val: any, index: number) => ({
+        const newArry = categorieResp?.map((val: any, index: number) => ({
           ...val,
           isActive: index == 0,
         }));
@@ -66,7 +66,7 @@ const SeeAllRestaurant = (props: any) => {
               isActive={item.isActive}
               title={item.Name}
               onPress={() => {
-                const newArry = categorieData.map((_item: Categories) => ({
+                const newArry = categorieData?.map((_item: Categories) => ({
                   ..._item,
                   isActive: item.ID == _item.ID,
                 }));
