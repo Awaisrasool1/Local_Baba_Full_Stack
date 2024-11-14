@@ -1,0 +1,152 @@
+/* Sidebar.css */
+
+.sidebar-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+}
+
+.sidebar-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-container::-webkit-scrollbar-thumb {
+  background-color: rgba(155, 155, 155, 0.5);
+  border-radius: 20px;
+  border: transparent;
+}
+
+/* Logo styles */
+.logo-container {
+  transition: all 0.3s ease;
+}
+
+.logo-container img {
+  transition: transform 0.3s ease;
+}
+
+.logo-container:hover img {
+  transform: scale(1.05);
+}
+
+/* Navigation item styles */
+.sidebar-nav-item {
+  position: relative;
+  transition: all 0.3s ease;
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+.sidebar-nav-item button {
+  padding: 12px 16px;
+  width: 100%;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+}
+
+.sidebar-nav-item button:hover {
+  transform: translateX(8px);
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+.sidebar-nav-item button.active {
+  background: #242B47 !important; 
+  color: white !important;
+  transform: translateX(8px);
+  box-shadow: 0 4px 14px 0 rgba(36, 43, 71, 0.4); 
+}
+
+.sidebar-nav-item button:not(.active):hover {
+  background: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+/* Icon animations */
+.sidebar-nav-item button span {
+  transition: all 0.3s ease;
+}
+
+.sidebar-nav-item:hover button span:first-child {
+  transform: scale(1.2);
+}
+
+.sidebar-nav-item button.active span:first-child {
+  transform: scale(1.2);
+}
+
+/* Add Restaurant Card styles */
+.add-restaurant-card {
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.add-restaurant-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.chef-icon {
+  transition: all 0.3s ease;
+}
+
+.add-restaurant-card:hover .chef-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Add Restaurant Button styles */
+.add-restaurant-button {
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.add-restaurant-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 0;
+  padding-bottom: 120%;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s;
+}
+
+.add-restaurant-button:hover::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+  .sidebar-nav-item button:hover {
+    transform: translateX(4px);
+  }
+  
+  .add-restaurant-card:hover {
+    transform: translateY(-3px);
+  }
+}
+
+/* Reduce motion if user prefers */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-nav-item,
+  .sidebar-nav-item button,
+  .add-restaurant-card,
+  .chef-icon,
+  .add-restaurant-button,
+  .logo-container {
+    transition: none;
+  }
+  
+  .sidebar-nav-item button:hover,
+  .add-restaurant-card:hover,
+  .chef-icon:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,130 @@
+
+.search-bar {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+  }
+  
+  .search-bar input {
+    padding-right: 40px;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .search-bar input:focus {
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .search-bar i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .category-nav {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    border-bottom: 2px solid #ddd;
+    position: relative;
+  }
+  
+  .category-btn {
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #242B47;
+    position: relative;
+    transition: color 0.3s ease;
+  }
+  
+  .category-btn:hover {
+    color: #000;
+  }
+  
+  .category-btn.active {
+    color: #242B47;
+  }
+  
+  .category-btn.active::after {
+    content: "";
+    width: 100%;
+    height: 2px;
+    background: #242B47;
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    transition: transform 0.3s ease; 
+  }
+  
+  .category-btn.active::after {
+    transform: scaleX(1);
+  }
+  
+  .food-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+  
+  .food-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .rating {
+    font-size: 0.9rem;
+    color: #ffc107;
+  }
+  
+  .price-section {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    margin-top: 10px;
+    gap: 4px;
+  }
+  
+  .discount-badge {
+    font-size: 0.8rem;
+    color: #fff;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25em;
+    align-self: flex-start;
+  }
+  
+  .original-price {
+    font-size: 1rem;
+    text-decoration: line-through;
+    color: #888;
+  }
+  
+  .discounted-price {
+    font-size: 1.2rem;
+    color: #e74c3c;
+    font-weight: bold;
+  }
+  
+  @media (max-width: 768px) {
+    .category-nav {
+      flex-wrap: wrap;
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.5s ease forwards;
+  }
+  
