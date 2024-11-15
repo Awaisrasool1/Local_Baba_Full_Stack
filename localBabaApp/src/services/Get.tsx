@@ -37,6 +37,16 @@ async function get_default_address() {
   return res.data;
 }
 
+async function get_profile() {
+  const res = await API.get('profile/get-profile');
+  return res.data;
+}
+
+async function get_all_address() {
+  const res = await API.get('/user/Address/get-address');
+  return res.data;
+}
+
 export {
   get_categories,
   get_nearby_restaurants,
@@ -45,4 +55,6 @@ export {
   get_product_byId,
   get_cart_item,
   get_default_address,
+  get_profile,
+  get_all_address
 };

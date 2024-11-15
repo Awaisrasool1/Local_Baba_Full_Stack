@@ -12,9 +12,15 @@ import styles from './styles';
 import Theme from '../../../theme/Theme';
 import {Header} from '../../../components';
 import {Constants} from '../../../constants';
+import {useQuery} from '@tanstack/react-query';
+import {isNetworkAvailable} from '../../../api';
+import {useToast} from 'react-native-toasty-toast';
+import {get_profile} from '../../../services';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const SettingScreen = () => {
+const SettingScreen = (props: any) => {
   const navigation: any = useNavigation();
+  const {showToast} = useToast();
 
   const menuItems = [
     {
@@ -55,11 +61,45 @@ const SettingScreen = () => {
     },
   ];
 
+  const {data} = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      try {
+        const isConnected = await isNetworkAvailable();
+        if (!isConnected) {
+          showToast('Check your internet!', 'error', 'bottom', 1000);
+          return;
+        }
+        const res = await get_profile();
+        return res.data;
+      } catch (err: any) {
+        console.log(err.response.data.message);
+        showToast(err.response.data.message, 'error', 'bottom', 1000);
+      }
+    },
+  });
+  const logOut = async () => {
+    AsyncStorage.clear();
+    props.navigation.reset({
+      index: 0,
+      routes: [
+        {
+          name: Constants.LOGIN_SCREEN,
+        },
+      ],
+    });
+  };
   const renderMenuItem = ({id, title, icon}: any) => (
     <TouchableOpacity
       key={id}
       style={styles.menuItem}
-      onPress={() => navigation.navigate(id)}>
+      onPress={() => {
+        if (title == 'Log Out') {
+          logOut();
+        } else {
+          navigation.navigate(id);
+        }
+      }}>
       <View style={styles.menuItemLeft}>
         <Image source={icon} />
         <Text style={styles.menuItemText}>{title}</Text>
@@ -90,12 +130,16 @@ const SettingScreen = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Image
-            source={{uri: 'https://via.placeholder.com/100'}}
+            source={{
+              uri: data?.image
+                ? data?.image
+                : 'https://via.placeholder.com/100',
+            }}
             style={styles.profileImage}
           />
           <View>
-            <Text style={styles.name}>John Doe</Text>
-            <Text style={styles.email}>abc@email.com</Text>
+            <Text style={styles.name}>{data?.name}</Text>
+            <Text style={styles.email}>{data?.email}</Text>
           </View>
         </View>
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"foodApp/database"
 	"foodApp/models"
+	"foodApp/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -85,4 +86,30 @@ func SignIn(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": "success", "message": "User Login", "token": tokenString, "userId": user.ID, "name": user.Name, "role": user.Role})
+}
+
+func Get_Profile(c *gin.Context) {
+	token := c.GetHeader("Authorization")
+	var user models.User
+
+	if token == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "token missing"})
+		return
+	}
+
+	claim, err := utils.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "invalid token"})
+		return
+	}
+	userID := (*claim)["userId"].(string)
+	collection := database.GetCollection("user")
+	ctx := context.Background()
+
+	err = collection.FindOne(ctx, bson.M{"_id": userID}).Decode(&user)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"status": "error", "meesage": "user not found"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "success", "data": user})
 }

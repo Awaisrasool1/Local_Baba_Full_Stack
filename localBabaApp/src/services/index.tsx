@@ -7,8 +7,11 @@ import {
   get_product_byId,
   get_cart_item,
   get_default_address,
+  get_profile,
+  get_all_address,
 } from './Get';
 import {add_to_cart, add_to_address} from './Post';
+import {delete_address} from './Delete';
 
 export {
   SignIn,
@@ -22,4 +25,7 @@ export {
   get_cart_item,
   get_default_address,
   add_to_address,
+  get_profile,
+  get_all_address,
+  delete_address,
 };

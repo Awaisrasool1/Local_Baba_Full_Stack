@@ -36,6 +36,7 @@ func SetUpRoutes() *gin.Engine {
 	router.POST("Auth/user-signup", handlers.SignUp)
 	router.POST("Auth/login", handlers.SignIn)
 	router.GET("Categories/get-All-Categories", handlers.GetCategories)
+	router.GET("profile/get-profile", handlers.Get_Profile)
 
 	router.POST("upload", handlers.UploadImage)
 	//admin pannel routes
@@ -77,7 +78,7 @@ func SetUpRoutes() *gin.Engine {
 		userRoutes.GET("Product/get-products/:id", user.Get_user_products)
 		userRoutes.GET("Product/GetProductById/:id", user.Get_user_product_by_id)
 		//address apis
-		userRoutes.DELETE("Address/delete-address", user.Delete_user_address)
+		userRoutes.DELETE("Address/delete-address:id", user.Delete_user_address)
 		userRoutes.POST("Address/add-address", user.Add_user_address)
 		userRoutes.POST("Address/update-address", user.UpdateDefaultAddress)
 		userRoutes.GET("Address/get-address", user.Get_user_address)

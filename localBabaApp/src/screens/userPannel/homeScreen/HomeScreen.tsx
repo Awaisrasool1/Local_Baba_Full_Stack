@@ -117,7 +117,7 @@ const HomeScreen = (props: any) => {
       <View style={styles.marginV5} />
       <SeeAllBtn title="Categories" onPress={() => {}} />
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {categorieData.map(rendercategories)}
+        {categorieData?.map(rendercategories)}
       </ScrollView>
       <View style={styles.marginV5} />
       <SeeAllBtn
@@ -131,7 +131,7 @@ const HomeScreen = (props: any) => {
         }}
       />
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {filteredRestaurants.length > 0 ? (
+        {filteredRestaurants?.length > 0 ? (
           filteredRestaurants?.map(renderRestaurants)
         ) : (
           <Text style={styles.noDataText}>{'No Restaurants Found !'}</Text>
