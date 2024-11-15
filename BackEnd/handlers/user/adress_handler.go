@@ -117,11 +117,6 @@ func Get_user_address(c *gin.Context) {
 		return
 	}
 
-	if err := c.ShouldBindJSON(&adress); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": err.Error()})
-		return
-	}
-
 	userID := (*claim)["userId"].(string)
 
 	collection := database.GetCollection("address")

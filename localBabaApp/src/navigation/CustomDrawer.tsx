@@ -9,9 +9,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {Constants} from '../constants';
 import Theme from '../theme/Theme';
+import {useQuery} from '@tanstack/react-query';
+import {useToast} from 'react-native-toasty-toast';
+import {get_profile} from '../services';
 
 const CustomDrawer = (props: any) => {
   const nav: any = useNavigation();
+  const {showToast} = useToast();
 
   const logOut = async () => {
     AsyncStorage.clear();
@@ -24,17 +28,37 @@ const CustomDrawer = (props: any) => {
       ],
     });
   };
+
+  const {data} = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      try {
+        const isConnected = await isNetworkAvailable();
+        if (!isConnected) {
+          showToast('Check your internet!', 'error', 'bottom', 1000);
+          return;
+        }
+        const res = await get_profile();
+        return res.data;
+      } catch (err: any) {
+        console.log(err.response.data.message);
+        showToast(err.response.data.message, 'error', 'bottom', 1000);
+      }
+    },
+  });
   return (
     <View style={{flex: 1}}>
       <DrawerContentScrollView {...props}>
         <View style={style.drawerHeader}>
           <Image
-            source={{uri: 'https://via.placeholder.com/100'}}
+            source={{
+              uri: data?.image ? data?.image : 'https://via.placeholder.com/100',
+            }}
             style={style.profilePicture}
           />
           <View style={style.profileInfo}>
-            <Text style={style.profileName}>John Doe</Text>
-            <Text style={style.profileEmail}>john@example.com</Text>
+            <Text style={style.profileName}>{data?.name}</Text>
+            <Text style={style.profileEmail}>{data?.email}</Text>
           </View>
         </View>
         <View style={style.magrinV5} />
@@ -45,7 +69,7 @@ const CustomDrawer = (props: any) => {
           onPress={() => logOut()}
           style={{paddingVertical: 15}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            {/* <Image source={require('../assest/Img/logout.png')} /> */}
+            <Image source={Theme.icons.logout} />
             <Text style={style.logoutText}>Logout</Text>
           </View>
         </TouchableOpacity>
