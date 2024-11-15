@@ -1,3 +1,4 @@
-import AddressScreen from './AddressScreen'
+import AddressScreen from './AddressScreen';
+import SeeAllAddress from './SeeAllAddress';
 
-export {AddressScreen}
+export {AddressScreen, SeeAllAddress};

@@ -8,6 +8,7 @@ import {Constants} from '../../constants';
 interface Props {
   isBack?: boolean;
   isCart?: boolean;
+  onlyBack?: boolean;
   isEdit?: boolean;
   isBackTitle?: string;
   onBack?: () => void;
@@ -40,7 +41,7 @@ const Header = (props: Props) => {
           <Image source={Theme.icons.addToCart} />
         </TouchableOpacity>
       )}
-      {!props.isEdit && !props.isCart ? (
+      {!props.onlyBack && !props.isEdit && !props.isCart ? (
         <TouchableOpacity onPress={props.onEdit}>
           <Text style={styles.editText}>{'Edit'}</Text>
         </TouchableOpacity>

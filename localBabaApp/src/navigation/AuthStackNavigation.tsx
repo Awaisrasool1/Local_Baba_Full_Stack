@@ -12,6 +12,9 @@ import {
   FoodDetail,
   CartScreen,
   AddressScreen,
+  SeeAllAddress,
+  Notification,
+  ProfileScreen,
 } from '../screens';
 import SignUpScreen from '../screens/auth/signupScreen';
 import DrawerNavigation from './DrawerNavigation';
@@ -49,7 +52,7 @@ const AuthStackNavigation = () => {
           component={DrawerNavigation}
           options={{headerShown: false}}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={Constants.SEE_ALL_RESTAURANT}
           component={SeeAllRestaurant}
           options={{headerShown: false}}
@@ -59,14 +62,29 @@ const AuthStackNavigation = () => {
           component={SeeAllFood}
           options={{headerShown: false}}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={Constants.ADDRESS_SCREEN}
           component={AddressScreen}
           options={{headerShown: false}}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={Constants.FOOD_DETAIL}
           component={FoodDetail}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Constants.SEE_ALL_ADDRESS}
+          component={SeeAllAddress}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Constants.NOTIFICATION_SCREEN}
+          component={Notification}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Constants.PROFILE_SCREEN}
+          component={ProfileScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
