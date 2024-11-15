@@ -55,11 +55,63 @@ const styles = StyleSheet.create({
     fontSize: Theme.responsiveSize.size16,
     fontWeight: '600',
   },
-  backArrow:{
+  backArrow: {
     position: 'absolute',
-    top:Theme.responsiveSize.size10,
-    left:Theme.responsiveSize.size10
-  }
+    top: Theme.responsiveSize.size10,
+    left: Theme.responsiveSize.size10,
+  },
+  ///   See All Address Screen ///
+
+  mainContainer: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: Theme.colors.white,
+  },
+  scrollContent: {
+    padding: Theme.responsiveSize.size10,
+  },
+  paddingH10: {
+    paddingHorizontal: Theme.responsiveSize.size10,
+    paddingTop: Theme.responsiveSize.size5,
+    paddingBottom: Theme.responsiveSize.size5,
+  },
+  card: {
+    backgroundColor: Theme.colors.bgColor7,
+    borderRadius: Theme.responsiveSize.size10,
+    padding: Theme.responsiveSize.size10,
+    marginBottom: Theme.responsiveSize.size10,
+    shadowColor: Theme.colors.black,
+    shadowOffset: {
+      width: 0,
+      height: Theme.responsiveSize.size2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: Theme.responsiveSize.size1,
+    elevation: Theme.responsiveSize.size2,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Theme.responsiveSize.size10,
+  },
+  typeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  typeText: {
+    fontSize: Theme.responsiveSize.size12,
+    fontWeight: '600',
+    color: Theme.colors.black,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  addressText: {
+    fontSize: Theme.responsiveSize.size12,
+    color: '#666',
+  },
 });
 
 export default styles;

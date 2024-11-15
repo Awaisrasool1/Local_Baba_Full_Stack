@@ -3,9 +3,8 @@ import {SeeAllRestaurant} from './seeAllRestaurant';
 import SeeAllFood from './seeAllFood';
 import {FoodDetail} from './foodDetail';
 import {CartScreen} from './cartScreen';
-import {AddressScreen} from './addressScreen';
-import {SettingScreen} from './settingScreen';
-
+import {AddressScreen,SeeAllAddress} from './addressScreen';
+import {SettingScreen, ProfileScreen, Notification} from './settingScreen';
 
 export {
   HomeScreen,
@@ -14,5 +13,8 @@ export {
   FoodDetail,
   CartScreen,
   AddressScreen,
-  SettingScreen
+  SettingScreen,
+  ProfileScreen,
+  Notification,
+  SeeAllAddress
 };
