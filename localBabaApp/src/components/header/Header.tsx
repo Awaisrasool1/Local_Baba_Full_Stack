@@ -4,6 +4,7 @@ import Theme from '../../theme/Theme';
 import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
 import {Constants} from '../../constants';
+import {getToken} from '../../api/api';
 
 interface Props {
   isBack?: boolean;
@@ -37,7 +38,15 @@ const Header = (props: Props) => {
         </View>
       )}
       {props.isCart && (
-        <TouchableOpacity onPress={() => nav.navigate(Constants.CART_SCREEN)}>
+        <TouchableOpacity
+          onPress={() => {
+            const token = getToken();
+            if (token) {
+              nav.navigate(Constants.CART_SCREEN);
+            } else {
+              nav.navigate(Constants.LOGIN_SCREEN);
+            }
+          }}>
           <Image source={Theme.icons.addToCart} />
         </TouchableOpacity>
       )}

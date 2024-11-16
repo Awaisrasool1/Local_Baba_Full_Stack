@@ -10,4 +10,14 @@ async function add_to_address(data: any) {
   return res.data;
 }
 
-export {add_to_cart, add_to_address};
+async function add_quantity(id: string) {
+  const res = await API.put(`/user/Cart/add-quantity/${id}`);
+  return res.data;
+}
+
+async function remove_quantity(id: string) {
+  const res = await API.put(`/user/Cart/remove-quantity/${id}`);
+  return res.data;
+}
+
+export {add_to_cart, add_to_address, remove_quantity, add_quantity};

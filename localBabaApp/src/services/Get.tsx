@@ -6,7 +6,7 @@ async function get_categories() {
 }
 
 async function get_all_restaurants() {
-  const res = await API.get('/user/Restaurant/get-all-restaurant');
+  const res = await API.get('Restaurant/get-all-restaurant');
   return res.data.data;
 }
 
@@ -16,14 +16,14 @@ async function get_nearby_restaurants() {
 }
 
 async function get_all_product(id: string, category: string) {
-  const res = await API.get(`/user/Product/get-products/${id}`, {
+  const res = await API.get(`Product/get-products/${id}`, {
     params: {category},
   });
   return res.data;
 }
 
 async function get_product_byId(id: string) {
-  const res = await API.get(`/user/Product/GetProductById/${id}`);
+  const res = await API.get(`Product/GetProductById/${id}`);
   return res.data;
 }
 

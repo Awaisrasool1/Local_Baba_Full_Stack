@@ -46,8 +46,8 @@ const HomeScreen = (props: any) => {
         setFilteredRestaurants(allRestaurant);
         // const nearbyRestaurant = await get_nearby_restaurants();
         // setNearbyRestaurants(nearbyRestaurant);
-      } catch (err) {
-        console.log(err);
+      } catch (err:any) {
+        console.log(err.response.data);
       }
     }
   };

@@ -38,6 +38,12 @@ func SetUpRoutes() *gin.Engine {
 	router.GET("Categories/get-All-Categories", handlers.GetCategories)
 	router.GET("profile/get-profile", handlers.Get_Profile)
 
+	//app routes
+	router.GET("Restaurant/get-all-restaurant", user.Get_user_restaurant)
+	router.GET("Restaurants/Get-Nearby-Restaurants", user.Get_user_nearby_restaurants)
+	router.GET("Product/get-products/:id", user.Get_user_products)
+	router.GET("Product/GetProductById/:id", user.Get_user_product_by_id)
+
 	router.POST("upload", handlers.UploadImage)
 	//admin pannel routes
 	adminRoutes := router.Group("/admin")
@@ -66,17 +72,12 @@ func SetUpRoutes() *gin.Engine {
 	userRoutes := router.Group("/user")
 	userRoutes.Use(utils.RoleAuthorization(4))
 	{
-		//restaurant apis
-		userRoutes.GET("Restaurant/get-all-restaurant", user.Get_user_restaurant)
-		userRoutes.GET("Restaurants/Get-Nearby-Restaurants", user.Get_user_nearby_restaurants)
 		//carts apis
 		userRoutes.POST("Cart/add-to-cart/:id", user.AddToCart)
-		userRoutes.PUT("AddQuantity/:id", user.AddQuantity)
-		userRoutes.PUT("RemoveQuantity/:id", user.RemoveQuantity)
+		userRoutes.PUT("Cart/add-quantity/:id", user.AddQuantity)
+		userRoutes.PUT("Cart/remove-quantity/:id", user.RemoveQuantity)
+		userRoutes.DELETE("Cart/item-delete:id", user.DeleteItem)
 		userRoutes.GET("Cart/get_cart_Item", user.GetAllCartItem)
-		//products apis
-		userRoutes.GET("Product/get-products/:id", user.Get_user_products)
-		userRoutes.GET("Product/GetProductById/:id", user.Get_user_product_by_id)
 		//address apis
 		userRoutes.DELETE("Address/delete-address:id", user.Delete_user_address)
 		userRoutes.POST("Address/add-address", user.Add_user_address)

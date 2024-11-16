@@ -131,6 +131,40 @@ func GetAllCartItem(c *gin.Context) {
 	})
 }
 
+func DeleteItem(c *gin.Context) {
+	var cart models.Cart
+
+	token := c.GetHeader("Authorization")
+	if token == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "token messing"})
+		return
+	}
+
+	claim, err := utils.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
+		return
+	}
+
+	userID := (*claim)["userId"].(string)
+	collection := database.GetCollection("cart")
+	ctx := context.Background()
+	err = collection.FindOne(ctx, bson.M{"user_id": userID, "_id": c.Param("id")}).Decode(&cart)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "product not found"})
+		return
+	}
+
+	_, err = collection.DeleteOne(ctx, bson.M{"_id": cart.ID})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete item"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Status": "Success", "Message": "item delete successfully"})
+}
+
 func AddQuantity(c *gin.Context) {
 	var cart models.Cart
 
@@ -149,7 +183,7 @@ func AddQuantity(c *gin.Context) {
 	userID := (*claim)["userId"].(string)
 	collection := database.GetCollection("cart")
 	ctx := context.Background()
-	err = collection.FindOne(ctx, bson.M{"user_id": userID, "product_id": c.Param("id")}).Decode(&cart)
+	err = collection.FindOne(ctx, bson.M{"user_id": userID, "_id": c.Param("id")}).Decode(&cart)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "product not found"})
@@ -188,7 +222,7 @@ func RemoveQuantity(c *gin.Context) {
 	userID := (*claim)["userId"].(string)
 	collection := database.GetCollection("cart")
 	ctx := context.Background()
-	err = collection.FindOne(ctx, bson.M{"user_id": userID, "product_id": c.Param("id")}).Decode(&cart)
+	err = collection.FindOne(ctx, bson.M{"user_id": userID, "_id": c.Param("id")}).Decode(&cart)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "product not found"})

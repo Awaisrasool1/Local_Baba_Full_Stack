@@ -5,4 +5,9 @@ async function delete_address(id:string) {
   return res;
 }
 
-export {delete_address};
+async function delete_cart_item(id:string) {
+  const res = await API.delete(`/user/Cart/item-delete${id}`);
+  return res;
+}
+
+export {delete_address,delete_cart_item};
