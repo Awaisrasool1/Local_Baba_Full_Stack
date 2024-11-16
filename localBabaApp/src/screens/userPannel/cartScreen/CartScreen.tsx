@@ -1,10 +1,16 @@
 import {View, ScrollView, ActivityIndicator, Text} from 'react-native';
 import React, {useState} from 'react';
-import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import styles from './styles';
 import {CartFooter, CartItem, Header} from '../../../components';
 import {isNetworkAvailable} from '../../../api';
-import {get_cart_item, get_default_address} from '../../../services';
+import {
+  add_quantity,
+  delete_cart_item,
+  get_cart_item,
+  get_default_address,
+  remove_quantity,
+} from '../../../services';
 import {useToast} from 'react-native-toasty-toast';
 import {AddressData, CartData} from './types';
 import {Constants} from '../../../constants';
@@ -56,13 +62,37 @@ const CartScreen = (props: any) => {
     enabled: isFocused,
   });
 
-  const handleDelete = async (itemId: string) => {
-    queryClient.setQueryData<CartData[]>(
-      ['cartItem'],
-      oldData => oldData?.filter(item => item.id !== itemId) ?? [],
-    );
-    queryClient.invalidateQueries({queryKey: ['cartItem']});
-  };
+  const deleteMutation = useMutation({
+    mutationFn: delete_cart_item,
+    onSuccess: (data: any) => {
+      showToast(data.data.Message, 'success', 'top', 1000);
+      queryClient.invalidateQueries({queryKey: ['cartItem']});
+    },
+    onError: (err: any) => {
+      console.log(err.response.data);
+    },
+  });
+
+  const addMutation = useMutation({
+    mutationFn: add_quantity,
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['cartItem']});
+    },
+    onError: (err: any) => {
+      console.log(err.response.data);
+    },
+  });
+
+  const removeMutation = useMutation({
+    mutationFn: remove_quantity,
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['cartItem']});
+    },
+  });
+
+  const handleAdd = (id: string) => addMutation.mutate(id);
+  const handleRemove = (id: string) => removeMutation.mutate(id);
+  const handleDelete = async (id: string) => deleteMutation.mutate(id);
 
   return (
     <>
@@ -89,6 +119,8 @@ const CartScreen = (props: any) => {
               category={item.category}
               quantity={item.quantity}
               index={index}
+              add={() => handleAdd(item.id)}
+              remove={() => handleRemove(item.id)}
               onDelete={() => handleDelete(item.id)}
             />
           ))}

@@ -193,6 +193,9 @@ const Theme = {
     profileSetting: require('../resource/images/profile.png'),
     addressHome: require('../resource/images/addressHome.png'),
     addressDelete: require('../resource/images/addressDelete.png'),
+    editIcon: require('../resource/images/EditIcon.png'),
+    email: require('../resource/images/email.png'),
+    PhoneNo: require('../resource/images/phoneNo.png'),
   },
 };
 export default Theme;

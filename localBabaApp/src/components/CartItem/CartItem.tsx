@@ -14,6 +14,8 @@ interface Props {
   quantity: number;
   category: string;
   onDelete: () => void;
+  add: () => void;
+  remove: () => void;
 }
 
 const CartItem = (props: Props) => {
@@ -87,11 +89,13 @@ const CartItem = (props: Props) => {
           <View style={styles.priceContainer}>
             <Text style={styles.priceText}>Total: {props.itemTotalPrice}</Text>
             <View style={styles.quntityContainer}>
-              <TouchableOpacity style={styles.boxContainer}>
+              <TouchableOpacity
+                style={styles.boxContainer}
+                onPress={props.remove}>
                 <Image source={Theme.icons.minus} />
               </TouchableOpacity>
               <Text style={styles.itemText}>{props.quantity}</Text>
-              <TouchableOpacity style={styles.boxContainer}>
+              <TouchableOpacity style={styles.boxContainer} onPress={props.add}>
                 <Image source={Theme.icons.add} />
               </TouchableOpacity>
             </View>

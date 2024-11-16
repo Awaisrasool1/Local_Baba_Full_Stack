@@ -80,10 +80,7 @@ const LoginScreen = (props: any) => {
           data.name,
         );
         showToast(data.message, 'success', 'top', 1000);
-        props.navigation.reset({
-          index: 0,
-          routes: [{name: Constants.DRAWER_NAVIGATION}],
-        });
+        props.navigation.navigate(Constants.DRAWER_NAVIGATION);
       } else {
         console.log('Invalid user role.');
       }

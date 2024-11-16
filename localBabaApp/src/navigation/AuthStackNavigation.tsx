@@ -15,6 +15,7 @@ import {
   SeeAllAddress,
   Notification,
   ProfileScreen,
+  SettingScreen,
 } from '../screens';
 import SignUpScreen from '../screens/auth/signupScreen';
 import DrawerNavigation from './DrawerNavigation';
@@ -27,6 +28,11 @@ const AuthStackNavigation = () => {
       <Stack.Navigator
         initialRouteName={Constants.SPLASH_SCREEN}
         screenOptions={({navigation, route}) => ({})}>
+        <Stack.Screen
+          name={Constants.DRAWER_NAVIGATION}
+          component={DrawerNavigation}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name={Constants.SPLASH_SCREEN}
           component={SplashScreen}
@@ -45,11 +51,6 @@ const AuthStackNavigation = () => {
         <Stack.Screen
           name={Constants.LOCATION_ACCESS_SCREEN}
           component={LocationAccess}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name={Constants.DRAWER_NAVIGATION}
-          component={DrawerNavigation}
           options={{headerShown: false}}
         />
         <Stack.Screen
@@ -85,6 +86,21 @@ const AuthStackNavigation = () => {
         <Stack.Screen
           name={Constants.PROFILE_SCREEN}
           component={ProfileScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Constants.SETTING_SCREEN}
+          component={SettingScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Constants.HOME_SCREEN}
+          component={HomeScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Constants.CART_SCREEN}
+          component={CartScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

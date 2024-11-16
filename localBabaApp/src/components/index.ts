@@ -8,8 +8,7 @@ import {RestaurantCard} from './restaurantCard';
 import {FoodCard} from './foodCard';
 import {CartFooter} from './cartFooter';
 import {CartItem} from './CartItem';
-
-
+import {ProfileCard} from './profileCard';
 
 export {
   CustomButton,
@@ -21,5 +20,6 @@ export {
   RestaurantCard,
   FoodCard,
   CartFooter,
-  CartItem
+  CartItem,
+  ProfileCard,
 };

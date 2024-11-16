@@ -4,7 +4,6 @@ import (
 	"context"
 	"foodApp/database"
 	"foodApp/models"
-	"foodApp/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,17 +13,6 @@ import (
 
 func Get_user_products(c *gin.Context) {
 	var products []models.Product
-
-	token := c.GetHeader("Authorization")
-	if token == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "token missing"})
-		return
-	}
-	_, err := utils.ValidateToken(token)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
-		return
-	}
 
 	id := c.Param("id")
 	category := c.Query("category")
@@ -57,20 +45,11 @@ func Get_user_products(c *gin.Context) {
 }
 
 func Get_user_product_by_id(c *gin.Context) {
-	token := c.GetHeader("Authorization")
-	if token == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "token messing"})
-		return
-	}
-	_, err := utils.ValidateToken(token)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "invalid token"})
-		return
-	}
+
 	var product models.Product
 	collection := database.GetCollection("product")
 	ctx := context.Background()
-	err = collection.FindOne(ctx, bson.M{"_id": c.Param("id")}).Decode(&product)
+	err := collection.FindOne(ctx, bson.M{"_id": c.Param("id")}).Decode(&product)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": err.Error()})
 		return

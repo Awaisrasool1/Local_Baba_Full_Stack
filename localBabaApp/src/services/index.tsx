@@ -10,8 +10,13 @@ import {
   get_profile,
   get_all_address,
 } from './Get';
-import {add_to_cart, add_to_address} from './Post';
-import {delete_address} from './Delete';
+import {
+  add_to_cart,
+  add_to_address,
+  add_quantity,
+  remove_quantity,
+} from './Post';
+import {delete_address, delete_cart_item} from './Delete';
 
 export {
   SignIn,
@@ -28,4 +33,7 @@ export {
   get_profile,
   get_all_address,
   delete_address,
+  remove_quantity,
+  add_quantity,
+  delete_cart_item,
 };

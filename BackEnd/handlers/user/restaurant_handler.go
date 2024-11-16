@@ -16,16 +16,6 @@ import (
 func Get_user_restaurant(c *gin.Context) {
 	var restaurants []models.Restaurant
 
-	token := c.GetHeader("Authorization")
-	if token == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "token messing"})
-		return
-	}
-	_, err := utils.ValidateToken(token)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
-		return
-	}
 	collection := database.GetCollection("restaurants")
 	ctx := context.Background()
 

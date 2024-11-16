@@ -7,11 +7,13 @@ import {add_to_cart, get_all_product, get_categories} from '../../../services';
 import {Categories} from '../../../constants/type';
 import {ProductData} from './type';
 import {Constants} from '../../../constants';
+import {getToken} from '../../../api/api';
 
 const SeeAllFood = (props: any) => {
   const {id, name} = props?.route?.params;
   const [categorieData, setCategorieData] = useState<Categories[]>([]);
   const [productData, setProductData] = useState<ProductData[]>([]);
+  const token = getToken();
 
   useEffect(() => {
     fetchCategories();
@@ -41,10 +43,10 @@ const SeeAllFood = (props: any) => {
       const productResp = await get_all_product(id, name);
       if (productResp?.products?.length > 0) {
         setProductData(productResp.products);
-      }else{
-        setProductData([])
+      } else {
+        setProductData([]);
       }
-    } catch (err:any) {
+    } catch (err: any) {
       console.log('Error fetching products:', err.response.data);
     }
   }, []);
@@ -54,7 +56,7 @@ const SeeAllFood = (props: any) => {
     if (isConnected) {
       try {
         const res = await add_to_cart(id);
-      } catch (err:any) {
+      } catch (err: any) {
         console.log(err.response.data);
       }
     }
@@ -106,7 +108,13 @@ const SeeAllFood = (props: any) => {
               rating={item.rating}
               time={item.time}
               type={item.category_name}
-              addToCart={() => addToCart(item.id)}
+              addToCart={() => {
+                if (token) {
+                  addToCart(item.id);
+                } else {
+                  props.navigation.navigate(Constants.LOGIN_SCREEN);
+                }
+              }}
               onPress={() => {
                 props.navigation.navigate(Constants.FOOD_DETAIL, {id: item.id});
               }}
