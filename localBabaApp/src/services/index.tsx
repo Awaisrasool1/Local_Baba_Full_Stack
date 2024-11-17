@@ -15,6 +15,7 @@ import {
   add_to_address,
   add_quantity,
   remove_quantity,
+  upload_image
 } from './Post';
 import {delete_address, delete_cart_item} from './Delete';
 
@@ -36,4 +37,5 @@ export {
   remove_quantity,
   add_quantity,
   delete_cart_item,
+  upload_image
 };

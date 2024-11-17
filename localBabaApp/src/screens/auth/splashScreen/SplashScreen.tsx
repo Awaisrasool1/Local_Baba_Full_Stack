@@ -21,21 +21,30 @@ const SplashScreen = (props: any) => {
           );
           if (token) {
             await saveToken(token, '', name);
+            props.navigation.reset({
+              index: 0,
+              routes: [
+                {
+                  name: Constants.DRAWER_NAVIGATION,
+                },
+              ],
+            });
+          } else {
+            props.navigation.reset({
+              index: 0,
+              routes: [
+                {
+                  name: Constants.LOGIN_SCREEN,
+                },
+              ],
+            });
           }
-          props.navigation.reset({
-            index: 0,
-            routes: [
-              {
-                name: Constants.DRAWER_NAVIGATION,
-              },
-            ],
-          });
         } catch (err) {
           props.navigation.reset({
             index: 0,
             routes: [
               {
-                name: Constants.DRAWER_NAVIGATION,
+                name: Constants.LOGIN_SCREEN,
               },
             ],
           });

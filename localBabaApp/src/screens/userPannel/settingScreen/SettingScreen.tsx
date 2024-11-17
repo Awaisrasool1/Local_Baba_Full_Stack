@@ -1,26 +1,21 @@
 import React from 'react';
 import {View, Text, Image, ScrollView, SafeAreaView} from 'react-native';
-import {
-  CommonActions,
-  useFocusEffect,
-  useNavigation,
-} from '@react-navigation/native';
+import {CommonActions, useIsFocused, useNavigation} from '@react-navigation/native';
 import styles from './styles';
 import Theme from '../../../theme/Theme';
-import {CustomButton, Header, ProfileCard} from '../../../components';
+import {Header, ProfileCard} from '../../../components';
 import {Constants} from '../../../constants';
-import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {useQuery} from '@tanstack/react-query';
 import {isNetworkAvailable} from '../../../api';
 import {useToast} from 'react-native-toasty-toast';
 import {get_profile} from '../../../services';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getToken, saveToken} from '../../../api/api';
+import {saveToken} from '../../../api/api';
 
 const SettingScreen = (props: any) => {
   const navigation: any = useNavigation();
   const {showToast} = useToast();
-  const [token, setToken] = React.useState<string | null>(null);
-  const queryClient = useQueryClient();
+  const isFocused = useIsFocused();
 
   const menuItems = [
     {
@@ -53,19 +48,15 @@ const SettingScreen = (props: any) => {
       icon: 'star-outline',
       section: 3,
     },
-    ...(token
-      ? [
-          {
-            id: 'logout',
-            title: 'Log Out',
-            icon: Theme.icons.logout,
-            section: 3,
-          },
-        ]
-      : []),
+    {
+      id: 'logout',
+      title: 'Log Out',
+      icon: Theme.icons.logout,
+      section: 3,
+    },
   ];
 
-  const {data, refetch} = useQuery({
+  const {data} = useQuery({
     queryKey: ['profile'],
     queryFn: async () => {
       try {
@@ -78,53 +69,28 @@ const SettingScreen = (props: any) => {
         return res.data;
       } catch (err: any) {
         console.log(err.response?.data?.message || 'Error fetching profile');
-        showToast(err.response?.data?.message || 'Error fetching profile', 'error', 'bottom', 1000);
+        showToast(
+          err.response?.data?.message || 'Error fetching profile',
+          'error',
+          'bottom',
+          1000,
+        );
         return null;
       }
     },
-    enabled: false,
+    enabled:isFocused
   });
-
-  const clearProfileData = () => {
-    queryClient.removeQueries({ queryKey: ['profile'] });
-    queryClient.setQueryData(['profile'], null);
-  };
-
-  const checkTokenAndFetchProfile = async () => {
-    try {
-      const savedToken = await getToken();
-      setToken(savedToken);
-      
-      if (savedToken) {
-        refetch();
-      } else {
-        clearProfileData();
-      }
-    } catch (error) {
-      console.error('Error checking token:', error);
-      showToast('Error checking authentication status', 'error', 'bottom', 1000);
-    }
-  };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      checkTokenAndFetchProfile();
-    }, [])
-  );
 
   const logOut = async () => {
     try {
       await AsyncStorage.clear();
-      clearProfileData();
-      saveToken(null,null,null);
-      setToken(null)
-
-      // props.navigation.dispatch(
-      //   CommonActions.reset({
-      //     index: 0,
-      //     routes: [{name: Constants.LOGIN_SCREEN}],
-      //   }),
-      // );
+      saveToken(null, null, null);
+      props.navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: Constants.LOGIN_SCREEN}],
+        }),
+      );
     } catch (error) {
       console.error('Error during logout:', error);
       showToast('Error during logout', 'error', 'bottom', 1000);
@@ -132,11 +98,6 @@ const SettingScreen = (props: any) => {
   };
 
   const handleNavigation = (item: any) => {
-    if (!token) {
-      navigation.navigate(Constants.LOGIN_SCREEN);
-      return;
-    }
-
     if (item.title === 'Log Out') {
       logOut();
       return;
@@ -151,7 +112,9 @@ const SettingScreen = (props: any) => {
   };
 
   const renderSection = (sectionNumber: number) => {
-    const sectionItems = menuItems.filter(item => item.section === sectionNumber);
+    const sectionItems = menuItems.filter(
+      item => item.section === sectionNumber,
+    );
     return (
       <View style={styles.section}>
         {sectionItems.map((item: any, index: number) => (
@@ -177,28 +140,18 @@ const SettingScreen = (props: any) => {
         />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {data && token ? (
-          <View style={styles.header}>
-            <Image
-              source={{
-                uri: data?.image || 'https://via.placeholder.com/100',
-              }}
-              style={styles.profileImage}
-            />
-            <View>
-              <Text style={styles.name}>{data?.name}</Text>
-              <Text style={styles.email}>{data?.email}</Text>
-            </View>
+        <View style={styles.header}>
+          <Image
+            source={{
+              uri: data?.image || 'https://via.placeholder.com/100',
+            }}
+            style={styles.profileImage}
+          />
+          <View>
+            <Text style={styles.name}>{data?.name}</Text>
+            <Text style={styles.email}>{data?.email}</Text>
           </View>
-        ) : (
-          <View style={styles.loginbtn}>
-            <CustomButton
-              title="LogIn"
-              onClick={() => navigation.navigate(Constants.LOGIN_SCREEN)}
-            />
-          </View>
-        )}
-
+        </View>
         {renderSection(1)}
         {renderSection(2)}
         {renderSection(3)}
