@@ -9,6 +9,7 @@ import {FoodCard} from './foodCard';
 import {CartFooter} from './cartFooter';
 import {CartItem} from './CartItem';
 import {ProfileCard} from './profileCard';
+import {DropPicker} from './DropPicker';
 
 export {
   CustomButton,
@@ -22,4 +23,5 @@ export {
   CartFooter,
   CartItem,
   ProfileCard,
+  DropPicker,
 };

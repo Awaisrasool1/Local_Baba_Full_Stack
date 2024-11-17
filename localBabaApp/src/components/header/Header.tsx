@@ -40,12 +40,7 @@ const Header = (props: Props) => {
       {props.isCart && (
         <TouchableOpacity
           onPress={() => {
-            const token = getToken();
-            if (token) {
-              nav.navigate(Constants.CART_SCREEN);
-            } else {
-              nav.navigate(Constants.LOGIN_SCREEN);
-            }
+            nav.navigate(Constants.CART_SCREEN);
           }}>
           <Image source={Theme.icons.addToCart} />
         </TouchableOpacity>

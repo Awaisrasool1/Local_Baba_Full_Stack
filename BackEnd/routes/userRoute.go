@@ -84,6 +84,9 @@ func SetUpRoutes() *gin.Engine {
 		userRoutes.POST("Address/update-address", user.UpdateDefaultAddress)
 		userRoutes.GET("Address/get-address", user.Get_user_address)
 		userRoutes.GET("Address/get-user-default-address", user.Get_user_default_address)
+		//profile
+		userRoutes.PUT("upload-image", user.Upload_Image)
+
 	}
 
 	return router

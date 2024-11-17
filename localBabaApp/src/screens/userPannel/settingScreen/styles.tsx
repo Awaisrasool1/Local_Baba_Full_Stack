@@ -54,10 +54,6 @@ const styles = StyleSheet.create({
     shadowRadius: Theme.responsiveSize.size1,
     elevation: Theme.responsiveSize.size1,
   },
-  loginbtn: {
-    paddingHorizontal: Theme.responsiveSize.size20,
-    marginVertical: Theme.responsiveSize.size20,
-  },
 });
 
 export default styles;
