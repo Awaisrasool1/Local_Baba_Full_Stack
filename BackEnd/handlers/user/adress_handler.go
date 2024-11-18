@@ -151,6 +151,7 @@ func Get_user_default_address(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "invalid token"})
 		return
 	}
+
 	userID := (*claim)["userId"].(string)
 
 	collection := database.GetCollection("address")
@@ -158,18 +159,28 @@ func Get_user_default_address(c *gin.Context) {
 	filter := bson.M{"userId": userID, "isDefaultShipping": true}
 
 	err = collection.FindOne(ctx, filter).Decode(&address)
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
 
-			c.JSON(http.StatusOK, gin.H{"status": "success", "message": "default shipping address not found"})
-		} else {
-
-			c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "internal server error"})
-		}
+	if err == mongo.ErrNoDocuments {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  "success",
+			"message": "No default address found",
+			"data":    nil,
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"status": "success", "data": address})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "error",
+			"message": "internal server error",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "success",
+		"data":   address,
+	})
 }
 
 func Delete_user_address(c *gin.Context) {

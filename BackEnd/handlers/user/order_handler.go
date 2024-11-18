@@ -5,66 +5,196 @@ import (
 	"foodApp/database"
 	"foodApp/models"
 	"foodApp/utils"
+	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func PlaceOrder(c *gin.Context) {
-	var order models.FoodOrder
-	var products []models.Product
-
+func AddOrderByCart(c *gin.Context) {
 	token := c.GetHeader("Authorization")
+	var input models.Order
+
 	if token == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "token messing"})
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "token missing"})
 		return
 	}
 
 	claim, err := utils.ValidateToken(token)
-
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
 		return
 	}
-	if err := c.ShouldBindJSON(&order); err != nil {
+
+	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": err.Error()})
 		return
 	}
 
-	productCollection := database.GetCollection("products")
+	userObjectID := (*claim)["userId"].(string)
 	ctx := context.Background()
+	cartCollection := database.GetCollection("cart")
+	orderCollection := database.GetCollection("order")
+	productCollection := database.GetCollection("product")
 
-	cursor, err := productCollection.Find(ctx, bson.M{"_id": bson.M{"$in": order.ProductIDs}})
+	cartItems, err := cartCollection.Find(ctx, bson.M{"user_id": userObjectID})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch products"})
+		log.Println("Error fetching cart items:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch cart items"})
 		return
 	}
-	defer cursor.Close(ctx)
+	defer cartItems.Close(ctx)
 
-	if err := cursor.All(ctx, &products); err != nil {
+	log.Println("Cart Items Found:", cartItems.RemainingBatchLength())
+
+	var orders []interface{}
+	var overallTotalBill float64
+
+	for cartItems.Next(ctx) {
+		var cartItem models.Cart
+		if err := cartItems.Decode(&cartItem); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode cart item"})
+			return
+		}
+
+		price := cartItem.DiscountedPrice
+		if price == 0 {
+			price = cartItem.OriginalPrice
+		}
+		totalBill := float64(cartItem.Quantity) * price
+
+		overallTotalBill += totalBill
+
+		var product models.Product
+		err := productCollection.FindOne(ctx, bson.M{"_id": cartItem.ProductID}).Decode(&product)
+		if err != nil {
+			log.Println("Error fetching product details:", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch product details"})
+			return
+		}
+
+		order := models.Order{
+			ID:           uuid.NewString(),
+			UserID:       cartItem.UserID,
+			ProductID:    cartItem.ProductID,
+			RestaurantID: product.RestaurantID,
+			Quantity:     cartItem.Quantity,
+			Price:        price,
+			TotalBill:    totalBill,
+			City:         input.City,
+			Address:      input.Address,
+			PhoneNo:      input.PhoneNo,
+			FirstName:    input.FirstName,
+			Email:        input.Email,
+			Status:       "Pending",
+			CreatedAt:    time.Now(),
+		}
+
+		orders = append(orders, order)
+	}
+
+	log.Printf("Orders Slice Length: %d\n", len(orders))
+
+	if len(orders) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "No items in cart to place an order"})
+		return
+	}
+
+	_, err = orderCollection.InsertMany(ctx, orders)
+	if err != nil {
+		log.Println("InsertMany Error:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to place orders", "error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":      "Order placed successfully!",
+		"overallTotal": overallTotalBill,
+	})
+}
+
+func AddOrderByProduct(c *gin.Context) {
+	token := c.GetHeader("Authorization")
+	var input models.Order
+
+	if token == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "token missing"})
+		return
+	}
+
+	claim, err := utils.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
+		return
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": err.Error()})
 		return
 	}
 
-	for _, product := range products {
-		order.TotalPrice += product.OriginalPrice
+	productID := c.Param("id")
+
+	userObjectID := (*claim)["userId"].(string)
+
+	ctx := context.Background()
+	orderCollection := database.GetCollection("order")
+	productCollection := database.GetCollection("product")
+
+	var product models.Product
+	err = productCollection.FindOne(ctx, bson.M{"_id": productID}).Decode(&product)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch product details"})
+		return
 	}
 
-	order.ID = uuid.NewString()
-	order.Status = "Pending"
-	order.UserID = (*claim)["userId"].(string)
+	if product.ID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Product not found"})
+		return
+	}
 
-	collection := database.GetCollection("orders")
+	priceToUse := product.DiscountedPrice
+	if priceToUse == 0 {
+		priceToUse = product.OriginalPrice
+	}
 
-	_, err = collection.InsertOne(ctx, order)
+	totalPrice := float64(input.Quantity) * priceToUse
+
+	newOrder := models.Order{
+		ID:           uuid.NewString(),
+		UserID:       userObjectID,
+		ProductID:    productID,
+		RestaurantID: product.RestaurantID,
+		Quantity:     input.Quantity,
+		Price:        priceToUse,
+		TotalBill:    totalPrice,
+		Status:       "Pending",
+		CreatedAt:    time.Now(),
+		Address:      input.Address,
+		City:         input.City,
+		PhoneNo:      input.PhoneNo,
+		FirstName:    input.FirstName,
+		Email:        input.Email,
+	}
+
+	_, err = orderCollection.InsertOne(ctx, newOrder)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to place order"})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"status": "sucess", "message": "Order placed successfully", "order_id": order.ID})
+	c.JSON(http.StatusOK, gin.H{
+		"message":     "Order placed successfully!",
+		"orderID":     newOrder.ID,
+		"totalPrice":  totalPrice,
+		"restaurant":  product.RestaurantID,
+		"quantity":    input.Quantity,
+		"productName": product.Title,
+		"status":      newOrder.Status,
+	})
 }
 
 func ShowAvailableOrders(c *gin.Context) {
