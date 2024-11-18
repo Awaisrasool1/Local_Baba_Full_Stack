@@ -66,6 +66,9 @@ func SetUpRoutes() *gin.Engine {
 	{
 		restaurantRoutes.POST("Product/add-product", restaurant.Create_restaurant_product)
 		restaurantRoutes.GET("Product/get-products", restaurant.Get_restaurant_products)
+		//order
+		restaurantRoutes.GET("Order/get-all-order", restaurant.GetOrdersByRestaurant)
+
 	}
 
 	//user pannel routes
@@ -86,6 +89,9 @@ func SetUpRoutes() *gin.Engine {
 		userRoutes.GET("Address/get-user-default-address", user.Get_user_default_address)
 		//profile
 		userRoutes.PUT("upload-image", user.Upload_Image)
+		//order
+		userRoutes.POST("Order/add-order-by-cart", user.AddOrderByCart)
+		userRoutes.POST("Order/add-order-by-product:id", user.AddOrderByProduct)
 
 	}
 
