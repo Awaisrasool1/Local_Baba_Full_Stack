@@ -69,7 +69,7 @@ func SetUpRoutes() *gin.Engine {
 		//order
 		restaurantRoutes.GET("Order/get-pending-orders", restaurant.GetOrdersByRestaurant)
 		restaurantRoutes.GET("Order/get-nonPending-orders", restaurant.GetNonPendingOrdersByRestaurant)
-
+		restaurantRoutes.POST("Order/update-order-status", restaurant.UpdateOrderStatus)
 	}
 
 	//user pannel routes

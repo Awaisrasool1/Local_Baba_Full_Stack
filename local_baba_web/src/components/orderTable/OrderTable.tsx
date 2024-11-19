@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Search } from "lucide-react";
-import { get_nonPenging_orders, get_penging_orders } from "../../services";
+import {
+  get_nonPenging_orders,
+  get_penging_orders,
+  order_status_change,
+} from "../../services";
 import { formatDate } from "../../api/api";
 import { Button } from "react-bootstrap";
+import { OrderPopup } from "../orderPopup";
+import { OrderData, Props } from "./type";
 const screenWidth = window.innerWidth;
 
 interface TableStyles {
@@ -110,18 +116,14 @@ const styles: TableStyles = {
   },
 };
 
-interface Props {
-  tableHead: string[];
-  type: string;
-  isPopup?: boolean;
-  onPopUp?: () => void;
-}
 const OrderTable: React.FC<Props> = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [tableData, setTableData] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
   const [role, setRole] = useState<number>();
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<OrderData | null>(null);
 
   useEffect(() => {
     const style = createStyleTag();
@@ -174,6 +176,45 @@ const OrderTable: React.FC<Props> = (props) => {
   };
 
   const totalPages = Math.ceil(totalItems / rowsPerPage);
+  const handleViewDetails = (order: any) => {
+    const mappedOrder: OrderData = {
+      customerName: order.name,
+      customerEmail: order.email,
+      customerPhone: order.phone,
+      orderId: order.orderId,
+      address: `${order.city}, ${order.address}`,
+      placedTime: formatDate(order.created_at),
+      items: order.orderItem.map((item: any) => ({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        total: item.price * item.quantity,
+      })),
+      totalBill: order.total_amount,
+    };
+    setSelectedOrder(mappedOrder);
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = async (status: string) => {
+    await chnageStatus(status);
+    setSelectedOrder(null);
+    setShowPopup(false);
+  };
+
+  const chnageStatus = async (status: string) => {
+    try {
+      let data = {
+        id:selectedOrder?.orderId,
+        Status: status,
+      };
+      const res = await order_status_change(data);
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const formatContactInfo = (email: any, phone: any) => {
     return (
       <>
@@ -248,6 +289,7 @@ const OrderTable: React.FC<Props> = (props) => {
                   </td>
                   <td style={styles.td}>
                     <Button
+                      onClick={() => handleViewDetails(val)}
                       style={{
                         backgroundColor: "#248AC4",
                         borderColor: "#248AC4",
@@ -298,6 +340,25 @@ const OrderTable: React.FC<Props> = (props) => {
           </div>
         </div>
       </div>
+      {showPopup && (
+        <OrderPopup
+          customerEmail={selectedOrder?.customerEmail}
+          customerName={selectedOrder?.customerName}
+          customerPhone={selectedOrder?.customerPhone}
+          address={selectedOrder?.address}
+          placedTime={selectedOrder?.placedTime}
+          totalBill={selectedOrder?.totalBill}
+          items={selectedOrder?.items}
+          onAccept={() => {
+            // alert("Order Accepted!");
+            handleClosePopup("Accepted");
+          }}
+          onDecline={() => {
+            // alert("Order Declined!");
+            handleClosePopup("Cancelled");
+          }}
+        />
+      )}
     </div>
   );
 };

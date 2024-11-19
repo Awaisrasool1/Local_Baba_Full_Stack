@@ -2,10 +2,12 @@ package user
 
 import (
 	"context"
+	"fmt"
 	"foodApp/database"
 	"foodApp/models"
 	"foodApp/utils"
 	"log"
+	"math/rand"
 	"net/http"
 	"time"
 
@@ -35,6 +37,7 @@ func AddOrderByCart(c *gin.Context) {
 	}
 
 	userObjectID := (*claim)["userId"].(string)
+
 	ctx := context.Background()
 	cartCollection := database.GetCollection("cart")
 	orderCollection := database.GetCollection("order")
@@ -48,7 +51,9 @@ func AddOrderByCart(c *gin.Context) {
 	}
 	defer cartItems.Close(ctx)
 
-	log.Println("Cart Items Found:", cartItems.RemainingBatchLength())
+	orderID := fmt.Sprintf("#%08d", rand.Intn(90000000)+10000000)
+
+	log.Println("Generated Order ID:", orderID)
 
 	var orders []interface{}
 	var overallTotalBill float64
@@ -65,7 +70,6 @@ func AddOrderByCart(c *gin.Context) {
 			price = cartItem.OriginalPrice
 		}
 		totalBill := float64(cartItem.Quantity) * price
-
 		overallTotalBill += totalBill
 
 		var product models.Product
@@ -77,6 +81,7 @@ func AddOrderByCart(c *gin.Context) {
 		}
 
 		order := models.Order{
+			OrderID:      orderID,
 			ID:           uuid.NewString(),
 			UserID:       cartItem.UserID,
 			ProductID:    cartItem.ProductID,
@@ -97,8 +102,6 @@ func AddOrderByCart(c *gin.Context) {
 		orders = append(orders, order)
 	}
 
-	log.Printf("Orders Slice Length: %d\n", len(orders))
-
 	if len(orders) == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "No items in cart to place an order"})
 		return
@@ -111,8 +114,16 @@ func AddOrderByCart(c *gin.Context) {
 		return
 	}
 
+	// _, err = cartCollection.DeleteMany(ctx, bson.M{"user_id": userObjectID})
+	// if err != nil {
+	// 	log.Println("Error clearing cart:", err)
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to clear cart"})
+	// 	return
+	// }
+
 	c.JSON(http.StatusOK, gin.H{
 		"message":      "Order placed successfully!",
+		"orderID":      orderID,
 		"overallTotal": overallTotalBill,
 	})
 }
@@ -152,6 +163,7 @@ func AddOrderByProduct(c *gin.Context) {
 		return
 	}
 
+	orderID := fmt.Sprintf("#%08d", rand.Intn(90000000)+10000000)
 	if product.ID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Product not found"})
 		return
@@ -166,6 +178,7 @@ func AddOrderByProduct(c *gin.Context) {
 
 	newOrder := models.Order{
 		ID:           uuid.NewString(),
+		OrderID:      orderID,
 		UserID:       userObjectID,
 		ProductID:    productID,
 		RestaurantID: product.RestaurantID,
@@ -189,87 +202,9 @@ func AddOrderByProduct(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message":     "Order placed successfully!",
-		"orderID":     newOrder.ID,
-		"totalPrice":  totalPrice,
-		"restaurant":  product.RestaurantID,
-		"quantity":    input.Quantity,
-		"productName": product.Title,
-		"status":      newOrder.Status,
+		"message":    "Order placed successfully!",
+		"orderID":    newOrder.OrderID,
+		"totalPrice": totalPrice,
+		"status":     newOrder.Status,
 	})
-}
-
-func ShowAvailableOrders(c *gin.Context) {
-	token := c.GetHeader("Authorization")
-	if token == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "token messing"})
-		return
-	}
-	_, err := utils.ValidateToken(token)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
-		return
-	}
-	collection := database.GetCollection("orders")
-	ctx := context.Background()
-
-	var orders []models.FoodOrder
-	filter := bson.M{"status": "Pending"}
-
-	cursor, err := collection.Find(ctx, filter)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch orders"})
-		return
-	}
-
-	if err := cursor.All(ctx, &orders); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to parse orders"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"status": "sucess", "data": orders})
-}
-
-func AcceptOrder(c *gin.Context) {
-	token := c.GetHeader("Authorization")
-	if token == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "token messing"})
-		return
-	}
-	claim, err := utils.ValidateToken(token)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
-		return
-	}
-
-	var order models.FoodOrder
-	orderId := c.Param("orderId")
-	riderId := (*claim)["userId"].(string)
-
-	collection := database.GetCollection("orders")
-	riderCollection := database.GetCollection("user")
-
-	ctx := context.Background()
-
-	err = collection.FindOne(ctx, bson.M{"_id": orderId, "status": "Pending"}).Decode(&order)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"status": "error", "message": "Order already taken"})
-		return
-	}
-
-	var rider models.User
-	err = riderCollection.FindOne(ctx, bson.M{"_id": riderId}).Decode(&rider)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"status": "error", "message": "Rider not found"})
-		return
-	}
-
-	update := bson.M{"$set": bson.M{"rider_id": riderId, "status": "Assigned"}}
-	_, err = collection.UpdateOne(ctx, bson.M{"_id": orderId}, update)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to assign order"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"status": "sucess", "message": "Order accepted", "order_id": orderId, "rider_id": riderId})
 }

@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Navbar, OrderTable } from "../../../components";
 import { toast, ToastContainer } from "react-toastify";
 
 function RestaurantOrder() {
-  const [showPopup, setShowPopup] = useState(false);
-
   const tableHead = [
     "Order ID",
     "Customer name",
@@ -13,11 +11,9 @@ function RestaurantOrder() {
     "Location",
     "Total Bill",
     "Status",
-    ''
+    "",
   ];
 
-  const handleShow = () => setShowPopup(true);
-  const handleClose = () => setShowPopup(false);
   return (
     <div className="w-full">
       <ToastContainer position="bottom-left" />
@@ -25,12 +21,7 @@ function RestaurantOrder() {
         title="Restaurant List"
         subTitle="Registered restaurants on local baba"
       />
-      <OrderTable
-        type={"order"}
-        tableHead={tableHead}
-        isPopup
-        onPopUp={handleShow}
-      />
+      <OrderTable type={"order"} tableHead={tableHead} />
     </div>
   );
 }
