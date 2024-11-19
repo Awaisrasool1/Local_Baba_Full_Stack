@@ -5,7 +5,9 @@ import {
   get_restaurant,
   get_customers,
   get_rider,
-  get_restaurant_products
+  get_restaurant_products,
+  get_nonPenging_orders,
+  get_penging_orders,
 } from "./Get";
 
 export {
@@ -19,5 +21,7 @@ export {
   add_rider,
   createProduct,
   uploadImage,
-  get_restaurant_products
+  get_restaurant_products,
+  get_nonPenging_orders,
+  get_penging_orders,
 };

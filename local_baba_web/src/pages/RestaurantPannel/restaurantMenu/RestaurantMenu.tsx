@@ -134,7 +134,7 @@ const RestaurantMenu: React.FC = () => {
             <div className="card food-card h-100">
               <img
                 src={item.image}
-                className="card-img-top h-75"
+                className="card-img-top "
                 alt={item.name}
               />
               <div className="card-body">

@@ -87,9 +87,10 @@ func AddOrderByCart(c *gin.Context) {
 			City:         input.City,
 			Address:      input.Address,
 			PhoneNo:      input.PhoneNo,
-			FirstName:    input.FirstName,
+			UserName:     input.UserName,
 			Email:        input.Email,
 			Status:       "Pending",
+			ItemName:     product.Title,
 			CreatedAt:    time.Now(),
 		}
 
@@ -176,8 +177,9 @@ func AddOrderByProduct(c *gin.Context) {
 		Address:      input.Address,
 		City:         input.City,
 		PhoneNo:      input.PhoneNo,
-		FirstName:    input.FirstName,
+		UserName:     input.UserName,
 		Email:        input.Email,
+		ItemName:     product.Title,
 	}
 
 	_, err = orderCollection.InsertOne(ctx, newOrder)

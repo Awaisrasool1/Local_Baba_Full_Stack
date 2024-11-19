@@ -37,10 +37,26 @@ async function get_restaurant_products(
   return res;
 }
 
+async function get_nonPenging_orders(page: number, limit: number) {
+  const res = await API.get(`/restaurant/Order/get-nonPending-orders`, {
+    params: { page, limit },
+  });
+  return res;
+}
+
+async function get_penging_orders(page: number, limit: number) {
+  const res = await API.get(`/restaurant/Order/get-pending-orders`, {
+    params: { page, limit },
+  });
+  return res;
+}
+
 export {
   get_categories,
   get_restaurant,
   get_customers,
   get_rider,
   get_restaurant_products,
+  get_nonPenging_orders,
+  get_penging_orders,
 };
