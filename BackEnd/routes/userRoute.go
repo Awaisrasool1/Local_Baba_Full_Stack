@@ -67,7 +67,8 @@ func SetUpRoutes() *gin.Engine {
 		restaurantRoutes.POST("Product/add-product", restaurant.Create_restaurant_product)
 		restaurantRoutes.GET("Product/get-products", restaurant.Get_restaurant_products)
 		//order
-		restaurantRoutes.GET("Order/get-all-order", restaurant.GetOrdersByRestaurant)
+		restaurantRoutes.GET("Order/get-pending-orders", restaurant.GetOrdersByRestaurant)
+		restaurantRoutes.GET("Order/get-nonPending-orders", restaurant.GetNonPendingOrdersByRestaurant)
 
 	}
 

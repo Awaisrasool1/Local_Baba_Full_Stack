@@ -5,6 +5,7 @@ import { Navbar } from "./navbar";
 import { CustomTable } from "./customTable";
 import { PopupForm, RiderPopup } from "./popup";
 import { CountCard } from "./countCard";
+import { OrderTable } from "./orderTable";
 
 export {
   SideBar,
@@ -15,4 +16,5 @@ export {
   PopupForm,
   RiderPopup,
   CountCard,
+  OrderTable,
 };

@@ -89,12 +89,12 @@ const AppNavigation = () => {
     {
       icon: <ClipboardList size={20} />,
       label: "Order List",
-      path: "/resturant-Orders",
+      path: "/restaurant-Orders",
     },
     {
       icon: <History size={20} />,
       label: "Order History",
-      path: "/resturant-Order-History",
+      path: "/restaurant-Order-History",
     },
     { icon: <Star size={20} />, label: "Review", path: "/resturant-Review" },
     { icon: <Menu size={20} />, label: "Menu", path: "/restaurant-Menu" },
