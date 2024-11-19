@@ -1,5 +1,11 @@
 import { SignIn, SignUp } from "./Auth";
-import { add_restaurant, add_rider, createProduct, uploadImage } from "./Post";
+import {
+  add_restaurant,
+  add_rider,
+  createProduct,
+  uploadImage,
+  order_status_change,
+} from "./Post";
 import {
   get_categories,
   get_restaurant,
@@ -24,4 +30,5 @@ export {
   get_restaurant_products,
   get_nonPenging_orders,
   get_penging_orders,
+  order_status_change,
 };

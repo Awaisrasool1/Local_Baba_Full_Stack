@@ -6,6 +6,7 @@ import { CustomTable } from "./customTable";
 import { PopupForm, RiderPopup } from "./popup";
 import { CountCard } from "./countCard";
 import { OrderTable } from "./orderTable";
+import { OrderPopup } from "./orderPopup";
 
 export {
   SideBar,
@@ -17,4 +18,5 @@ export {
   RiderPopup,
   CountCard,
   OrderTable,
+  OrderPopup,
 };

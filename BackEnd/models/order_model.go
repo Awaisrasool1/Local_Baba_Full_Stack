@@ -15,6 +15,7 @@ type FoodOrder struct {
 
 type Order struct {
 	ID           string    `json:"id" bson:"_id"`
+	OrderID      string    `json:"orderId" bson:"orderId"`
 	UserID       string    `json:"userId" bson:"user_id"`
 	ProductID    string    `json:"productId" bson:"product_id"`
 	RestaurantID string    `json:"restaurantId" bson:"restaurant_id"`

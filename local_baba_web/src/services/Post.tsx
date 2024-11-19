@@ -16,13 +16,28 @@ async function createProduct(data: any) {
   return res.data;
 }
 
+async function order_status_change(data: any) {
+  const res = await API.post(`/restaurant/Order/update-order-status`, data);
+  return res.data;
+}
+
 async function uploadImage(formData: any) {
-  const response = await axios.post("http://192.168.100.93:8080/upload", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const response = await axios.post(
+    "http://192.168.100.93:8080/upload",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
   return response.data;
 }
 
-export { add_restaurant, add_rider, createProduct, uploadImage };
+export {
+  add_restaurant,
+  add_rider,
+  createProduct,
+  uploadImage,
+  order_status_change,
+};

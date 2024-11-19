@@ -26,8 +26,6 @@ export default function RestaurantOrderHistory() {
       <OrderTable
         type={"history"}
         tableHead={tableHead}
-        isPopup
-        onPopUp={handleShow}
       />
     </div>
   );
