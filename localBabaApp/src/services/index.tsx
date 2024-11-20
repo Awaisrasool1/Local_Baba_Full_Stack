@@ -9,6 +9,7 @@ import {
   get_default_address,
   get_profile,
   get_all_address,
+  get_user_onGoing_order
 } from './Get';
 import {
   add_to_cart,
@@ -37,5 +38,6 @@ export {
   remove_quantity,
   add_quantity,
   delete_cart_item,
-  upload_image
+  upload_image,
+  get_user_onGoing_order
 };

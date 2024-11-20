@@ -208,3 +208,259 @@ func AddOrderByProduct(c *gin.Context) {
 		"status":     newOrder.Status,
 	})
 }
+
+func Get_user_ongoing_order(c *gin.Context) {
+	type GroupedOrder struct {
+		CreatedAt      time.Time `json:"created_at"`
+		OrderId        string    `json:"orderId"`
+		RestaurantName string    `json:"restaurantName"`
+		Status         string    `json:"status"`
+		Name           string    `json:"name"`
+		Quantity       int       `json:"quantity"`
+		Price          float64   `json:"price" bson:"price"`
+		TotalAmount    float64   `json:"total_amount"`
+		TotalItems     int       `json:"total_items"`
+	}
+
+	token := c.GetHeader("Authorization")
+	if token == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "token missing"})
+		return
+	}
+
+	claim, err := utils.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
+		return
+	}
+
+	userId := (*claim)["userId"].(string)
+	ctx := context.Background()
+
+	orderCollection := database.GetCollection("order")
+	productCollection := database.GetCollection("product")
+	restaurantCollection := database.GetCollection("restaurants")
+
+	filter := bson.M{
+		"user_id": userId,
+		"status":  "Pending",
+	}
+
+	cursor, err := orderCollection.Find(ctx, filter)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch orders"})
+		return
+	}
+	defer cursor.Close(ctx)
+
+	var orders []models.Order
+	if err := cursor.All(ctx, &orders); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to decode orders"})
+		return
+	}
+
+	productCache := make(map[string]string)
+	restaurantCache := make(map[string]string)
+
+	groupedOrders := make(map[string]*GroupedOrder)
+
+	for _, order := range orders {
+		orderID := order.OrderID
+		restaurantID := order.RestaurantID
+
+		restaurantName, exists := restaurantCache[restaurantID]
+		if !exists {
+			restaurantData := bson.M{}
+			if err := restaurantCollection.FindOne(ctx, bson.M{"_id": restaurantID}).Decode(&restaurantData); err == nil {
+				restaurantName, _ = restaurantData["name"].(string)
+				restaurantCache[restaurantID] = restaurantName
+			} else {
+				log.Printf("Error fetching restaurant details for ID %s: %v", restaurantID, err)
+				restaurantName = "Unknown Restaurant"
+			}
+		}
+
+		productName, exists := productCache[order.ProductID]
+		if !exists {
+			var product struct {
+				Title string `bson:"title"`
+			}
+			err := productCollection.FindOne(ctx, bson.M{"_id": order.ProductID}).Decode(&product)
+			if err != nil {
+				log.Printf("Error fetching product details for ID %s: %v", order.ProductID, err)
+				continue
+			}
+			productName = product.Title
+			productCache[order.ProductID] = productName
+		}
+
+		if _, exists := groupedOrders[orderID]; !exists {
+			groupedOrders[orderID] = &GroupedOrder{
+				CreatedAt:      order.CreatedAt,
+				OrderId:        order.OrderID,
+				RestaurantName: restaurantName,
+				Status:         order.Status,
+				Name:           "",
+				Quantity:       0,
+				Price:          0,
+				TotalAmount:    0.0,
+				TotalItems:     0,
+			}
+		}
+
+		groupedOrder := groupedOrders[orderID]
+
+		if groupedOrder.Name == "" {
+			groupedOrder.Name = productName
+		}
+
+		groupedOrder.Quantity += order.Quantity
+		groupedOrder.Price = order.Price
+
+		groupedOrder.TotalAmount += order.TotalBill
+
+		groupedOrder.TotalItems++
+	}
+
+	var response []GroupedOrder
+	for _, groupedOrder := range groupedOrders {
+		response = append(response, *groupedOrder)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "success",
+		"data":   response,
+	})
+}
+
+func Get_user_summry_order(c *gin.Context) {
+	type OrderItem struct {
+		Name     string  `json:"name"`
+		Quantity int     `json:"quantity"`
+		Price    float64 `json:"price" bson:"price"`
+	}
+	type GroupedOrder struct {
+		CreatedAt      time.Time   `json:"created_at"`
+		OrderId        string      `json:"orderId"`
+		RestaurantName string      `json:"restaurantName"`
+		Status         string      `json:"status"`
+		OrderItem      []OrderItem `json:"orderItem"`
+		TotalAmount    float64     `json:"total_amount"`
+		TotalItems     int         `json:"total_items"`
+	}
+	token := c.GetHeader("Authorization")
+	if token == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "token missing"})
+		return
+	}
+
+	claim, err := utils.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
+		return
+	}
+
+	userId := (*claim)["userId"].(string)
+	ctx := context.Background()
+
+	orderCollection := database.GetCollection("order")
+	productCollection := database.GetCollection("product")
+	restaurantCollection := database.GetCollection("restaurants")
+
+	filter := bson.M{
+		"user_id": userId,
+		"status":  "Pending",
+	}
+
+	cursor, err := orderCollection.Find(ctx, filter)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch orders"})
+		return
+	}
+	defer cursor.Close(ctx)
+
+	var orders []models.Order
+	if err := cursor.All(ctx, &orders); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to decode orders"})
+		return
+	}
+
+	productCache := make(map[string]string)
+	restaurantCache := make(map[string]string)
+
+	groupedOrders := make(map[string]*GroupedOrder)
+
+	for _, order := range orders {
+		orderID := order.OrderID
+		restaurantID := order.RestaurantID
+
+		restaurantName, exists := restaurantCache[restaurantID]
+		if !exists {
+			restaurantData := bson.M{}
+			if err := restaurantCollection.FindOne(ctx, bson.M{"_id": restaurantID}).Decode(&restaurantData); err == nil {
+				restaurantName, _ = restaurantData["name"].(string)
+				restaurantCache[restaurantID] = restaurantName
+			} else {
+				log.Printf("Error fetching restaurant details for ID %s: %v", restaurantID, err)
+				restaurantName = "Unknown Restaurant"
+			}
+		}
+
+		productName, exists := productCache[order.ProductID]
+		if !exists {
+			var product struct {
+				Title string `bson:"title"`
+			}
+			err := productCollection.FindOne(ctx, bson.M{"_id": order.ProductID}).Decode(&product)
+			if err != nil {
+				log.Printf("Error fetching product details for ID %s: %v", order.ProductID, err)
+				continue
+			}
+			productName = product.Title
+			productCache[order.ProductID] = productName
+		}
+
+		if _, exists := groupedOrders[orderID]; !exists {
+			groupedOrders[orderID] = &GroupedOrder{
+				CreatedAt:      order.CreatedAt,
+				OrderId:        order.OrderID,
+				RestaurantName: restaurantName,
+				Status:         order.Status,
+				OrderItem:      []OrderItem{},
+				TotalAmount:    0.0,
+				TotalItems:     0,
+			}
+		}
+
+		groupedOrder := groupedOrders[orderID]
+		groupedOrder.TotalAmount += order.TotalBill
+
+		itemMatched := false
+		for i := range groupedOrder.OrderItem {
+			if groupedOrder.OrderItem[i].Name == productName {
+				groupedOrder.OrderItem[i].Quantity += order.Quantity
+				itemMatched = true
+				break
+			}
+		}
+
+		if !itemMatched {
+			groupedOrder.OrderItem = append(groupedOrder.OrderItem, OrderItem{
+				Name:     productName,
+				Quantity: order.Quantity,
+				Price:    order.Price,
+			})
+			groupedOrder.TotalItems++
+		}
+	}
+
+	var response []GroupedOrder
+	for _, groupedOrder := range groupedOrders {
+		response = append(response, *groupedOrder)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "success",
+		"data":   response,
+	})
+}
