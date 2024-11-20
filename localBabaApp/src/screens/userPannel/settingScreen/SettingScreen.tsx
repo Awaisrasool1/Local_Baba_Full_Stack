@@ -44,7 +44,7 @@ const SettingScreen = (props: any) => {
     },
     {
       id: Constants.ORDER_TOP_TAB,
-      title: 'Oder History',
+      title: 'My Orders',
       icon: 'star-outline',
       section: 3,
     },
