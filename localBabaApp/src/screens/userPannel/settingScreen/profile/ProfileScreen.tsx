@@ -14,24 +14,10 @@ import Theme from '../../../../theme/Theme';
 import {checkPermission} from '../../../../api/api';
 import {upload_image} from '../../../../services';
 
-interface ProfileScreenProps {
-  route: {
-    params: {
-      data: {
-        name: string;
-        email: string;
-        phone: string;
-        image?: string;
-      };
-    };
-  };
-  navigation: {
-    goBack: () => void;
-  };
-}
 
-const ProfileScreen: React.FC<ProfileScreenProps> = ({route, navigation}) => {
-  const {data} = route.params;
+
+const ProfileScreen = ({route, navigation}:any) => {
+  const {data} = route?.params;
 
   const [name, setName] = useState(data.name);
   const [phoneNo, setPhoneNo] = useState(data.phone);

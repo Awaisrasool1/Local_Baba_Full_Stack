@@ -11,7 +11,8 @@ type OrderData = {
   customerPhone: string;
   address: string;
   placedTime: string;
-  orderId :string
+  orderId: string;
+  status: string;
   items: OrderItem[];
   totalBill: number;
 };

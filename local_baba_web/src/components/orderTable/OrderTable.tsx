@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Search } from "lucide-react";
 import {
   get_nonPenging_orders,
   get_penging_orders,
@@ -9,6 +8,7 @@ import { formatDate } from "../../api/api";
 import { Button } from "react-bootstrap";
 import { OrderPopup } from "../orderPopup";
 import { OrderData, Props } from "./type";
+import { toast, ToastContainer } from "react-toastify";
 const screenWidth = window.innerWidth;
 
 interface TableStyles {
@@ -144,18 +144,19 @@ const OrderTable: React.FC<Props> = (props) => {
       if (role == 1) {
       } else {
         if (props.type == "history") {
+          console.log(props.type);
           const res = await get_nonPenging_orders(currentPage, rowsPerPage);
           if (res.status == 200) {
             console.log(res.data);
             setTableData(res?.data?.data);
-            setTotalItems(res.data.totalItems);
+            setTotalItems(res.data?.data?.length || 0);
           }
         } else {
           const res = await get_penging_orders(currentPage, rowsPerPage);
           if (res.status == 200) {
             console.log(res.data);
             setTableData(res?.data?.data);
-            setTotalItems(res.data?.data?.length);
+            setTotalItems(res.data?.data?.length || 0);
           }
         }
       }
@@ -182,6 +183,7 @@ const OrderTable: React.FC<Props> = (props) => {
       customerEmail: order.email,
       customerPhone: order.phone,
       orderId: order.orderId,
+      status: order.status,
       address: `${order.city}, ${order.address}`,
       placedTime: formatDate(order.created_at),
       items: order.orderItem.map((item: any) => ({
@@ -205,11 +207,15 @@ const OrderTable: React.FC<Props> = (props) => {
   const chnageStatus = async (status: string) => {
     try {
       let data = {
-        id:selectedOrder?.orderId,
+        id: selectedOrder?.orderId,
         Status: status,
       };
       const res = await order_status_change(data);
-      console.log(res);
+      if (res.status == "success") {
+        toast(res.message);
+        getData();
+      }
+      console.log(res.status);
     } catch (err) {
       console.log(err);
     }
@@ -263,7 +269,7 @@ const OrderTable: React.FC<Props> = (props) => {
                     </div>
                   </td>
                   <td style={styles.td}>
-                    {props.type != "history" &&
+                    {role == 2 &&
                       val?.orderItem?.map((item: any) => (
                         <div className="flex flex-col min-w-0 max-w-[200px]">
                           {item.quantity} {item.name}
@@ -277,7 +283,13 @@ const OrderTable: React.FC<Props> = (props) => {
                   <td style={styles.td}>{val.total_amount}</td>
                   <td
                     style={{
-                      color: val.status == "Pending" ? "#FFA800" : "",
+                      color:
+                        val.status == "Pending"
+                          ? "#FFA800"
+                          : val.status == "Delivered" ||
+                            val.status == "Accepted"
+                          ? "#00B074"
+                          : "#FF5B5B",
                       padding: "12px 15px",
                       borderBottom: "1px solid #eee",
                       textOverflow: "ellipsis",
@@ -349,6 +361,9 @@ const OrderTable: React.FC<Props> = (props) => {
           placedTime={selectedOrder?.placedTime}
           totalBill={selectedOrder?.totalBill}
           items={selectedOrder?.items}
+          type={props.type}
+          status={selectedOrder?.status}
+          onCross={() => setShowPopup(false)}
           onAccept={() => {
             // alert("Order Accepted!");
             handleClosePopup("Accepted");
@@ -359,6 +374,7 @@ const OrderTable: React.FC<Props> = (props) => {
           }}
         />
       )}
+      <ToastContainer position="bottom-left" />
     </div>
   );
 };

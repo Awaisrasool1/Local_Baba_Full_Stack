@@ -16,6 +16,9 @@ interface OrderDetailsProps {
   placedTime?: string;
   items?: OrderItem[];
   totalBill?: number;
+  type: string;
+  status?: string;
+  onCross?: () => void;
   onAccept?: () => void;
   onDecline?: () => void;
 }
@@ -28,6 +31,9 @@ const OrderDetailsPopup: React.FC<OrderDetailsProps> = ({
   placedTime,
   items,
   totalBill,
+  type,
+  status,
+  onCross,
   onAccept,
   onDecline,
 }) => {
@@ -41,7 +47,7 @@ const OrderDetailsPopup: React.FC<OrderDetailsProps> = ({
               type="button"
               className="btn-close"
               aria-label="Close"
-              onClick={onDecline}
+              onClick={onCross}
             ></button>
           </div>
           <div className="modal-body">
@@ -106,14 +112,18 @@ const OrderDetailsPopup: React.FC<OrderDetailsProps> = ({
             </div>
           </div>
 
-          <div className="modal-footer">
-            <button className="btn btn-danger" onClick={onDecline}>
-              Decline
-            </button>
-            <button className="btn btn-success" onClick={onAccept}>
-              Accept
-            </button>
-          </div>
+          {type != "history" && (
+            <div className="modal-footer">
+              <button className="btn btn-danger" onClick={onDecline}>
+                Decline
+              </button>
+              {status == "Pending" && (
+                <button className="btn btn-success" onClick={onAccept}>
+                  Accept
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -15,8 +15,8 @@ import {saveToken} from '../../../api/api';
 const SettingScreen = (props: any) => {
   const navigation: any = useNavigation();
   const {showToast} = useToast();
-  const isFocused = useIsFocused();
-
+  // const isFocused = useIsFocused();
+  
   const menuItems = [
     {
       id: Constants.PROFILE_SCREEN,
@@ -43,8 +43,8 @@ const SettingScreen = (props: any) => {
       section: 2,
     },
     {
-      id: 'review',
-      title: 'To Review',
+      id: Constants.ORDER_TOP_TAB,
+      title: 'Oder History',
       icon: 'star-outline',
       section: 3,
     },
@@ -55,7 +55,12 @@ const SettingScreen = (props: any) => {
       section: 3,
     },
   ];
-
+  const state = props.navigation.getState();
+    
+  // Access the current index
+  const currentIndex = state.index;
+  
+  console.log('Current Navigation Index:', currentIndex);
   const {data} = useQuery({
     queryKey: ['profile'],
     queryFn: async () => {
@@ -78,7 +83,7 @@ const SettingScreen = (props: any) => {
         return null;
       }
     },
-    enabled:isFocused
+    // enabled:isFocused
   });
 
   const logOut = async () => {

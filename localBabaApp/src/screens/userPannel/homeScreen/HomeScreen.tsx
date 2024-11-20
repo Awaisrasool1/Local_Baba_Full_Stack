@@ -30,7 +30,13 @@ const HomeScreen = (props: any) => {
   useEffect(() => {
     getData();
   }, []);
-
+  
+  const state = props.navigation.getState();
+    
+  // Access the current index
+  const currentIndex = state.index;
+  
+  console.log('Current Navigation Index:', currentIndex);
   const getData = async () => {
     const isConnected: boolean = await isNetworkAvailable();
     if (isConnected) {

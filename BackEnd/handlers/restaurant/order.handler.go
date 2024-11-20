@@ -58,13 +58,41 @@ func GetOrdersByRestaurant(c *gin.Context) {
 	userCollection := database.GetCollection("user")
 	restaurantCollection := database.GetCollection("restaurant")
 
+	fiveHoursAgo := time.Now().Add(-5 * time.Hour)
+	updateFilter := bson.M{
+		"restaurant_id": restaurantID,
+		"status": bson.M{
+			"$nin": []string{"Cancelled", "Delivered"},
+		},
+		"createdAt": bson.M{
+			"$lt": fiveHoursAgo,
+		},
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"status": "Cancelled",
+		},
+	}
+
+	_, err = orderCollection.UpdateMany(ctx, updateFilter, update)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to update expired orders"})
+		return
+	}
+
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "5"))
 	skip := (page - 1) * limit
 
 	filter := bson.M{
 		"restaurant_id": restaurantID,
-		"status":        "Pending",
+		"status": bson.M{
+			"$nin": []string{"Cancelled", "Delivered"},
+		},
+		"createdAt": bson.M{
+			"$gte": fiveHoursAgo,
+		},
 	}
 
 	opts := options.Find().SetLimit(int64(limit)).SetSkip(int64(skip))
@@ -204,7 +232,9 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 
 	filter := bson.M{
 		"restaurant_id": restaurantID,
-		"status":        bson.M{"$ne": "Pending"},
+		"status": bson.M{
+			"$in": []string{"Cancelled", "Delivered"},
+		},
 	}
 
 	opts := options.Find().SetLimit(int64(limit)).SetSkip(int64(skip))
@@ -329,7 +359,7 @@ func UpdateOrderStatus(c *gin.Context) {
 	}
 
 	if body.Status != "Accepted" && body.Status != "Cancelled" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid status. Allowed values: 'Accepted', 'Pending'"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid status. Allowed values: 'Accepted', 'Cancelled'"})
 		return
 	}
 
@@ -353,82 +383,5 @@ func UpdateOrderStatus(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Order status updated successfully"})
+	c.JSON(http.StatusOK, gin.H{"status": "success", "message": "Order status updated successfully"})
 }
-
-// func GetUserOrders(c *gin.Context) {
-// 	token := c.GetHeader("Authorization")
-// 	if token == "" {
-// 		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "token missing"})
-// 		return
-// 	}
-
-// 	claim, err := utils.ValidateToken(token)
-// 	if err != nil {
-// 		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
-// 		return
-// 	}
-
-// 	userID := (*claim)["userId"].(string)
-// 	ctx := context.Background()
-// 	orderCollection := database.GetCollection("order")
-// 	userCollection := database.GetCollection("users")
-
-// 	// Get user details
-// 	var userData bson.M
-// 	err = userCollection.FindOne(ctx, bson.M{"_id": userID}).Decode(&userData)
-// 	if err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch user details"})
-// 		return
-// 	}
-
-// 	// Get all orders for the user
-// 	cursor, err := orderCollection.Find(ctx, bson.M{"user_id": userID})
-// 	if err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch orders"})
-// 		return
-// 	}
-// 	defer cursor.Close(ctx)
-
-// 	var orders []models.Order
-// 	if err := cursor.All(ctx, &orders); err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to decode orders"})
-// 		return
-// 	}
-
-// 	// Group orders by creation time
-// 	orderGroups := make(map[time.Time]GroupedOrder)
-
-// 	for _, order := range orders {
-// 		group, exists := orderGroups[order.CreatedAt]
-// 		if !exists {
-// 			group = GroupedOrder{
-// 				CreatedAt: order.CreatedAt,
-// 				UserID:    userID,
-// 				FirstName: userData["first_name"].(string),
-// 				LastName:  userData["last_name"].(string),
-// 				Email:     userData["email"].(string),
-// 				Phone:     userData["phone"].(string),
-// 				Orders:    make([]models.Order, 0),
-// 			}
-// 		}
-// 		group.Orders = append(group.Orders, order)
-// 		group.TotalAmount += order.TotalBill
-// 		orderGroups[order.CreatedAt] = group
-// 	}
-
-// 	var groupedOrders []GroupedOrder
-// 	for _, group := range orderGroups {
-// 		groupedOrders = append(groupedOrders, group)
-// 	}
-
-// 	// Sort grouped orders by creation time (newest first)
-// 	sort.Slice(groupedOrders, func(i, j int) bool {
-// 		return groupedOrders[i].CreatedAt.After(groupedOrders[j].CreatedAt)
-// 	})
-
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"status": "success",
-// 		"orders": groupedOrders,
-// 	})
-// }

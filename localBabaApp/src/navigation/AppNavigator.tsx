@@ -12,9 +12,13 @@ import {
   SeeAllAddress,
   Notification,
   ProfileScreen,
+  HomeScreen,
+  CartScreen,
+  SettingScreen,
 } from '../screens';
 import SignUpScreen from '../screens/auth/signupScreen';
 import DrawerNavigation from './DrawerNavigation';
+import OrderTopTab from './OrderTopTab';
 
 const Stack = createNativeStackNavigator();
 
@@ -81,6 +85,26 @@ const AppNavigator = () => {
       <Stack.Screen
         name={Constants.PROFILE_SCREEN}
         component={ProfileScreen}
+        options={{headerShown: false}}
+      />
+       <Stack.Screen
+        name={Constants.HOME_SCREEN}
+        component={HomeScreen}
+        options={{headerShown: false}}
+      />
+       <Stack.Screen
+        name={Constants.CART_SCREEN}
+        component={CartScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={Constants.SETTING_SCREEN}
+        component={SettingScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={Constants.ORDER_TOP_TAB}
+        component={OrderTopTab}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

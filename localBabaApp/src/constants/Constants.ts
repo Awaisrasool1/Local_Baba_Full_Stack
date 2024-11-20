@@ -14,7 +14,11 @@ export const NOTIFICATION_SCREEN = 'NOTIFICATION_SCREEN';
 export const SIGNUP_SCREEN = 'SIGNUP_SCREEM';
 export const LOGIN_SCREEN = 'LOGIN_SCREEN';
 
-
+//top tab
+export const MAIN_ORDER_TOP_TAB = 'OrderTopTab'
+export const ORDER_TOP_TAB = 'OrderTopTab'
+export const ONGOING_ORDER = 'Ongoing';
+export const ORDER_HISTORY = 'History';
 //
 //drawer Navigation
 export const DRAWER_NAVIGATION = 'DRAWER_NAVIGATION';
