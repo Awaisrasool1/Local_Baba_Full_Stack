@@ -3,7 +3,6 @@ import { Navbar, OrderTable } from "../../../components";
 import { toast, ToastContainer } from "react-toastify";
 
 export default function RestaurantOrderHistory() {
-  const [showPopup, setShowPopup] = useState(false);
 
   const tableHead = [
     "Order ID",
@@ -12,10 +11,10 @@ export default function RestaurantOrderHistory() {
     "Order Placed Date / Time",
     "Location",
     "Total Bill",
+    "Status",
+    "",
   ];
 
-  const handleShow = () => setShowPopup(true);
-  const handleClose = () => setShowPopup(false);
   return (
     <div className="w-full">
       <ToastContainer position="bottom-left" />
@@ -23,10 +22,7 @@ export default function RestaurantOrderHistory() {
         title="Restaurant List"
         subTitle="Registered restaurants on local baba"
       />
-      <OrderTable
-        type={"history"}
-        tableHead={tableHead}
-      />
+      <OrderTable type={"history"} tableHead={tableHead} />
     </div>
   );
 }

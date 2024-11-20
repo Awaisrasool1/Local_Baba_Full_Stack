@@ -37,7 +37,7 @@ const Header = (props: Props) => {
           <Text style={styles.topSubHeading}>{'Delhi,India'}</Text>
         </View>
       )}
-      {props.isCart && (
+      {!props.onlyBack && props.isCart && (
         <TouchableOpacity
           onPress={() => {
             nav.navigate(Constants.CART_SCREEN);

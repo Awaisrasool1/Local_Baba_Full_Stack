@@ -10,6 +10,9 @@ import {CartFooter} from './cartFooter';
 import {CartItem} from './CartItem';
 import {ProfileCard} from './profileCard';
 import {DropPicker} from './DropPicker';
+import {OrderTopTabHeader} from './OrderTopTabHeader';
+import {CustomTabNavigator} from './CustomTabNavigator';
+
 
 export {
   CustomButton,
@@ -24,4 +27,6 @@ export {
   CartItem,
   ProfileCard,
   DropPicker,
+  OrderTopTabHeader,
+  CustomTabNavigator
 };
