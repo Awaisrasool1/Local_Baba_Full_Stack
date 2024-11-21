@@ -70,11 +70,11 @@ const OrderDetailsPopup: React.FC<OrderDetailsProps> = ({
               <div className="row">
                 <div className="col-12 col-md-7 mb-2">
                   <strong>Order placed Time</strong>
-                  <p>{address}</p>
+                  <p>{placedTime}</p>
                 </div>
                 <div className="col-12 col-md-5 mb-2">
                   <strong>Address</strong>
-                  <p>{placedTime}</p>
+                  <p>{address}</p>
                 </div>
               </div>
             </div>

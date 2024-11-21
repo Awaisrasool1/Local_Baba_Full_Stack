@@ -196,6 +196,7 @@ const Theme = {
     editIcon: require('../resource/images/EditIcon.png'),
     email: require('../resource/images/email.png'),
     PhoneNo: require('../resource/images/phoneNo.png'),
+    warningImage:require('../resource/images/warning.png')
   },
 };
 export default Theme;

@@ -1,4 +1,3 @@
-// envConfig/envConfig.go
 package envConfig
 
 import (
@@ -8,7 +7,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// LoadEnv loads the environment variables from the .env file
 func LoadEnv() {
 	err := godotenv.Load()
 	if err != nil {
@@ -16,7 +14,6 @@ func LoadEnv() {
 	}
 }
 
-// GetEnvVars retrieves the environment variables
-func GetEnvVars() (string, string, string, string) {
-	return os.Getenv("S3_REGION"), os.Getenv("ACCESS_KEY_ID"), os.Getenv("S3_BUCKET"), os.Getenv("SECRET_KEY")
+func GetEnvVars() (string, string, string, string, string) {
+	return os.Getenv("S3_REGION"), os.Getenv("ACCESS_KEY_ID"), os.Getenv("S3_BUCKET"), os.Getenv("SECRET_KEY"), os.Getenv("apiKey")
 }

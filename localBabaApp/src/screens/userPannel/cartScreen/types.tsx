@@ -18,3 +18,8 @@ export type AddressData = {
   userId: string;
   isDefaultShiping: boolean;
 };
+
+export type Location= {
+  latitude: number;
+  longitude: number;
+}

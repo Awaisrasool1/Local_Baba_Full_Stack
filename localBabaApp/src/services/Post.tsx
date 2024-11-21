@@ -35,10 +35,32 @@ async function upload_image(formData: any) {
   );
   return res.data;
 }
+
+async function place_order_By_Cart(data: {
+  quantity: number;
+  latLong: string;
+  isDefaultAddress: boolean;
+}) {
+  const res = await API.post(`/user/Order/add-order-by-cart`, data);
+  return res.data;
+}
+
+async function place_order_By_product(
+  id: string,
+  data: {quantity: number; latLong: string; isDefaultAddress: boolean},
+) {
+  console.log(id);
+  console.log(data);
+  const res = await API.post(`/user/Order/add-order-by-product${id}`, data);
+  return res.data;
+}
+
 export {
   add_to_cart,
   add_to_address,
   remove_quantity,
   add_quantity,
   upload_image,
+  place_order_By_product,
+  place_order_By_Cart,
 };

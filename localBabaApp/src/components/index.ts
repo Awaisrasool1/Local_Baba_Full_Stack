@@ -12,7 +12,7 @@ import {ProfileCard} from './profileCard';
 import {DropPicker} from './DropPicker';
 import {OrderTopTabHeader} from './OrderTopTabHeader';
 import {CustomTabNavigator} from './CustomTabNavigator';
-
+import {PopUp} from './popUp';
 
 export {
   CustomButton,
@@ -28,5 +28,6 @@ export {
   ProfileCard,
   DropPicker,
   OrderTopTabHeader,
-  CustomTabNavigator
+  CustomTabNavigator,
+  PopUp,
 };

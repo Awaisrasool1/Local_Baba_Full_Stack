@@ -1,5 +1,5 @@
-import {View, ScrollView, ActivityIndicator, Text} from 'react-native';
-import React, {useState} from 'react';
+import {View, ScrollView} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import styles from './styles';
 import {CartFooter, CartItem, Header} from '../../../components';
@@ -9,12 +9,15 @@ import {
   delete_cart_item,
   get_cart_item,
   get_default_address,
+  place_order_By_Cart,
   remove_quantity,
 } from '../../../services';
 import {useToast} from 'react-native-toasty-toast';
-import {AddressData, CartData} from './types';
+import {AddressData, CartData, Location} from './types';
 import {Constants} from '../../../constants';
 import {useIsFocused} from '@react-navigation/native';
+import {checkPermission} from '../../../api/api';
+import GetLocation from 'react-native-get-location';
 
 const CartScreen = (props: any) => {
   const {showToast} = useToast();
@@ -22,6 +25,25 @@ const CartScreen = (props: any) => {
   const [totalPrice, setTotalPrice] = useState<number>();
   const queryClient = useQueryClient();
   const isFocused = useIsFocused();
+  const [checked, setChecked] = useState(false);
+  const [userLocation, setUserLocation] = useState<Location | null>(null);
+
+  useEffect(() => {
+    GetCurrentLocation();
+  }, []);
+
+  const GetCurrentLocation = async () => {
+    const result = await checkPermission('location');
+    if (result.result) {
+      const currentLocation = await GetLocation.getCurrentPosition({
+        enableHighAccuracy: false,
+        timeout: 5000,
+      });
+      const {latitude, longitude} = currentLocation;
+      const newLocation: Location = {latitude, longitude};
+      setUserLocation(newLocation);
+    }
+  };
 
   const {data} = useQuery<CartData[]>({
     queryKey: ['cartItem'],
@@ -94,6 +116,28 @@ const CartScreen = (props: any) => {
   const handleRemove = (id: string) => removeMutation.mutate(id);
   const handleDelete = async (id: string) => deleteMutation.mutate(id);
 
+  const orderMutation = useMutation({
+    mutationFn: ({
+      data,
+    }: {
+      data: {quantity: number; latLong: string; isDefaultAddress: boolean};
+    }) => place_order_By_Cart(data),
+    onSuccess: () => {
+      console.log('Order placed successfully!');
+    },
+  });
+
+  const placeOrder = async () => {
+    const data = {
+      quantity: 1,
+      latLong: `${String(userLocation?.latitude)},${String(
+        userLocation?.longitude,
+      )}`,
+      isDefaultAddress: checked,
+    };
+
+    orderMutation.mutate({data});
+  };
   return (
     <>
       <View style={styles.container}>
@@ -132,9 +176,11 @@ const CartScreen = (props: any) => {
           address={defaultAddress?.fullAddress}
           price={totalPrice}
           type={'cart'}
+          checked={checked}
+          setChecked={setChecked}
           btnTitle={'By Now'}
           onAddress={() => props.navigation.navigate(Constants.ADDRESS_SCREEN)}
-          onPress={() => {}}
+          onPress={() => placeOrder()}
         />
       </View>
     </>

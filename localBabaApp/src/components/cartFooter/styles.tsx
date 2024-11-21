@@ -35,11 +35,11 @@ const styles = StyleSheet.create({
     marginTop: Theme.responsiveSize.size5,
     marginBottom: Theme.responsiveSize.size10,
   },
-  marginV5:{
-    marginVertical:Theme.responsiveSize.size5
+  marginV5: {
+    marginVertical: Theme.responsiveSize.size5,
   },
-  marginV10:{
-    marginVertical:Theme.responsiveSize.size10
+  marginV10: {
+    marginVertical: Theme.responsiveSize.size10,
   },
   addAddress: {
     backgroundColor: Theme.colors.appColor,
@@ -52,11 +52,15 @@ const styles = StyleSheet.create({
     right: Theme.responsiveSize.size10,
     top: Theme.responsiveSize.size10,
   },
-  addAddressText:{
-    fontSize:Theme.responsiveSize.size12,
-    color:Theme.colors.white,
-    fontWeight:'500',
-  }
+  addAddressText: {
+    fontSize: Theme.responsiveSize.size12,
+    color: Theme.colors.white,
+    fontWeight: '500',
+  },
+  flexRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });
 
 export default styles;

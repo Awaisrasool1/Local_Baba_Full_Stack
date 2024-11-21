@@ -1,10 +1,14 @@
 package utils
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math"
 	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -73,4 +77,77 @@ func RoleAuthorization(allowedRoles ...int) gin.HandlerFunc {
 		c.JSON(http.StatusForbidden, gin.H{"status": "error", "message": "You do not have access to this resource"})
 		c.Abort()
 	}
+}
+
+type GeocodingResponse struct {
+	Results []struct {
+		FormattedAddress  string `json:"formatted_address"`
+		AddressComponents []struct {
+			LongName  string   `json:"long_name"`
+			ShortName string   `json:"short_name"`
+			Types     []string `json:"types"`
+		} `json:"address_components"`
+	} `json:"results"`
+	Status string `json:"status"`
+}
+
+func GetCityAndAddressFromLatLong(latLong string, apiKey string) (string, string, error) {
+	coords := strings.Split(latLong, ",")
+	if len(coords) != 2 {
+		return "", "", fmt.Errorf("invalid LatLong format")
+	}
+
+	lat, err := strconv.ParseFloat(strings.TrimSpace(coords[0]), 64)
+	if err != nil {
+		return "", "", fmt.Errorf("invalid latitude value: %v", err)
+	}
+
+	lng, err := strconv.ParseFloat(strings.TrimSpace(coords[1]), 64)
+	if err != nil {
+		return "", "", fmt.Errorf("invalid longitude value: %v", err)
+	}
+
+	baseURL := "https://maps.googleapis.com/maps/api/geocode/json"
+	params := url.Values{}
+	params.Add("latlng", fmt.Sprintf("%f,%f", lat, lng))
+	params.Add("key", apiKey)
+	apiURL := fmt.Sprintf("%s?%s", baseURL, params.Encode())
+
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		return "", "", err
+	}
+	defer resp.Body.Close()
+
+	var geocodingResponse struct {
+		Results []struct {
+			FormattedAddress  string `json:"formatted_address"`
+			AddressComponents []struct {
+				LongName string   `json:"long_name"`
+				Types    []string `json:"types"`
+			} `json:"address_components"`
+		} `json:"results"`
+		Status string `json:"status"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&geocodingResponse); err != nil {
+		return "", "", err
+	}
+
+	if geocodingResponse.Status != "OK" {
+		return "", "", fmt.Errorf("API error: %s", geocodingResponse.Status)
+	}
+
+	if len(geocodingResponse.Results) > 0 {
+		fullAddress := geocodingResponse.Results[0].FormattedAddress
+
+		for _, component := range geocodingResponse.Results[0].AddressComponents {
+			for _, t := range component.Types {
+				if t == "locality" {
+					return component.LongName, fullAddress, nil
+				}
+			}
+		}
+	}
+
+	return "", "", fmt.Errorf("city not found in the response")
 }

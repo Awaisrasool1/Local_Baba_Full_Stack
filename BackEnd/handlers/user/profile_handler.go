@@ -44,7 +44,7 @@ func Upload_Image(c *gin.Context) {
 		return
 	}
 
-	s3Region, accessKeyID, s3Bucket, secretKey := envConfig.GetEnvVars()
+	s3Region, accessKeyID, s3Bucket, secretKey, _ := envConfig.GetEnvVars()
 	file, header, err := c.Request.FormFile("image")
 
 	if err != nil {
