@@ -9,18 +9,22 @@ import {
   get_default_address,
   get_profile,
   get_all_address,
-  get_user_onGoing_order
+  get_user_onGoing_order,
 } from './Get';
 import {
   add_to_cart,
   add_to_address,
   add_quantity,
   remove_quantity,
-  upload_image
+  upload_image,
+  place_order_By_Cart,
+  place_order_By_product,
 } from './Post';
 import {delete_address, delete_cart_item} from './Delete';
 
 export {
+  place_order_By_Cart,
+  place_order_By_product,
   SignIn,
   SignUp,
   get_categories,
@@ -39,5 +43,5 @@ export {
   add_quantity,
   delete_cart_item,
   upload_image,
-  get_user_onGoing_order
+  get_user_onGoing_order,
 };

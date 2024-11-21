@@ -14,21 +14,18 @@ type FoodOrder struct {
 }
 
 type Order struct {
-	ID           string    `json:"id" bson:"_id"`
-	OrderID      string    `json:"orderId" bson:"orderId"`
-	UserID       string    `json:"userId" bson:"user_id"`
-	ProductID    string    `json:"productId" bson:"product_id"`
-	RestaurantID string    `json:"restaurantId" bson:"restaurant_id"`
-	RiderID      string    `json:"riderId" bson:"rider_id"`
-	City         string    `json:"city" bson:"city"`
-	Address      string    `json:"address" bson:"address"`
-	PhoneNo      string    `json:"phoneNo" bson:"phoneNo"`
-	UserName     string    `json:"firstName" bson:"firstName"`
-	Email        string    `json:"email" bson:"email"`
-	Status       string    `json:"status" bson:"status"` // e.g., Pending, Assigned, Delivered
-	CreatedAt    time.Time `json:"createdAt" bson:"createdAt"`
-	ItemName     string    `json:"itemName" bson:"itemName"`
-	Quantity     int       `json:"quantity" bson:"quantity"`
-	Price        float64   `json:"price" bson:"price"`
-	TotalBill    float64   `json:"totalBill" bson:"total_bill"`
+	ID               string    `json:"id" bson:"_id"`
+	OrderID          string    `json:"orderId" bson:"orderId"`
+	UserID           string    `json:"userId" bson:"user_id"`
+	ProductID        string    `json:"productId" bson:"product_id"`
+	RestaurantID     string    `json:"restaurantId" bson:"restaurant_id"`
+	RiderID          string    `json:"riderId" bson:"rider_id"`
+	LatLong          string    `json:"latLong" bson:"latLong"`
+	Status           string    `json:"status" bson:"status"` // e.g., Pending, Assigned, Delivered
+	CreatedAt        time.Time `json:"createdAt" bson:"createdAt"`
+	ItemName         string    `json:"itemName" bson:"itemName"`
+	Quantity         int       `json:"quantity" bson:"quantity"`
+	Price            float64   `json:"price" bson:"price"`
+	TotalBill        float64   `json:"totalBill" bson:"total_bill"`
+	IsDefaultAddress bool      `json:"isDefaultAddress" bson:"isDefaultAddress"`
 }

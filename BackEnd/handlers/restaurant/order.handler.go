@@ -3,6 +3,7 @@ package restaurant
 import (
 	"context"
 	"foodApp/database"
+	"foodApp/envConfig"
 	"foodApp/models"
 	"foodApp/utils"
 	"log"
@@ -40,6 +41,8 @@ type GroupedOrder struct {
 
 func GetOrdersByRestaurant(c *gin.Context) {
 	token := c.GetHeader("Authorization")
+	_, _, _, _, apiKey := envConfig.GetEnvVars()
+
 	if token == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "token missing"})
 		return
@@ -54,9 +57,10 @@ func GetOrdersByRestaurant(c *gin.Context) {
 	restaurantID := (*claim)["userId"].(string)
 	ctx := context.Background()
 	orderCollection := database.GetCollection("order")
+	addressCollection := database.GetCollection("address")
 	productCollection := database.GetCollection("product")
 	userCollection := database.GetCollection("user")
-	restaurantCollection := database.GetCollection("restaurant")
+	restaurantCollection := database.GetCollection("restaurants")
 
 	fiveHoursAgo := time.Now().Add(-5 * time.Hour)
 	updateFilter := bson.M{
@@ -110,42 +114,39 @@ func GetOrdersByRestaurant(c *gin.Context) {
 		return
 	}
 
-	userCache := make(map[string]bson.M)
-	productCache := make(map[string]string)
 	restaurantData := bson.M{}
 	restaurantName := ""
-
 	if err := restaurantCollection.FindOne(ctx, bson.M{"_id": restaurantID}).Decode(&restaurantData); err == nil {
 		restaurantName, _ = restaurantData["name"].(string)
 	}
 
 	groupedOrders := make(map[string]map[string]*GroupedOrder)
-
 	for _, order := range orders {
 		orderID := order.OrderID
 
-		userData, exists := userCache[order.UserID]
-		if !exists {
-			err := userCollection.FindOne(ctx, bson.M{"_id": order.UserID}).Decode(&userData)
-			if err != nil {
-				log.Printf("Error fetching user details for ID %s: %v", order.UserID, err)
-				continue
-			}
-			userCache[order.UserID] = userData
+		var user bson.M
+		err := userCollection.FindOne(ctx, bson.M{"_id": order.UserID}).Decode(&user)
+		if err != nil {
+			log.Printf("Error fetching user details for ID %s: %v", order.UserID, err)
+			continue
 		}
 
-		productName, exists := productCache[order.ProductID]
-		if !exists {
-			var product struct {
-				Title string `bson:"title"`
-			}
-			err := productCollection.FindOne(ctx, bson.M{"_id": order.ProductID}).Decode(&product)
+		var city, fullAddress string
+		if order.IsDefaultAddress {
+			var address bson.M
+			err := addressCollection.FindOne(ctx, bson.M{"userId": order.UserID, "isDefaultShipping": true}).Decode(&address)
 			if err != nil {
-				log.Printf("Error fetching product details for ID %s: %v", order.ProductID, err)
+				log.Printf("Error fetching address for user %s: %v", order.UserID, err)
+				return
+			}
+			city = address["city"].(string)
+			fullAddress = address["fullAddress"].(string)
+		} else {
+			city, fullAddress, err = utils.GetCityAndAddressFromLatLong(order.LatLong, apiKey)
+			if err != nil {
+				log.Printf("Error fetching address from LatLong: %v", err)
 				continue
 			}
-			productName = product.Title
-			productCache[order.ProductID] = productName
 		}
 
 		if _, exists := groupedOrders[order.UserID]; !exists {
@@ -157,12 +158,12 @@ func GetOrdersByRestaurant(c *gin.Context) {
 				CreatedAt:      order.CreatedAt,
 				UserID:         order.UserID,
 				OrderId:        order.OrderID,
-				City:           order.City,
-				Address:        order.Address,
-				Email:          userData["email"].(string),
-				Image:          userData["image"].(string),
-				Name:           userData["name"].(string),
-				Phone:          userData["phone"].(string),
+				City:           city,
+				Address:        fullAddress,
+				Email:          user["email"].(string),
+				Image:          user["image"].(string),
+				Name:           user["name"].(string),
+				Phone:          user["phone"].(string),
 				RestaurantName: restaurantName,
 				Status:         order.Status,
 				Orders:         []models.Order{},
@@ -171,13 +172,22 @@ func GetOrdersByRestaurant(c *gin.Context) {
 			}
 		}
 
+		var product struct {
+			Title string `bson:"title"`
+		}
+		err = productCollection.FindOne(ctx, bson.M{"_id": order.ProductID}).Decode(&product)
+		if err != nil {
+			log.Printf("Error fetching product details for ID %s: %v", order.ProductID, err)
+			continue
+		}
+
 		groupedOrder := groupedOrders[order.UserID][orderID]
 		groupedOrder.Orders = append(groupedOrder.Orders, order)
 		groupedOrder.TotalAmount += order.TotalBill
 
 		itemMatched := false
 		for i := range groupedOrder.OrderItem {
-			if groupedOrder.OrderItem[i].Name == productName {
+			if groupedOrder.OrderItem[i].Name == product.Title {
 				groupedOrder.OrderItem[i].Quantity += order.Quantity
 				itemMatched = true
 				break
@@ -186,7 +196,7 @@ func GetOrdersByRestaurant(c *gin.Context) {
 
 		if !itemMatched {
 			groupedOrder.OrderItem = append(groupedOrder.OrderItem, OrderItem{
-				Name:     productName,
+				Name:     product.Title,
 				Quantity: order.Quantity,
 				Price:    order.Price,
 			})
@@ -208,6 +218,8 @@ func GetOrdersByRestaurant(c *gin.Context) {
 
 func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 	token := c.GetHeader("Authorization")
+	_, _, _, _, apiKey := envConfig.GetEnvVars()
+
 	if token == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "token missing"})
 		return
@@ -224,7 +236,8 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 	orderCollection := database.GetCollection("order")
 	productCollection := database.GetCollection("product")
 	userCollection := database.GetCollection("user")
-	restaurantCollection := database.GetCollection("restaurant")
+	addressCollection := database.GetCollection("address")
+	restaurantCollection := database.GetCollection("restaurants")
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "5"))
@@ -232,13 +245,10 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 
 	filter := bson.M{
 		"restaurant_id": restaurantID,
-		"status": bson.M{
-			"$in": []string{"Cancelled", "Delivered"},
-		},
+		"status":        bson.M{"$in": []string{"Cancelled", "Delivered"}},
 	}
 
 	opts := options.Find().SetLimit(int64(limit)).SetSkip(int64(skip))
-
 	cursor, err := orderCollection.Find(ctx, filter, opts)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch orders"})
@@ -266,6 +276,7 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 	for _, order := range orders {
 		orderID := order.OrderID
 
+		// Fetch user data
 		userData, exists := userCache[order.UserID]
 		if !exists {
 			err := userCollection.FindOne(ctx, bson.M{"_id": order.UserID}).Decode(&userData)
@@ -276,6 +287,7 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 			userCache[order.UserID] = userData
 		}
 
+		// Fetch product data
 		productName, exists := productCache[order.ProductID]
 		if !exists {
 			var product struct {
@@ -290,16 +302,33 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 			productCache[order.ProductID] = productName
 		}
 
+		var city, fullAddress string
+		if order.IsDefaultAddress {
+			var address bson.M
+			err := addressCollection.FindOne(ctx, bson.M{"userId": order.UserID, "isDefaultShipping": true}).Decode(&address)
+			if err != nil {
+				log.Printf("Error fetching address for user %s: %v", order.UserID, err)
+				return
+			}
+			city = address["city"].(string)
+			fullAddress = address["fullAddress"].(string)
+		} else {
+			city, fullAddress, err = utils.GetCityAndAddressFromLatLong(order.LatLong, apiKey)
+			if err != nil {
+				log.Printf("Error fetching address from LatLong: %v", err)
+				continue
+			}
+		}
 		if _, exists := groupedOrders[order.UserID]; !exists {
 			groupedOrders[order.UserID] = make(map[string]*GroupedOrder)
 		}
-
 		if _, exists := groupedOrders[order.UserID][orderID]; !exists {
 			groupedOrders[order.UserID][orderID] = &GroupedOrder{
 				CreatedAt:      order.CreatedAt,
 				UserID:         order.UserID,
-				City:           order.City,
-				Address:        order.Address,
+				OrderId:        order.OrderID,
+				City:           city,
+				Address:        fullAddress,
 				Email:          userData["email"].(string),
 				Image:          userData["image"].(string),
 				Name:           userData["name"].(string),

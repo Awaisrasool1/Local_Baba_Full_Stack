@@ -1,20 +1,14 @@
 import React, {useRef, useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-  Image,
-} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, Image} from 'react-native';
 import MapView, {Marker, MapPressEvent, Region} from 'react-native-maps';
-import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
 import Theme from '../../../theme/Theme';
 import styles from './styles';
 import {useMutation} from '@tanstack/react-query';
 import {useToast} from 'react-native-toasty-toast';
 import {add_to_address} from '../../../services';
+import {checkPermission} from '../../../api/api';
+import GetLocation from 'react-native-get-location';
 
 interface Location {
   latitude: number;
@@ -32,27 +26,28 @@ const AddressScreen: React.FC = (props: any) => {
   const [city, setCity] = useState<string>('');
   const PROVIDER_GOOGLE = 'google';
 
-  Geocoder.init(String(''));
+  Geocoder.init('');
 
   useEffect(() => {
-    Geolocation.getCurrentPosition(
-      position => {
-        const {latitude, longitude} = position.coords;
-        const currentLocation: Location = {latitude, longitude};
-        setUserLocation(currentLocation);
-
+    const getLocation = async () => {
+      const result = await checkPermission('location');
+      if (result.result) {
+        const currentLocation = await GetLocation.getCurrentPosition({
+          enableHighAccuracy: false,
+          timeout: 5000,
+        });
+        const {latitude, longitude} = currentLocation;
+        const newLocation: Location = {latitude, longitude};
+        setUserLocation(newLocation);
         mapRef.current?.animateToRegion({
           latitude,
           longitude,
           latitudeDelta: 0.006,
           longitudeDelta: 0.006,
         } as Region);
-      },
-      (error: any) => {
-        Alert.alert('Error', 'Failed to get location');
-      },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-    );
+      }
+    };
+    getLocation();
   }, []);
 
   const handleMapPress = async (event: MapPressEvent) => {

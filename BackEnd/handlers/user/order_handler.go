@@ -16,9 +16,15 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+type Input struct {
+	LatLong          string `json:"latLong"`
+	Quantity         int    `json:"quantity"`
+	IsDefaultAddress bool   `json:"isDefaultAddress"`
+}
+
 func AddOrderByCart(c *gin.Context) {
 	token := c.GetHeader("Authorization")
-	var input models.Order
+	var input Input
 
 	if token == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "token missing"})
@@ -42,6 +48,7 @@ func AddOrderByCart(c *gin.Context) {
 	cartCollection := database.GetCollection("cart")
 	orderCollection := database.GetCollection("order")
 	productCollection := database.GetCollection("product")
+	addressCollection := database.GetCollection("address")
 
 	cartItems, err := cartCollection.Find(ctx, bson.M{"user_id": userObjectID})
 	if err != nil {
@@ -57,6 +64,23 @@ func AddOrderByCart(c *gin.Context) {
 
 	var orders []interface{}
 	var overallTotalBill float64
+
+	var finalLatLong string
+
+	if input.IsDefaultAddress {
+		var userAddress struct {
+			LatLong string `json:"latlong"`
+		}
+		err := addressCollection.FindOne(ctx, bson.M{"userId": userObjectID}).Decode(&userAddress)
+		if err != nil {
+			log.Println("Error fetching address:", err)
+			c.JSON(http.StatusNotFound, gin.H{"status": "error", "message": "default Address not found"})
+			return
+		}
+		finalLatLong = userAddress.LatLong
+	} else {
+		finalLatLong = input.LatLong
+	}
 
 	for cartItems.Next(ctx) {
 		var cartItem models.Cart
@@ -81,22 +105,19 @@ func AddOrderByCart(c *gin.Context) {
 		}
 
 		order := models.Order{
-			OrderID:      orderID,
-			ID:           uuid.NewString(),
-			UserID:       cartItem.UserID,
-			ProductID:    cartItem.ProductID,
-			RestaurantID: product.RestaurantID,
-			Quantity:     cartItem.Quantity,
-			Price:        price,
-			TotalBill:    totalBill,
-			City:         input.City,
-			Address:      input.Address,
-			PhoneNo:      input.PhoneNo,
-			UserName:     input.UserName,
-			Email:        input.Email,
-			Status:       "Pending",
-			ItemName:     product.Title,
-			CreatedAt:    time.Now(),
+			OrderID:          orderID,
+			ID:               uuid.NewString(),
+			UserID:           cartItem.UserID,
+			ProductID:        cartItem.ProductID,
+			RestaurantID:     product.RestaurantID,
+			Quantity:         cartItem.Quantity,
+			Price:            price,
+			LatLong:          finalLatLong,
+			TotalBill:        totalBill,
+			Status:           "Pending",
+			ItemName:         product.Title,
+			IsDefaultAddress: input.IsDefaultAddress,
+			CreatedAt:        time.Now(),
 		}
 
 		orders = append(orders, order)
@@ -114,6 +135,7 @@ func AddOrderByCart(c *gin.Context) {
 		return
 	}
 
+	// Optionally, clear cart items after placing an order (if desired)
 	// _, err = cartCollection.DeleteMany(ctx, bson.M{"user_id": userObjectID})
 	// if err != nil {
 	// 	log.Println("Error clearing cart:", err)
@@ -149,12 +171,12 @@ func AddOrderByProduct(c *gin.Context) {
 	}
 
 	productID := c.Param("id")
-
 	userObjectID := (*claim)["userId"].(string)
 
 	ctx := context.Background()
 	orderCollection := database.GetCollection("order")
 	productCollection := database.GetCollection("product")
+	addressCollection := database.GetCollection("address")
 
 	var product models.Product
 	err = productCollection.FindOne(ctx, bson.M{"_id": productID}).Decode(&product)
@@ -164,6 +186,7 @@ func AddOrderByProduct(c *gin.Context) {
 	}
 
 	orderID := fmt.Sprintf("#%08d", rand.Intn(90000000)+10000000)
+
 	if product.ID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Product not found"})
 		return
@@ -176,23 +199,36 @@ func AddOrderByProduct(c *gin.Context) {
 
 	totalPrice := float64(input.Quantity) * priceToUse
 
+	var finalLatLong string
+
+	if input.IsDefaultAddress {
+		var userAddress struct {
+			LatLong string `json:"latlong"`
+		}
+		err := addressCollection.FindOne(ctx, bson.M{"userId": userObjectID}).Decode(&userAddress)
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"status": "error", "message": "default Address not found"})
+			return
+		}
+		finalLatLong = userAddress.LatLong
+	} else {
+		finalLatLong = input.LatLong
+	}
+
 	newOrder := models.Order{
-		ID:           uuid.NewString(),
-		OrderID:      orderID,
-		UserID:       userObjectID,
-		ProductID:    productID,
-		RestaurantID: product.RestaurantID,
-		Quantity:     input.Quantity,
-		Price:        priceToUse,
-		TotalBill:    totalPrice,
-		Status:       "Pending",
-		CreatedAt:    time.Now(),
-		Address:      input.Address,
-		City:         input.City,
-		PhoneNo:      input.PhoneNo,
-		UserName:     input.UserName,
-		Email:        input.Email,
-		ItemName:     product.Title,
+		ID:               uuid.NewString(),
+		OrderID:          orderID,
+		UserID:           userObjectID,
+		ProductID:        productID,
+		RestaurantID:     product.RestaurantID,
+		Quantity:         input.Quantity,
+		Price:            priceToUse,
+		TotalBill:        totalPrice,
+		Status:           "Pending",
+		CreatedAt:        time.Now(),
+		LatLong:          finalLatLong,
+		ItemName:         product.Title,
+		IsDefaultAddress: input.IsDefaultAddress,
 	}
 
 	_, err = orderCollection.InsertOne(ctx, newOrder)

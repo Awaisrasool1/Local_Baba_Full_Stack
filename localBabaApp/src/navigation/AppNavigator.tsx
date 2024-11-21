@@ -87,12 +87,12 @@ const AppNavigator = () => {
         component={ProfileScreen}
         options={{headerShown: false}}
       />
-       <Stack.Screen
+      <Stack.Screen
         name={Constants.HOME_SCREEN}
         component={HomeScreen}
         options={{headerShown: false}}
       />
-       <Stack.Screen
+      <Stack.Screen
         name={Constants.CART_SCREEN}
         component={CartScreen}
         options={{headerShown: false}}
