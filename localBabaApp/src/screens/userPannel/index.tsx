@@ -11,6 +11,7 @@ import {
   OngoingOrder,
   OrderHistory,
 } from './settingScreen';
+import {TrackOrder, OrderSuccess} from './trackOrder';
 
 export {
   HomeScreen,
@@ -25,4 +26,6 @@ export {
   SeeAllAddress,
   OngoingOrder,
   OrderHistory,
+  TrackOrder,
+  OrderSuccess,
 };

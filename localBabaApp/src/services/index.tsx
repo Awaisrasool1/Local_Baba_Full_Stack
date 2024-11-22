@@ -10,6 +10,7 @@ import {
   get_profile,
   get_all_address,
   get_user_onGoing_order,
+  get_user_order_status,
 } from './Get';
 import {
   add_to_cart,
@@ -25,6 +26,7 @@ import {delete_address, delete_cart_item} from './Delete';
 export {
   place_order_By_Cart,
   place_order_By_product,
+  get_user_order_status,
   SignIn,
   SignUp,
   get_categories,

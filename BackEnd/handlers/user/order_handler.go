@@ -14,6 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Input struct {
@@ -144,6 +145,7 @@ func AddOrderByCart(c *gin.Context) {
 	// }
 
 	c.JSON(http.StatusOK, gin.H{
+		"status":       "success",
 		"message":      "Order placed successfully!",
 		"orderID":      orderID,
 		"overallTotal": overallTotalBill,
@@ -238,11 +240,80 @@ func AddOrderByProduct(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
+		"status":     "success",
 		"message":    "Order placed successfully!",
 		"orderID":    newOrder.OrderID,
 		"totalPrice": totalPrice,
-		"status":     newOrder.Status,
 	})
+}
+
+func GetOrderStatus(c *gin.Context) {
+	type OrderResponse struct {
+		Status     string `json:"status"`
+		StatusCode int    `json:"status_code"`
+	}
+
+	type Request struct {
+		OrderId string `json:"orderId" bson:"orderId"`
+	}
+
+	token := c.GetHeader("Authorization")
+	if token == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "token missing"})
+		return
+	}
+
+	_, err := utils.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
+		return
+	}
+
+	var req Request
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": err.Error()})
+		return
+	}
+
+	orderCollection := database.GetCollection("order")
+	ctx := context.Background()
+	var order models.Order
+
+	err = orderCollection.FindOne(ctx, bson.M{"orderId": req.OrderId}).Decode(&order)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Order not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Something went wrong"})
+		return
+	}
+
+	if order.Status == "Cancelled" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Order has been cancelled",
+		})
+		return
+	}
+
+	statusCode := 0
+	switch order.Status {
+	case "pending":
+		statusCode = 0
+	case "accepted":
+		statusCode = 1
+	case "assigned":
+		statusCode = 2
+	case "delivered":
+		statusCode = 3
+	}
+
+	response := OrderResponse{
+		Status:     order.Status,
+		StatusCode: statusCode,
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 func Get_user_ongoing_order(c *gin.Context) {

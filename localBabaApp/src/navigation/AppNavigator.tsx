@@ -15,6 +15,8 @@ import {
   HomeScreen,
   CartScreen,
   SettingScreen,
+  TrackOrder,
+  OrderSuccess,
 } from '../screens';
 import SignUpScreen from '../screens/auth/signupScreen';
 import DrawerNavigation from './DrawerNavigation';
@@ -105,6 +107,16 @@ const AppNavigator = () => {
       <Stack.Screen
         name={Constants.ORDER_TOP_TAB}
         component={OrderTopTab}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={Constants.TRACK_ORDER}
+        component={TrackOrder}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={Constants.ORDER_SUCCESS}
+        component={OrderSuccess}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

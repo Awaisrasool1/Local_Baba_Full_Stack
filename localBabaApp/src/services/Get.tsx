@@ -49,8 +49,14 @@ async function get_all_address() {
 
 export const get_user_onGoing_order = async (): Promise<any[]> => {
   const res = await API.get('/user/Order/get-ongoing-order');
-  return res.data; // Return the data from the API response
+  return res.data;
 };
+
+async function get_user_order_status(data: any) {
+  const res = await API.get('',data);
+  return res.data;
+}
+
 export {
   get_categories,
   get_nearby_restaurants,
@@ -61,4 +67,5 @@ export {
   get_default_address,
   get_profile,
   get_all_address,
+  get_user_order_status,
 };
