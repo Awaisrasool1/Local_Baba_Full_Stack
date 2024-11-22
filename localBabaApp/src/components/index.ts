@@ -13,6 +13,7 @@ import {DropPicker} from './DropPicker';
 import {OrderTopTabHeader} from './OrderTopTabHeader';
 import {CustomTabNavigator} from './CustomTabNavigator';
 import {PopUp} from './popUp';
+import {OrderProgress} from './orderProgress';
 
 export {
   CustomButton,
@@ -30,4 +31,5 @@ export {
   OrderTopTabHeader,
   CustomTabNavigator,
   PopUp,
+  OrderProgress,
 };

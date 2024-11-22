@@ -9,7 +9,8 @@ export const ADDRESS_SCREEN = 'ADDRESS_SCREEN';
 export const SEE_ALL_ADDRESS = 'SEE_ALL_ADDRESS';
 export const PROFILE_SCREEN = 'PROFILE_SCREEN';
 export const NOTIFICATION_SCREEN = 'NOTIFICATION_SCREEN';
-
+export const TRACK_ORDER = "TrackOrder"
+export const ORDER_SUCCESS = "ORDERSUCCESS"
 
 export const SIGNUP_SCREEN = 'SIGNUP_SCREEM';
 export const LOGIN_SCREEN = 'LOGIN_SCREEN';

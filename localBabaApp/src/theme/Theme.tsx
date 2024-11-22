@@ -196,7 +196,11 @@ const Theme = {
     editIcon: require('../resource/images/EditIcon.png'),
     email: require('../resource/images/email.png'),
     PhoneNo: require('../resource/images/phoneNo.png'),
-    warningImage:require('../resource/images/warning.png')
+    warningImage: require('../resource/images/warning.png'),
+    success_Order: require('../resource/images/successOrder.png'),
+    tick: require('../resource/images/tick.png'),
+    time_clock: require('../resource/images/timeClockWhite.png'),
+    time_clock_res: require('../resource/images/timeClockRed.png'),
   },
 };
 export default Theme;

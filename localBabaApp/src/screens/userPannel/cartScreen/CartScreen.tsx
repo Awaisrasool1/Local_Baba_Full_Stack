@@ -122,7 +122,11 @@ const CartScreen = (props: any) => {
     }: {
       data: {quantity: number; latLong: string; isDefaultAddress: boolean};
     }) => place_order_By_Cart(data),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      if (data?.status == 'success') {
+        showToast(data.message, 'success', 'top', 1000);
+        props.navigation.navigate(Constants.ORDER_SUCCESS, {id: data.orderID});
+      }
       console.log('Order placed successfully!');
     },
   });

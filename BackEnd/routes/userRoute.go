@@ -94,6 +94,7 @@ func SetUpRoutes() *gin.Engine {
 		userRoutes.POST("Order/add-order-by-cart", user.AddOrderByCart)
 		userRoutes.POST("Order/add-order-by-product:id", user.AddOrderByProduct)
 		userRoutes.GET("Order/get-ongoing-order", user.Get_user_ongoing_order)
+		userRoutes.GET("Order/get-order-status", user.GetOrderStatus)
 
 	}
 
