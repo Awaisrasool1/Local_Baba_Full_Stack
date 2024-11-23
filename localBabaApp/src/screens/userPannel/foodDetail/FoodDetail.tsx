@@ -106,8 +106,12 @@ const FoodDetail = (props: any) => {
       id: string;
       data: {quantity: number; latLong: string; isDefaultAddress: boolean};
     }) => place_order_By_product(id, data),
-    onSuccess: () => {
-      console.log('Order placed successfully!');
+    onSuccess: data => {
+      if (data?.status == 'success') {
+        console.log(data)
+        showToast(data.message, 'success', 'top', 1000);
+        props.navigation.navigate(Constants.ORDER_SUCCESS, {id: data.orderID});
+      }
     },
   });
 

@@ -20,6 +20,7 @@ const CustomDrawer = (props: any) => {
   const {showToast} = useToast();
 
   const handleLogOut = async () => {
+    debugger
     try {
       await AsyncStorage.clear();
       await saveToken(null, null, null);
