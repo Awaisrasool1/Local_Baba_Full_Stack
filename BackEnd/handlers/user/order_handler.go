@@ -9,6 +9,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -253,8 +254,14 @@ func GetOrderStatus(c *gin.Context) {
 		StatusCode int    `json:"status_code"`
 	}
 
-	type Request struct {
-		OrderId string `json:"orderId" bson:"orderId"`
+	orderId := c.Query("orderId")
+	if orderId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "missing orderId"})
+		return
+	}
+
+	if !strings.HasPrefix(orderId, "#") {
+		orderId = "#" + orderId
 	}
 
 	token := c.GetHeader("Authorization")
@@ -269,17 +276,11 @@ func GetOrderStatus(c *gin.Context) {
 		return
 	}
 
-	var req Request
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": err.Error()})
-		return
-	}
-
 	orderCollection := database.GetCollection("order")
 	ctx := context.Background()
 	var order models.Order
 
-	err = orderCollection.FindOne(ctx, bson.M{"orderId": req.OrderId}).Decode(&order)
+	err = orderCollection.FindOne(ctx, bson.M{"orderId": orderId}).Decode(&order)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Order not found"})
@@ -298,14 +299,14 @@ func GetOrderStatus(c *gin.Context) {
 
 	statusCode := 0
 	switch order.Status {
-	case "pending":
+	case "Pending":
+		statusCode = -1
+	case "Accepted":
 		statusCode = 0
-	case "accepted":
+	case "Assigned":
 		statusCode = 1
-	case "assigned":
+	case "Delivered":
 		statusCode = 2
-	case "delivered":
-		statusCode = 3
 	}
 
 	response := OrderResponse{
