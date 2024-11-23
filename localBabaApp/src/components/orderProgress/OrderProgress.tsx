@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
-import {View, Text, Animated, StyleSheet, Image} from 'react-native';
-import Theme from '../../theme/Theme';
+import {View, Text, Animated, Image} from 'react-native';
 import styles from './styles';
+import Theme from '../../theme/Theme';
 
 const OrderProgress = ({currentStep = 0, steps = []}: any) => {
   const circleAnims = steps.map(
@@ -10,13 +10,6 @@ const OrderProgress = ({currentStep = 0, steps = []}: any) => {
   const lineAnims = steps.map(
     () => React.useRef(new Animated.Value(0)).current,
   );
-  const textAnims = steps.map(
-    () => React.useRef(new Animated.Value(0)).current,
-  );
-
-  if (currentStep > 3) {
-    currentStep = 3;
-  }
 
   useEffect(() => {
     const animations = [];
@@ -30,14 +23,7 @@ const OrderProgress = ({currentStep = 0, steps = []}: any) => {
           useNativeDriver: true,
         }),
       );
-      animations.push(
-        Animated.timing(textAnims[i], {
-          toValue: 1,
-          duration: 500,
-          delay: i * 300,
-          useNativeDriver: true,
-        }),
-      );
+
       if (i < steps.length - 1) {
         animations.push(
           Animated.timing(lineAnims[i], {
@@ -77,32 +63,22 @@ const OrderProgress = ({currentStep = 0, steps = []}: any) => {
               },
             ]}>
             {isCompleted ? (
-              <Image source={Theme.icons.tick} style={styles.icon} />
+              <Image source={Theme.icons.tick}/>
             ) : (
               <View
                 style={[
                   styles.dot,
-                  {backgroundColor: !isActive ? '#9E9E9E' : ''},
+                  {
+                    backgroundColor: isActive
+                      ? Theme.colors.appColor
+                      : '#9E9E9E',
+                  },
                 ]}
               />
             )}
           </Animated.View>
 
-          <Animated.View
-            style={[
-              styles.textContainer,
-              {
-                opacity: textAnims[index],
-                transform: [
-                  {
-                    translateX: textAnims[index].interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [20, 0],
-                    }),
-                  },
-                ],
-              },
-            ]}>
+          <View style={styles.textContainer}>
             <Text
               style={[
                 styles.title,
@@ -112,7 +88,7 @@ const OrderProgress = ({currentStep = 0, steps = []}: any) => {
               {step.title}
             </Text>
             <Text style={styles.description}>{step.description}</Text>
-          </Animated.View>
+          </View>
         </View>
 
         {!isLast && (
@@ -122,12 +98,8 @@ const OrderProgress = ({currentStep = 0, steps = []}: any) => {
               {
                 backgroundColor: isCompleted
                   ? Theme.colors.appColor
-                  : Theme.colors.disabled,
-                transform: [
-                  {
-                    scaleY: lineAnims[index],
-                  },
-                ],
+                  : '#E0E0E0',
+                transform: [{scaleY: lineAnims[index]}],
                 opacity: lineAnims[index],
               },
             ]}

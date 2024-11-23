@@ -1,5 +1,5 @@
 import {View} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {OrderProgress} from '../../../components';
 import styles from './styles';
 import {useQuery} from '@tanstack/react-query';
@@ -31,7 +31,7 @@ const TrackOrder = (props: any) => {
     },
   ];
 
-  const {data} = useQuery({
+  const {data, refetch} = useQuery({
     queryKey: ['orderStatus'],
     queryFn: async () => {
       try {
@@ -40,13 +40,13 @@ const TrackOrder = (props: any) => {
           showToast('Check your internet!', 'error', 'bottom', 1000);
           return null;
         }
-        let data = {
-          OrderId: '#95650090',
-        };
-        const res = await get_user_order_status(data);
-        return res.data;
+        const cleanOrderId = id.replace('#', '');
+        const res = await get_user_order_status(cleanOrderId);
+        if (res?.status === 'Accepted') {
+          res.status_code = res.status_code + 1;
+        }
+        return res;
       } catch (err: any) {
-        console.log(err.response.data);
         showToast(
           err.response?.data?.message || 'An error occurred',
           'error',
@@ -58,9 +58,18 @@ const TrackOrder = (props: any) => {
     },
     enabled: isFocused,
   });
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      refetch();
+    }, 10000);
+
+    return () => clearInterval(intervalId);
+  }, [refetch]);
+
   return (
     <View style={styles.container}>
-      <OrderProgress currentStep={3} steps={steps} />
+      <OrderProgress currentStep={data?.status_code || 0} steps={steps} />
     </View>
   );
 };
