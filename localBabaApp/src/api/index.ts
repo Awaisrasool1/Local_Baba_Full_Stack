@@ -1,2 +1,0 @@
-export {isNetworkAvailable} from './api';
-
