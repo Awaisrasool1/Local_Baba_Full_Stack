@@ -14,6 +14,7 @@ import {OrderTopTabHeader} from './OrderTopTabHeader';
 import {CustomTabNavigator} from './CustomTabNavigator';
 import {PopUp} from './popUp';
 import {OrderProgress} from './orderProgress';
+import {OrderCard} from './orderCard';
 
 export {
   CustomButton,
@@ -32,4 +33,5 @@ export {
   CustomTabNavigator,
   PopUp,
   OrderProgress,
+  OrderCard,
 };
