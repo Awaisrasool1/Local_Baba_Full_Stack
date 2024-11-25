@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import styles from './styles';
 import {CartFooter} from '../../../components';
 import {isNetworkAvailable} from '../../../api';
@@ -17,12 +17,11 @@ import {
 } from '../../../services';
 import Theme from '../../../theme/Theme';
 import {useMutation, useQuery} from '@tanstack/react-query';
-import {useIsFocused} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {AddressData} from '../cartScreen/types';
 import {useToast} from 'react-native-toasty-toast';
 import {Constants} from '../../../constants';
-import {checkPermission} from '../../../api/api';
-import GetLocation from 'react-native-get-location';
+import { GetCurrentLocation } from '../../../hooks/Hooks';
 interface Location {
   latitude: number;
   longitude: number;
@@ -48,21 +47,16 @@ const FoodDetail = (props: any) => {
   const {showToast} = useToast();
   const [userLocation, setUserLocation] = useState<Location | null>(null);
 
-  useEffect(() => {
-    GetCurrentLocation();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getLocation();
+    }, []),
+  );
 
-  const GetCurrentLocation = async () => {
-    const result = await checkPermission('location');
-    if (result.result) {
-      const currentLocation = await GetLocation.getCurrentPosition({
-        enableHighAccuracy: false,
-        timeout: 5000,
-      });
-      const {latitude, longitude} = currentLocation;
-      const newLocation: Location = {latitude, longitude};
-      setUserLocation(newLocation);
-    }
+  const getLocation = async () => {
+    const res: any = await GetCurrentLocation();
+    console.log(res);
+    setUserLocation(res);
   };
 
   const {data} = useQuery({
@@ -108,7 +102,7 @@ const FoodDetail = (props: any) => {
     }) => place_order_By_product(id, data),
     onSuccess: data => {
       if (data?.status == 'success') {
-        console.log(data)
+        console.log(data);
         showToast(data.message, 'success', 'top', 1000);
         props.navigation.navigate(Constants.ORDER_SUCCESS, {id: data.orderID});
       }

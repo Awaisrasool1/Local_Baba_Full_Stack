@@ -93,6 +93,7 @@ func SetUpRoutes() *gin.Engine {
 		//order
 		userRoutes.POST("Order/add-order-by-cart", user.AddOrderByCart)
 		userRoutes.POST("Order/add-order-by-product:id", user.AddOrderByProduct)
+		userRoutes.PUT("Order/order-cancel", user.Order_cancel)
 		userRoutes.GET("Order/get-ongoing-order", user.Get_user_ongoing_order)
 		userRoutes.GET("Order/get-past-order", user.Get_past_order)
 		userRoutes.GET("Order/get-order-status", user.GetOrderStatus)

@@ -18,8 +18,10 @@ import styles from './styles';
 import {Constants} from '../../../constants';
 import {Categories, Restaurants} from '../../../constants/type';
 import {getName} from '../../../api/api';
+import {getAddress, GetCurrentLocation} from '../../../hooks/Hooks';
 
 const HomeScreen = (props: any) => {
+  const [city, setCity] = useState<string>('');
   const [categorieData, setCategorieData] = useState<Categories[]>([]);
   const [allRestaurants, setAllRestaurants] = useState<Restaurants[]>([]);
   const [nearbyRestaurants, setNearbyRestaurants] = useState<Restaurants[]>([]);
@@ -27,16 +29,24 @@ const HomeScreen = (props: any) => {
   const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurants[]>(
     [],
   );
+
   useEffect(() => {
     getData();
+    getLocation();
   }, []);
-  
-  const state = props.navigation.getState();
-    
-  // Access the current index
-  const currentIndex = state.index;
-  
-  console.log('Current Navigation Index:', currentIndex);
+
+  const getLocation = async () => {
+    try {
+      const locationRes: any = await GetCurrentLocation();
+      const {latitude, longitude} = locationRes;
+      const res: any = await getAddress(latitude, longitude);
+      console.log(res);
+      setCity(res?.city);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const getData = async () => {
     const isConnected: boolean = await isNetworkAvailable();
     if (isConnected) {
@@ -52,7 +62,7 @@ const HomeScreen = (props: any) => {
         setFilteredRestaurants(allRestaurant);
         // const nearbyRestaurant = await get_nearby_restaurants();
         // setNearbyRestaurants(nearbyRestaurant);
-      } catch (err:any) {
+      } catch (err: any) {
         console.log(err.response.data);
       }
     }
@@ -107,7 +117,7 @@ const HomeScreen = (props: any) => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.marginV10}>
-        <Header isCart />
+        <Header isCart city={city} />
       </View>
       <View style={styles.marginV10} />
       <Text style={styles.userNmae}>

@@ -55,12 +55,7 @@ const SettingScreen = (props: any) => {
       section: 3,
     },
   ];
-  const state = props.navigation.getState();
-    
-  // Access the current index
-  const currentIndex = state.index;
-  
-  console.log('Current Navigation Index:', currentIndex);
+
   const {data} = useQuery({
     queryKey: ['profile'],
     queryFn: async () => {
