@@ -324,6 +324,7 @@ func Get_user_ongoing_order(c *gin.Context) {
 		RestaurantName string    `json:"restaurantName"`
 		Status         string    `json:"status"`
 		Name           string    `json:"name"`
+		Image          string    `json:"image"`
 		Quantity       int       `json:"quantity"`
 		Price          float64   `json:"price" bson:"price"`
 		TotalAmount    float64   `json:"total_amount"`
@@ -367,7 +368,10 @@ func Get_user_ongoing_order(c *gin.Context) {
 		return
 	}
 
-	productCache := make(map[string]string)
+	productCache := make(map[string]struct {
+		Title string
+		Image string
+	})
 	restaurantCache := make(map[string]string)
 
 	groupedOrders := make(map[string]*GroupedOrder)
@@ -388,20 +392,28 @@ func Get_user_ongoing_order(c *gin.Context) {
 			}
 		}
 
-		productName, exists := productCache[order.ProductID]
+		productDetails, exists := productCache[order.ProductID]
 		if !exists {
 			var product struct {
 				Title string `bson:"title"`
+				Image string `bson:"image"`
 			}
 			err := productCollection.FindOne(ctx, bson.M{"_id": order.ProductID}).Decode(&product)
 			if err != nil {
 				log.Printf("Error fetching product details for ID %s: %v", order.ProductID, err)
 				continue
 			}
-			productName = product.Title
-			productCache[order.ProductID] = productName
+			productDetails = struct {
+				Title string
+				Image string
+			}{
+				Title: product.Title,
+				Image: product.Image,
+			}
+			productCache[order.ProductID] = productDetails
 		}
 
+		// Group orders
 		if _, exists := groupedOrders[orderID]; !exists {
 			groupedOrders[orderID] = &GroupedOrder{
 				CreatedAt:      order.CreatedAt,
@@ -409,6 +421,7 @@ func Get_user_ongoing_order(c *gin.Context) {
 				RestaurantName: restaurantName,
 				Status:         order.Status,
 				Name:           "",
+				Image:          "",
 				Quantity:       0,
 				Price:          0,
 				TotalAmount:    0.0,
@@ -419,14 +432,151 @@ func Get_user_ongoing_order(c *gin.Context) {
 		groupedOrder := groupedOrders[orderID]
 
 		if groupedOrder.Name == "" {
-			groupedOrder.Name = productName
+			groupedOrder.Name = productDetails.Title
+			groupedOrder.Image = productDetails.Image
 		}
 
 		groupedOrder.Quantity += order.Quantity
 		groupedOrder.Price = order.Price
-
 		groupedOrder.TotalAmount += order.TotalBill
+		groupedOrder.TotalItems++
+	}
 
+	// Prepare response
+	var response []GroupedOrder
+	for _, groupedOrder := range groupedOrders {
+		response = append(response, *groupedOrder)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "success",
+		"data":   response,
+	})
+}
+
+func Get_past_order(c *gin.Context) {
+	type GroupedOrder struct {
+		CreatedAt      time.Time `json:"created_at"`
+		OrderId        string    `json:"orderId"`
+		RestaurantName string    `json:"restaurantName"`
+		Status         string    `json:"status"`
+		Name           string    `json:"name"`
+		Image          string    `json:"image"`
+		Quantity       int       `json:"quantity"`
+		Price          float64   `json:"price" bson:"price"`
+		TotalAmount    float64   `json:"total_amount"`
+		TotalItems     int       `json:"total_items"`
+	}
+
+	token := c.GetHeader("Authorization")
+	if token == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "token missing"})
+		return
+	}
+
+	claim, err := utils.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
+		return
+	}
+
+	userId := (*claim)["userId"].(string)
+	ctx := context.Background()
+
+	orderCollection := database.GetCollection("order")
+	productCollection := database.GetCollection("product")
+	restaurantCollection := database.GetCollection("restaurants")
+
+	filter := bson.M{
+		"user_id": userId,
+		"status": bson.M{
+			"$ne": "Pending",
+		},
+	}
+
+	cursor, err := orderCollection.Find(ctx, filter)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch orders"})
+		return
+	}
+	defer cursor.Close(ctx)
+
+	var orders []models.Order
+	if err := cursor.All(ctx, &orders); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to decode orders"})
+		return
+	}
+
+	productCache := make(map[string]struct {
+		Title string
+		Image string
+	})
+	restaurantCache := make(map[string]string)
+
+	groupedOrders := make(map[string]*GroupedOrder)
+
+	for _, order := range orders {
+		orderID := order.OrderID
+		restaurantID := order.RestaurantID
+
+		restaurantName, exists := restaurantCache[restaurantID]
+		if !exists {
+			restaurantData := bson.M{}
+			if err := restaurantCollection.FindOne(ctx, bson.M{"_id": restaurantID}).Decode(&restaurantData); err == nil {
+				restaurantName, _ = restaurantData["name"].(string)
+				restaurantCache[restaurantID] = restaurantName
+			} else {
+				log.Printf("Error fetching restaurant details for ID %s: %v", restaurantID, err)
+				restaurantName = "Unknown Restaurant"
+			}
+		}
+
+		productDetails, exists := productCache[order.ProductID]
+		if !exists {
+			var product struct {
+				Title string `bson:"title"`
+				Image string `bson:"image"`
+			}
+			err := productCollection.FindOne(ctx, bson.M{"_id": order.ProductID}).Decode(&product)
+			if err != nil {
+				log.Printf("Error fetching product details for ID %s: %v", order.ProductID, err)
+				continue
+			}
+			productDetails = struct {
+				Title string
+				Image string
+			}{
+				Title: product.Title,
+				Image: product.Image,
+			}
+			productCache[order.ProductID] = productDetails
+		}
+
+		if _, exists := groupedOrders[orderID]; !exists {
+			groupedOrders[orderID] = &GroupedOrder{
+				CreatedAt:      order.CreatedAt,
+				OrderId:        order.OrderID,
+				RestaurantName: restaurantName,
+				Status:         order.Status,
+				Name:           "",
+				Image:          "",
+				Quantity:       0,
+				Price:          0,
+				TotalAmount:    0.0,
+				TotalItems:     0,
+			}
+		}
+
+		groupedOrder := groupedOrders[orderID]
+
+		if groupedOrder.Name == "" {
+			groupedOrder.Name = productDetails.Title
+			groupedOrder.Image = productDetails.Image
+		}
+
+		groupedOrder.Quantity += order.Quantity
+		groupedOrder.Price = order.Price
+		groupedOrder.TotalAmount += order.TotalBill
 		groupedOrder.TotalItems++
 	}
 
