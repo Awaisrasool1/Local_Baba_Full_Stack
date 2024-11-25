@@ -352,9 +352,8 @@ func Get_user_ongoing_order(c *gin.Context) {
 
 	filter := bson.M{
 		"user_id": userId,
-		"status":  "Pending",
+		"status":  bson.M{"$in": []string{"Pending", "Accepted", "Assigned"}},
 	}
-
 	cursor, err := orderCollection.Find(ctx, filter)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch orders"})
@@ -489,9 +488,7 @@ func Get_past_order(c *gin.Context) {
 
 	filter := bson.M{
 		"user_id": userId,
-		"status": bson.M{
-			"$ne": "Pending",
-		},
+		"status":  bson.M{"$in": []string{"Cancelled", "Delivered"}},
 	}
 
 	cursor, err := orderCollection.Find(ctx, filter)
@@ -721,4 +718,37 @@ func Get_user_summry_order(c *gin.Context) {
 		"status": "success",
 		"data":   response,
 	})
+}
+
+func Order_cancel(c *gin.Context) {
+	var body struct {
+		Id string `json:"id"`
+	}
+
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	collection := database.GetCollection("order")
+	ctx := context.Background()
+
+	update := bson.M{
+		"$set": bson.M{
+			"status": "Cancelled",
+		},
+	}
+
+	result, err := collection.UpdateMany(ctx, bson.M{"orderId": body.Id}, update)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update order"})
+		return
+	}
+
+	if result.MatchedCount == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Order not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "success", "message": "Order status updated successfully"})
 }

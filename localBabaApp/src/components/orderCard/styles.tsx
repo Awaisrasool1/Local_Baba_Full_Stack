@@ -11,7 +11,6 @@ const styles = StyleSheet.create({
     shadowRadius: Theme.responsiveSize.size10,
     shadowOffset: {width: 0, height: 5},
     elevation: Theme.responsiveSize.size2,
-    marginTop:Theme.responsiveSize.size10
   },
   flexRow: {
     flexDirection: 'row',
@@ -61,7 +60,7 @@ const styles = StyleSheet.create({
   },
   trackButton: {
     backgroundColor: Theme.colors.appColor,
-    paddingVertical: Theme.responsiveSize.size5,
+    paddingVertical: Theme.responsiveSize.size8,
     paddingHorizontal: Theme.responsiveSize.size15,
     borderRadius: Theme.responsiveSize.size5,
   },
@@ -80,6 +79,14 @@ const styles = StyleSheet.create({
   cancelText: {
     color: Theme.colors.appColor,
     fontWeight: '600',
+  },
+  orderStatus: {
+    fontSize: Theme.responsiveSize.size12,
+    color: Theme.colors.bgColor1,
+    fontWeight: '600',
+    letterSpacing: 0.6,
+    textAlign:'right',
+    marginTop: Theme.responsiveSize.size10,
   },
 });
 

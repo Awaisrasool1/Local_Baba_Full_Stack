@@ -6,11 +6,11 @@ import Theme from '../theme/Theme';
 const OrderTopTab = (props: any) => {
   const tabs = [
     {
-      title: 'Home',
+      title: 'Ongoing',
       content: <OngoingOrder />,
     },
     {
-      title: 'Profile',
+      title: 'History',
       content: <OrderHistory />,
     },
   ];

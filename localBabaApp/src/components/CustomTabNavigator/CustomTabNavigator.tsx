@@ -92,8 +92,9 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: Theme.responsiveSize.size12,
-    color: Theme.colors.black,
+    color: Theme.colors.textColor2,
     fontWeight: '500',
+    letterSpacing: 0.5,
   },
   activeTabText: {
     color: Theme.colors.appColor,

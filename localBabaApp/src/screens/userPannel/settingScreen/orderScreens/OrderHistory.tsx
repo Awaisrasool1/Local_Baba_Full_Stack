@@ -54,6 +54,7 @@ const OrderHistory = () => {
           price={data?.total_amount}
           items={data?.total_items - 1}
           orderId={data?.orderId}
+          status={data?.status}
           onTrackOrder={handleTrackOrder}
           onCancel={handleCancelOrder}
         />

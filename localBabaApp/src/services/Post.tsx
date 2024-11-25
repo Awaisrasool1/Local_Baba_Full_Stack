@@ -55,6 +55,14 @@ async function place_order_By_product(
   return res.data;
 }
 
+async function Order_cancel(id: any) {
+  let data = {
+    Id: id,
+  };
+  const res = await API.put('/user/Order/order-cancel', data);
+  return res.data;
+}
+
 export {
   add_to_cart,
   add_to_address,
@@ -63,4 +71,5 @@ export {
   upload_image,
   place_order_By_product,
   place_order_By_Cart,
+  Order_cancel,
 };

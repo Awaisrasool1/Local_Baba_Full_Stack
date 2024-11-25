@@ -1,14 +1,13 @@
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {View, Text, TextInput, TouchableOpacity, Image} from 'react-native';
 import MapView, {Marker, MapPressEvent, Region} from 'react-native-maps';
-import Geocoder from 'react-native-geocoding';
 import Theme from '../../../theme/Theme';
 import styles from './styles';
 import {useMutation} from '@tanstack/react-query';
 import {useToast} from 'react-native-toasty-toast';
 import {add_to_address} from '../../../services';
-import {checkPermission} from '../../../api/api';
-import GetLocation from 'react-native-get-location';
+import {getAddress, GetCurrentLocation} from '../../../hooks/Hooks';
+import {useFocusEffect} from '@react-navigation/native';
 
 interface Location {
   latitude: number;
@@ -26,44 +25,32 @@ const AddressScreen: React.FC = (props: any) => {
   const [city, setCity] = useState<string>('');
   const PROVIDER_GOOGLE = 'google';
 
-  Geocoder.init('');
-
-  useEffect(() => {
-    const getLocation = async () => {
-      const result = await checkPermission('location');
-      if (result.result) {
-        const currentLocation = await GetLocation.getCurrentPosition({
-          enableHighAccuracy: false,
-          timeout: 5000,
-        });
-        const {latitude, longitude} = currentLocation;
-        const newLocation: Location = {latitude, longitude};
-        setUserLocation(newLocation);
+  useFocusEffect(
+    React.useCallback(() => {
+      const getLocation = async () => {
+        const res: any = await GetCurrentLocation();
+        setUserLocation(res);
+        const {latitude, longitude} = res;
         mapRef.current?.animateToRegion({
           latitude,
           longitude,
           latitudeDelta: 0.006,
           longitudeDelta: 0.006,
         } as Region);
-      }
-    };
-    getLocation();
-  }, []);
+      };
+      getLocation();
+    }, []),
+  );
 
   const handleMapPress = async (event: MapPressEvent) => {
     const {latitude, longitude} = event.nativeEvent.coordinate;
     const selected: Location = {latitude, longitude};
     setSelectedLocation(selected);
-
     try {
-      const response = await Geocoder.from(latitude, longitude);
-      const address = response.results[0].formatted_address;
-      const city =
-        response.results[0].address_components.find((component: any) =>
-          component.types.includes('locality'),
-        )?.long_name || '';
-      setAddress(address);
-      setCity(city);
+      const res: any = await getAddress(latitude, longitude);
+      console.log(res);
+      setCity(res?.city);
+      setAddress(res?.address);
     } catch (error) {
       console.warn('Failed to get address:', error);
     }

@@ -1,17 +1,19 @@
 import {View} from 'react-native';
 import React, {useEffect} from 'react';
-import {OrderProgress} from '../../../components';
+import {Header, OrderProgress} from '../../../components';
 import styles from './styles';
 import {useQuery} from '@tanstack/react-query';
 import {isNetworkAvailable} from '../../../api';
 import {useToast} from 'react-native-toasty-toast';
-import {useIsFocused} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {get_user_order_status} from '../../../services';
 
 const TrackOrder = (props: any) => {
   const {id} = props.route.params;
   const {showToast} = useToast();
   const isFocused = useIsFocused();
+  const navigation: any = useNavigation();
+
   const steps = [
     {
       title: 'Order Confirmed',
@@ -69,6 +71,12 @@ const TrackOrder = (props: any) => {
 
   return (
     <View style={styles.container}>
+      <Header
+        isBack
+        isBackTitle="Track my order"
+        onlyBack
+        onBack={() => navigation.goBack()}
+      />
       <OrderProgress currentStep={data?.status_code || 0} steps={steps} />
     </View>
   );

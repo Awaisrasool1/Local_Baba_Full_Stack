@@ -1,15 +1,19 @@
 import {View} from 'react-native';
 import React from 'react';
-import {useQuery} from '@tanstack/react-query';
-import {get_user_onGoing_order} from '../../../../services';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {get_user_onGoing_order, Order_cancel} from '../../../../services';
 import {OrderCard} from '../../../../components';
 import styles from './styles';
 import {isNetworkAvailable} from '../../../../api';
 import {useToast} from 'react-native-toasty-toast';
+import {Constants} from '../../../../constants';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 const OngoingOrder = () => {
   const {showToast} = useToast();
-
+  const nav: any = useNavigation();
+  const queryClient = useQueryClient();
+  
   const {data} = useQuery<any>({
     queryKey: ['onGoing'],
     queryFn: async () => {
@@ -33,14 +37,17 @@ const OngoingOrder = () => {
       }
     },
   });
-  const handleTrackOrder = () => {
-    console.log('Track Order clicked');
-  };
 
-  const handleCancelOrder = () => {
-    console.log('Cancel Order clicked');
+  const handleCancelOrder = (id: string) => {
+    OrderMutation.mutate(id);
   };
-
+  const OrderMutation = useMutation({
+    mutationFn: Order_cancel,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({queryKey: ['onGoing']});
+      showToast(data.message, 'success', 'top', 1000);
+    },
+  });
   return (
     <View style={styles.container}>
       <View style={styles.marginV10} />
@@ -53,8 +60,12 @@ const OngoingOrder = () => {
           price={data?.total_amount}
           items={data?.total_items - 1}
           orderId={data?.orderId}
-          onTrackOrder={handleTrackOrder}
-          onCancel={handleCancelOrder}
+          type='ongoing'
+          status={data?.status}
+          onTrackOrder={() =>
+            nav.navigate(Constants.TRACK_ORDER, {id: data.orderId})
+          }
+          onCancel={() => handleCancelOrder(data.orderId)}
         />
       ))}
     </View>

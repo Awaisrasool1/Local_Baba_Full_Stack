@@ -11,6 +11,7 @@ interface Props {
   isCart?: boolean;
   onlyBack?: boolean;
   isEdit?: boolean;
+  city?: string;
   isBackTitle?: string;
   onBack?: () => void;
   onEdit?: () => void;
@@ -34,7 +35,10 @@ const Header = (props: Props) => {
       {!props.isBack && (
         <View>
           <Text style={styles.topHeading}>{'Deliver to'}</Text>
-          <Text style={styles.topSubHeading}>{'Delhi,India'}</Text>
+          <Text style={styles.topSubHeading}>
+            {props?.city ? props.city : ''}
+            {', Pakistan'}
+          </Text>
         </View>
       )}
       {!props.onlyBack && props.isCart && (
