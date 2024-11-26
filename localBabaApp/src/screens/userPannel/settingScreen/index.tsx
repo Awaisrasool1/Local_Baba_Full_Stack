@@ -1,6 +1,13 @@
 import SettingScreen from './SettingScreen';
 import {Notification} from './notification';
 import {ProfileScreen} from './profile';
-import {OngoingOrder, OrderHistory} from './orderScreens';
+import {OngoingOrder, OrderHistory, OrderDetails} from './orderScreens';
 
-export {SettingScreen, ProfileScreen, Notification, OrderHistory, OngoingOrder};
+export {
+  SettingScreen,
+  ProfileScreen,
+  Notification,
+  OrderHistory,
+  OngoingOrder,
+  OrderDetails,
+};

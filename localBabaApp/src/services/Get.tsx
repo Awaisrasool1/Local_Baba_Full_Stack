@@ -57,11 +57,16 @@ export const get_user_past_order = async (): Promise<any[]> => {
   return res.data;
 };
 
-async function get_user_order_status(orderId:string) {
+async function get_user_order_status(orderId: string) {
   const res = await API.get(`/user/Order/get-order-status?orderId=${orderId}`);
   return res.data;
 }
 
+async function get_order_details(orderId: string) {
+  console.log(orderId)
+  const res = await API.get(`/user/Order/get-order-details?orderId=${orderId}`);
+  return res.data;
+}
 
 export {
   get_categories,
@@ -74,4 +79,5 @@ export {
   get_profile,
   get_all_address,
   get_user_order_status,
+  get_order_details,
 };

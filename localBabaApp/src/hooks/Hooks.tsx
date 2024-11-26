@@ -34,3 +34,15 @@ export const GetCurrentLocation = async () => {
     console.log(err);
   }
 };
+
+export const formatDate = (dateString: any) => {
+  const date = new Date(dateString);
+
+  const options: any = {day: '2-digit', month: 'short', year: 'numeric'};
+  const formattedDate = date.toLocaleDateString('en-US', options);
+
+  const optionsTime: any = {hour: 'numeric', minute: '2-digit', hour12: true};
+  const formattedTime = date.toLocaleTimeString('en-US', optionsTime);
+
+  return `${formattedDate} – ${formattedTime.toLowerCase()}`;
+};

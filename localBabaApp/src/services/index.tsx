@@ -11,6 +11,7 @@ import {
   get_all_address,
   get_user_onGoing_order,
   get_user_order_status,
+  get_order_details,
 } from './Get';
 import {
   add_to_cart,
@@ -48,4 +49,5 @@ export {
   delete_cart_item,
   upload_image,
   get_user_onGoing_order,
+  get_order_details,
 };

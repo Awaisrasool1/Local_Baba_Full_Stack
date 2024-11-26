@@ -14,6 +14,7 @@ interface OrderCardProps {
   status: string;
   onTrackOrder: () => void;
   onCancel: () => void;
+  onPress: () => void;
 }
 
 const OrderCard: React.FC<OrderCardProps> = ({
@@ -27,6 +28,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
   status,
   onTrackOrder,
   onCancel,
+  onPress,
 }) => {
   return (
     <>
@@ -43,7 +45,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
         ]}>
         {status}
       </Text>
-      <View style={styles.card}>
+      <TouchableOpacity style={styles.card} onPress={onPress}>
         <View style={styles.flexRow}>
           <Text style={styles.title} numberOfLines={1}>
             {name}
@@ -60,7 +62,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
               <Text style={[styles.details, {fontWeight: 'bold'}]}>
                 RS {price}
               </Text>{' '}
-              | {items} Items
+              | {items ? items + ' Items' : ''}
             </Text>
             {type == 'ongoing' && (
               <View style={styles.buttons}>
@@ -78,7 +80,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
             )}
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </>
   );
 };

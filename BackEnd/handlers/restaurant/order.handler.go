@@ -36,6 +36,7 @@ type GroupedOrder struct {
 	Status         string         `json:"status"`
 	Orders         []models.Order `json:"orders"`
 	OrderItem      []OrderItem    `json:"orderItem"`
+	DeliveryFee    float64        `json:"deliveryFee"`
 	TotalAmount    float64        `json:"total_amount"`
 }
 
@@ -169,6 +170,7 @@ func GetOrdersByRestaurant(c *gin.Context) {
 				Orders:         []models.Order{},
 				OrderItem:      []OrderItem{},
 				TotalAmount:    0.0,
+				DeliveryFee:    order.DeliveryFee,
 			}
 		}
 
@@ -206,6 +208,7 @@ func GetOrdersByRestaurant(c *gin.Context) {
 	var response []GroupedOrder
 	for _, userGroups := range groupedOrders {
 		for _, groupedOrder := range userGroups {
+			groupedOrder.TotalAmount = groupedOrder.TotalAmount + groupedOrder.DeliveryFee
 			response = append(response, *groupedOrder)
 		}
 	}
@@ -338,6 +341,7 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 				Orders:         []models.Order{},
 				OrderItem:      []OrderItem{},
 				TotalAmount:    0.0,
+				DeliveryFee:    order.DeliveryFee,
 			}
 		}
 
@@ -366,6 +370,7 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 	var response []GroupedOrder
 	for _, userGroups := range groupedOrders {
 		for _, groupedOrder := range userGroups {
+			groupedOrder.TotalAmount = groupedOrder.TotalAmount + groupedOrder.DeliveryFee
 			response = append(response, *groupedOrder)
 		}
 	}

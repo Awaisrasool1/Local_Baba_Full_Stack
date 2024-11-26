@@ -6,9 +6,12 @@ import styles from './styles';
 import {OrderCard} from '../../../../components';
 import {isNetworkAvailable} from '../../../../api';
 import {useToast} from 'react-native-toasty-toast';
+import { useNavigation } from '@react-navigation/native';
+import { Constants } from '../../../../constants';
 
 const OrderHistory = () => {
   const {showToast} = useToast();
+  const nav: any = useNavigation();
 
   const {data} = useQuery<any>({
     queryKey: ['past_order'],
@@ -57,6 +60,9 @@ const OrderHistory = () => {
           status={data?.status}
           onTrackOrder={handleTrackOrder}
           onCancel={handleCancelOrder}
+          onPress={() => {
+            nav.navigate(Constants.ORDER_DETAILS, {id: data.orderId});
+          }}
         />
       ))}
     </View>

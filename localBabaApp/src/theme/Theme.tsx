@@ -36,7 +36,7 @@ const Theme = {
     textColor6: '#170432',
     textColor7: '#757476',
     textColor8: '#A9A8A9',
-    textColor9: '#310676',
+    textColor9: '#248AC4',
     textColor10: '#A8A8A9',
     textColor11: '#1D1C20',
     textColor12: '#507A68',
@@ -189,7 +189,7 @@ const Theme = {
     logout: require('../resource/images/logout.png'),
     notification: require('../resource/images/notification.png'),
     profile: require('../resource/images/profile.png'),
-    profileCart: require('../resource/images/profile.png'),
+    profileCart: require('../resource/images/profileCart.png'),
     profileSetting: require('../resource/images/profile.png'),
     addressHome: require('../resource/images/addressHome.png'),
     addressDelete: require('../resource/images/addressDelete.png'),
@@ -201,6 +201,8 @@ const Theme = {
     tick: require('../resource/images/tick.png'),
     time_clock: require('../resource/images/timeClockWhite.png'),
     time_clock_res: require('../resource/images/timeClockRed.png'),
+    clipBoard: require('../resource/images/clip.png'),
+    cash: require('../resource/images/cash.png'),
   },
 };
 export default Theme;

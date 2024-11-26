@@ -97,6 +97,7 @@ func SetUpRoutes() *gin.Engine {
 		userRoutes.GET("Order/get-ongoing-order", user.Get_user_ongoing_order)
 		userRoutes.GET("Order/get-past-order", user.Get_past_order)
 		userRoutes.GET("Order/get-order-status", user.GetOrderStatus)
+		userRoutes.GET("Order/get-order-details", user.Get_order_details_byID)
 	}
 
 	return router

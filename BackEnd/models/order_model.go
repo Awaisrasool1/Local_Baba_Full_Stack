@@ -28,4 +28,19 @@ type Order struct {
 	Price            float64   `json:"price" bson:"price"`
 	TotalBill        float64   `json:"totalBill" bson:"total_bill"`
 	IsDefaultAddress bool      `json:"isDefaultAddress" bson:"isDefaultAddress"`
+	DeliveryFee      float64   `json:"deliveryFee" bson:"deliveryFee"`
+}
+
+type GroupedOrder struct {
+	CreatedAt      time.Time `json:"created_at"`
+	OrderId        string    `json:"orderId"`
+	RestaurantName string    `json:"restaurantName"`
+	Status         string    `json:"status"`
+	Name           string    `json:"name"`
+	Image          string    `json:"image"`
+	Quantity       int       `json:"quantity"`
+	Price          float64   `json:"price" bson:"price"`
+	TotalAmount    float64   `json:"total_amount"`
+	TotalItems     int       `json:"total_items"`
+	DeliveryFee    float64   `json:"deliveryFee"`
 }

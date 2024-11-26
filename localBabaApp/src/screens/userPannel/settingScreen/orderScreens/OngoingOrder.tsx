@@ -13,7 +13,7 @@ const OngoingOrder = () => {
   const {showToast} = useToast();
   const nav: any = useNavigation();
   const queryClient = useQueryClient();
-  
+
   const {data} = useQuery<any>({
     queryKey: ['onGoing'],
     queryFn: async () => {
@@ -43,7 +43,7 @@ const OngoingOrder = () => {
   };
   const OrderMutation = useMutation({
     mutationFn: Order_cancel,
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({queryKey: ['onGoing']});
       showToast(data.message, 'success', 'top', 1000);
     },
@@ -60,12 +60,15 @@ const OngoingOrder = () => {
           price={data?.total_amount}
           items={data?.total_items - 1}
           orderId={data?.orderId}
-          type='ongoing'
+          type="ongoing"
           status={data?.status}
           onTrackOrder={() =>
             nav.navigate(Constants.TRACK_ORDER, {id: data.orderId})
           }
           onCancel={() => handleCancelOrder(data.orderId)}
+          onPress={() => {
+            nav.navigate(Constants.ORDER_DETAILS, {id: data.orderId});
+          }}
         />
       ))}
     </View>
