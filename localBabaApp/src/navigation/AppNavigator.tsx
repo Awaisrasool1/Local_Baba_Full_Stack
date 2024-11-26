@@ -17,6 +17,7 @@ import {
   SettingScreen,
   TrackOrder,
   OrderSuccess,
+  OrderDetails,
 } from '../screens';
 import SignUpScreen from '../screens/auth/signupScreen';
 import DrawerNavigation from './DrawerNavigation';
@@ -117,6 +118,11 @@ const AppNavigator = () => {
       <Stack.Screen
         name={Constants.ORDER_SUCCESS}
         component={OrderSuccess}
+        options={{headerShown: false}}
+      />
+       <Stack.Screen
+        name={Constants.ORDER_DETAILS}
+        component={OrderDetails}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

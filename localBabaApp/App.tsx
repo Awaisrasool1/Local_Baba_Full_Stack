@@ -6,7 +6,7 @@ import {Provider as PaperProvider} from 'react-native-paper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {GlobalProvider} from './src/contexts/GlobalContext';
 import AppNavigator from './src/navigation/AppNavigator';
-import { ToastProvider } from 'react-native-toasty-toast';
+import {ToastProvider} from 'react-native-toasty-toast';
 
 const queryClient = new QueryClient();
 

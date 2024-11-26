@@ -11,6 +11,8 @@ export const PROFILE_SCREEN = 'PROFILE_SCREEN';
 export const NOTIFICATION_SCREEN = 'NOTIFICATION_SCREEN';
 export const TRACK_ORDER = "TrackOrder"
 export const ORDER_SUCCESS = "ORDERSUCCESS"
+export const ORDER_DETAILS = "ORDER_DETAILS"
+
 
 export const SIGNUP_SCREEN = 'SIGNUP_SCREEM';
 export const LOGIN_SCREEN = 'LOGIN_SCREEN';

@@ -10,6 +10,7 @@ import {
   Notification,
   OngoingOrder,
   OrderHistory,
+  OrderDetails,
 } from './settingScreen';
 import {TrackOrder, OrderSuccess} from './trackOrder';
 
@@ -28,4 +29,5 @@ export {
   OrderHistory,
   TrackOrder,
   OrderSuccess,
+  OrderDetails,
 };
