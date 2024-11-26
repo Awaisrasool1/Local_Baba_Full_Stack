@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 import React from 'react';
 import {useQuery} from '@tanstack/react-query';
 import {get_user_past_order} from '../../../../services/Get';
@@ -46,7 +46,7 @@ const OrderHistory = () => {
   };
   console.log('data', data);
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.marginV10} />
       {data?.map((data: any, index: number) => (
         <OrderCard
@@ -65,7 +65,7 @@ const OrderHistory = () => {
           }}
         />
       ))}
-    </View>
+    </ScrollView>
   );
 };
 

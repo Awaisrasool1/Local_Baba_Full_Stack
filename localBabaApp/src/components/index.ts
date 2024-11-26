@@ -15,6 +15,7 @@ import {CustomTabNavigator} from './CustomTabNavigator';
 import {PopUp} from './popUp';
 import {OrderProgress} from './orderProgress';
 import {OrderCard} from './orderCard';
+import {RiderChart} from './riderChart';
 
 export {
   CustomButton,
@@ -34,4 +35,5 @@ export {
   PopUp,
   OrderProgress,
   OrderCard,
+  RiderChart,
 };

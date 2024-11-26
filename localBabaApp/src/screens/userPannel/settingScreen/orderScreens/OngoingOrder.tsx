@@ -8,6 +8,7 @@ import {isNetworkAvailable} from '../../../../api';
 import {useToast} from 'react-native-toasty-toast';
 import {Constants} from '../../../../constants';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
+import { ScrollView } from 'react-native';
 
 const OngoingOrder = () => {
   const {showToast} = useToast();
@@ -49,7 +50,7 @@ const OngoingOrder = () => {
     },
   });
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.marginV10} />
       {data?.map((data: any, index: number) => (
         <OrderCard
@@ -71,7 +72,7 @@ const OngoingOrder = () => {
           }}
         />
       ))}
-    </View>
+    </ScrollView>
   );
 };
 
