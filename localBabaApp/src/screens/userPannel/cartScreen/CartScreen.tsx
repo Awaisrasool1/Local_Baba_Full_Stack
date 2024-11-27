@@ -1,4 +1,4 @@
-import {View, ScrollView} from 'react-native';
+import {View, ScrollView, Text} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import styles from './styles';
@@ -55,6 +55,7 @@ const CartScreen = (props: any) => {
           return;
         }
         const res = await get_cart_item();
+        console.log(res)
         setTotalPrice(res?.totalPrice);
         return res.data;
       } catch (err: any) {
@@ -122,7 +123,7 @@ const CartScreen = (props: any) => {
     }: {
       data: {quantity: number; latLong: string; isDefaultAddress: boolean};
     }) => place_order_By_Cart(data),
-    onSuccess: (data) => {
+    onSuccess: data => {
       if (data?.status == 'success') {
         showToast(data.message, 'success', 'top', 1000);
         props.navigation.navigate(Constants.ORDER_SUCCESS, {id: data.orderID});
@@ -155,6 +156,7 @@ const CartScreen = (props: any) => {
           />
         </View>
         <ScrollView>
+          {!data && <Text style={styles.notFound}>{'No Cart Item Found'}</Text>}
           {data?.map((item: CartData, index: number) => (
             <CartItem
               key={item.id}
@@ -168,25 +170,31 @@ const CartScreen = (props: any) => {
               quantity={item.quantity}
               index={index}
               add={() => handleAdd(item.id)}
-              remove={() => handleRemove(item.id)}
+              remove={() => {
+                if (item.quantity > 1) handleRemove(item.id);
+              }}
               onDelete={() => handleDelete(item.id)}
             />
           ))}
           <View style={styles.marginV60} />
         </ScrollView>
       </View>
-      <View style={styles.footer}>
-        <CartFooter
-          address={defaultAddress?.fullAddress}
-          price={totalPrice}
-          type={'cart'}
-          checked={checked}
-          setChecked={setChecked}
-          btnTitle={'By Now'}
-          onAddress={() => props.navigation.navigate(Constants.ADDRESS_SCREEN)}
-          onPress={() => placeOrder()}
-        />
-      </View>
+      {data && (
+        <View style={styles.footer}>
+          <CartFooter
+            address={defaultAddress?.fullAddress}
+            price={totalPrice}
+            type={'cart'}
+            checked={checked}
+            setChecked={setChecked}
+            btnTitle={'By Now'}
+            onAddress={() =>
+              props.navigation.navigate(Constants.ADDRESS_SCREEN)
+            }
+            onPress={() => placeOrder()}
+          />
+        </View>
+      )}
     </>
   );
 };

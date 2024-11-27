@@ -1,59 +1,127 @@
 import React from 'react';
-import {View, Text, Dimensions, StyleSheet} from 'react-native';
-const screenWidth = Dimensions.get('window').width;
+import {View, Text, StyleSheet, Dimensions} from 'react-native';
+import Svg, {Polyline, Circle, Line} from 'react-native-svg';
 
-const chartConfig = {
-  width: screenWidth * 0.9,
-  height: 200,
-  barWidth: 40,
-  spacing: 10,
-  backgroundColor: '#f4f4f4',
-  axisColor: '#333',
-  barColor: '#3498db',
+const {width} = Dimensions.get('window');
+const chartHeight = 200;
+const chartWidth = width - 40;
+
+type ChartPoint = {
+  time: string;
+  value: number;
 };
-const RiderChart = ({data}: any) => {
-  const maxValue = Math.max(...data.map((item: any) => item.value));
+
+type ChartProps = {
+  data: ChartPoint[];
+  totalRevenue: number;
+  highlightIndex?: number; // Optional: index of the point to highlight
+};
+
+const normalizeValue = (value: number, minValue: number, maxValue: number) =>
+  ((value - minValue) / (maxValue - minValue)) * chartHeight;
+
+const RiderChart: React.FC<ChartProps> = ({
+  data,
+  totalRevenue,
+  highlightIndex,
+}) => {
+  const maxValue = Math.max(...data.map(point => point.value));
+  const minValue = Math.min(...data.map(point => point.value));
+
+  const graphPoints = data
+    .map(
+      (point, index) =>
+        `${(index / (data.length - 1)) * chartWidth},${
+          chartHeight - normalizeValue(point.value, minValue, maxValue)
+        }`,
+    )
+    .join(' ');
+
   return (
     <View style={styles.container}>
-      {data.map((item: any, index: any) => (
-        <View key={index} style={styles.bar}>
-          <View
-            style={[
-              styles.barInner,
-              {
-                height: (item.value / maxValue) * (chartConfig.height - 40),
-                backgroundColor: chartConfig.barColor,
-              },
-            ]}
+      <View style={styles.header}>
+        <Text style={styles.title}>Total Revenue</Text>
+        <Text style={styles.subTitle}>Daily</Text>
+      </View>
+      <Text style={styles.totalRevenue}>₹ {totalRevenue}</Text>
+      <Svg width={chartWidth} height={chartHeight}>
+        <Polyline
+          points={graphPoints}
+          fill="none"
+          stroke="#4A90E2"
+          strokeWidth={3}
+        />
+        {data.map((point, index) => (
+          <Circle
+            key={index}
+            cx={(index / (data.length - 1)) * chartWidth}
+            cy={chartHeight - normalizeValue(point.value, minValue, maxValue)}
+            r={5}
+            fill="#4A90E2"
+            stroke="white"
+            strokeWidth={2}
           />
-          <Text style={styles.label}>{item.label}</Text>
-        </View>
-      ))}
+        ))}
+        {highlightIndex !== undefined && (
+          <Line
+            x1={(highlightIndex / (data.length - 1)) * chartWidth}
+            y1={
+              chartHeight -
+              normalizeValue(data[highlightIndex].value, minValue, maxValue)
+            }
+            x2={(highlightIndex / (data.length - 1)) * chartWidth}
+            y2={chartHeight}
+            stroke="#888"
+            strokeDasharray="4,2"
+          />
+        )}
+      </Svg>
+      <View style={styles.labels}>
+        {data.map((point, index) => (
+          <Text key={index} style={styles.labelText}>
+            {point.time}
+          </Text>
+        ))}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: chartConfig.width,
-    height: chartConfig.height,
-    backgroundColor: chartConfig.backgroundColor,
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
+  header: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'flex-end',
-    paddingBottom: 20,
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
-  bar: {
-    width: chartConfig.barWidth,
-    alignItems: 'center',
+  title: {
+    fontSize: 18,
+    fontWeight: '600',
   },
-  barInner: {
-    width: '100%',
-    borderRadius: 4,
+  subTitle: {
+    fontSize: 14,
+    color: '#888',
   },
-  label: {
-    color: chartConfig.axisColor,
-    marginTop: 8,
+  totalRevenue: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 10,
+  },
+  labels: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  labelText: {
+    fontSize: 12,
+    color: '#888',
   },
 });
 

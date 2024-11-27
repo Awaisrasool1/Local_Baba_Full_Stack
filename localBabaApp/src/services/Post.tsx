@@ -24,7 +24,7 @@ async function remove_quantity(id: string) {
 async function upload_image(formData: any) {
   const token = getToken();
   const res = await axios.put(
-    'http://192.168.100.138:8080/user/upload-image',
+    'http://192.168.100.108:8080/user/upload-image',
     formData,
     {
       headers: {

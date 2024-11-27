@@ -7,7 +7,10 @@ interface Props {
   title: string;
   subTitle?: string;
   icon: any;
+  type?: string;
+  index?: number;
   isDisable?: boolean;
+  orderNumber?: number;
   onPress: () => void;
 }
 
@@ -26,7 +29,11 @@ const ProfileCard = (props: Props) => {
           )}
         </View>
       </View>
-      <Image source={Theme.icons.rightArrow} />
+      {props.type == 'rider' && props.index == 1 ? (
+        <Text style={styles.menuItemText}>{props.orderNumber}</Text>
+      ) : (
+        <Image source={Theme.icons.rightArrow} />
+      )}
     </TouchableOpacity>
   );
 };

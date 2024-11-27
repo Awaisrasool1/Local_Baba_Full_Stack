@@ -19,16 +19,30 @@ const SplashScreen = (props: any) => {
           let name = await getDataFromCachedWithKey(
             AppConstants.AsyncKeyLiterals.userName,
           );
+          let role = await getDataFromCachedWithKey(
+            AppConstants.AsyncKeyLiterals.role,
+          );
           if (token) {
-            await saveToken(token, '', name);
-            props.navigation.reset({
-              index: 0,
-              routes: [
-                {
-                  name: Constants.DRAWER_NAVIGATION,
-                },
-              ],
-            });
+            await saveToken(token, Number(role), name);
+            if (role == 4) {
+              props.navigation.reset({
+                index: 0,
+                routes: [
+                  {
+                    name: Constants.DRAWER_NAVIGATION,
+                  },
+                ],
+              });
+            } else {
+              props.navigation.reset({
+                index: 0,
+                routes: [
+                  {
+                    name: Constants.RIDER_BOTTOM_TAB,
+                  },
+                ],
+              });
+            }
           } else {
             props.navigation.reset({
               index: 0,
@@ -55,7 +69,7 @@ const SplashScreen = (props: any) => {
 
   return (
     <>
-      <StatusBar hidden />
+      <StatusBar backgroundColor={Theme.colors.appColor} />
       <View style={styles.mainContainer}>
         <View style={styles.viewMainContainer}>
           <Image source={Theme.icons.splash_Logo} />

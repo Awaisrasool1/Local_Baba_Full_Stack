@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Constants} from '../constants';
 import {
@@ -18,11 +18,15 @@ import {
   TrackOrder,
   OrderSuccess,
   OrderDetails,
+  RiderProInfo,
 } from '../screens';
 import SignUpScreen from '../screens/auth/signupScreen';
 import DrawerNavigation from './DrawerNavigation';
 import OrderTopTab from './OrderTopTab';
 import {SafeAreaView} from 'react-native';
+import {getRole} from '../api/api';
+import {BottomTabs} from './BottomTab';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,11 +36,6 @@ const AppNavigator = () => {
       <Stack.Navigator
         initialRouteName={Constants.SPLASH_SCREEN}
         screenOptions={({navigation, route}) => ({})}>
-        <Stack.Screen
-          name={Constants.DRAWER_NAVIGATION}
-          component={DrawerNavigation}
-          options={{headerShown: false}}
-        />
         <Stack.Screen
           name={Constants.SPLASH_SCREEN}
           component={SplashScreen}
@@ -55,6 +54,11 @@ const AppNavigator = () => {
         <Stack.Screen
           name={Constants.LOCATION_ACCESS_SCREEN}
           component={LocationAccess}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Constants.DRAWER_NAVIGATION}
+          component={DrawerNavigation}
           options={{headerShown: false}}
         />
         <Stack.Screen
@@ -125,6 +129,17 @@ const AppNavigator = () => {
         <Stack.Screen
           name={Constants.ORDER_DETAILS}
           component={OrderDetails}
+          options={{headerShown: false}}
+        />
+        {/* rider */}
+        <Stack.Screen
+          name={Constants.RIDER_BOTTOM_TAB}
+          component={BottomTabs}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Constants.RIDER_PROFILE_INFO_SCREEN}
+          component={RiderProInfo}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

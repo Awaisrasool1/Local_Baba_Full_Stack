@@ -1,5 +1,5 @@
 export * from './auth';
 export * from './userPannel';
-// export * from './riderPannel';
+export * from './riderPannel';
 
 

@@ -2,37 +2,35 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Image, Text} from 'react-native';
 import Theme from '../theme/Theme';
 import React from 'react';
-import { Constants } from '../constants';
-import { CartScreen, HomeScreen, SettingScreen } from '../screens';
+import {Constants} from '../constants';
+import {
+  RiderHome,
+  RiderLocationScreen,
+  RiderNotificationScreen,
+  RiderProfileScreen,
+} from '../screens';
 
 const Tab = createBottomTabNavigator();
 
 export function BottomTabs() {
   return (
     <Tab.Navigator
-      initialRouteName={Constants.HOME_SCREEN}
+      initialRouteName={Constants.RIDER_HOME_SCREEN}
       screenOptions={({route}) => ({
         tabBarIcon: ({focused, color}) => {
           let iconSource;
 
-          if (route.name === Constants.HOME_SCREEN) {
-            iconSource = focused ? Theme.icons.home : Theme.icons.home;
-          } else if (route.name === Constants.CART_SCREEN) {
+          if (route.name === Constants.RIDER_HOME_SCREEN) {
+            iconSource = focused ? Theme.icons.riderActive1 : Theme.icons.rider1;
+          } else if (route.name === Constants.RIDER_LOCATION_SCREEN) {
             iconSource = focused
-              ? Theme.icons.addToCart
-              : Theme.icons.addToCart;
-          } else if (route.name === Constants.SETTING_SCREEN) {
-            iconSource = focused
-              ? Theme.icons.setting
-              : Theme.icons.setting;
+              ? Theme.icons.riderActive2
+              : Theme.icons.rider2;
+          } else if (route.name === Constants.RIDER_NOTIFICATION_SCREEN) {
+            iconSource = focused ? Theme.icons.riderActive3 : Theme.icons.rider3;
+          } else if (route.name === Constants.RIDER_PROFILE_SCREEN) {
+            iconSource = focused ? Theme.icons.riderActive4 : Theme.icons.rider4;
           }
-          // else if (route.name === ScreenConstants.MyProfileScreen) {
-          //   iconSource = focused
-          //     ? Theme.icons.profile_active
-          //     : Theme.icons.profile;
-          // } else if (route.name === ScreenConstants.MyMessagesScreen) {
-          //   iconSource = focused ? Theme.icons.messages : Theme.icons.messages;
-          // }
 
           return (
             <Image
@@ -42,26 +40,22 @@ export function BottomTabs() {
                 width: Theme.responsiveSize.size16,
                 height: Theme.responsiveSize.size16,
                 position: 'absolute',
-                top: 10,
+                top: 20,
               }}
             />
           );
         },
         tabBarLabel: ({focused}) => {
-          let label;
-          if (route.name === Constants.HOME_SCREEN) {
-            label = 'Home';
-          } else if (route.name === Constants.CART_SCREEN) {
-            label = 'Cart';
-          } else if (route.name === Constants.SETTING_SCREEN) {
-            label = 'Setting';
-          } 
-          // else if (route.name === ScreenConstants.MyProfileScreen) {
+          // let label;
+          // if (route.name === Constants.RIDER_HOME_SCREEN) {
+          //   label = 'Home';
+          // } else if (route.name === Constants.RIDER_LOCATION_SCREEN) {
+          //   label = 'Cart';
+          // } else if (route.name === Constants.RIDER_NOTIFICATION_SCREEN) {
+          //   label = 'Setting';
+          // } else if (route.name === Constants.RIDER_PROFILE_SCREEN) {
           //   label = 'Profile';
-          // } else if (route.name === ScreenConstants.MyMessagesScreen) {
-          //   label = 'Inbox';
           // }
-
           return (
             <Text
               style={{
@@ -71,7 +65,6 @@ export function BottomTabs() {
                 position: 'absolute',
                 bottom: 5,
               }}>
-              {label}
             </Text>
           );
         },
@@ -86,21 +79,25 @@ export function BottomTabs() {
         },
       })}>
       <Tab.Screen
-        name={Constants.HOME_SCREEN}
-        component={HomeScreen}
+        name={Constants.RIDER_HOME_SCREEN}
+        component={RiderHome}
         options={{headerShown: false}}
       />
       <Tab.Screen
-        name={Constants.CART_SCREEN}
-        component={CartScreen}
+        name={Constants.RIDER_LOCATION_SCREEN}
+        component={RiderLocationScreen}
         options={{headerShown: false}}
       />
       <Tab.Screen
-        name={Constants.SETTING_SCREEN}
-        component={SettingScreen}
+        name={Constants.RIDER_NOTIFICATION_SCREEN}
+        component={RiderNotificationScreen}
         options={{headerShown: false}}
       />
-      
+      <Tab.Screen
+        name={Constants.RIDER_PROFILE_SCREEN}
+        component={RiderProfileScreen}
+        options={{headerShown: false}}
+      />
     </Tab.Navigator>
   );
 }

@@ -251,8 +251,11 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 		"status":        bson.M{"$in": []string{"Cancelled", "Delivered"}},
 	}
 
-	opts := options.Find().SetLimit(int64(limit)).SetSkip(int64(skip))
-	cursor, err := orderCollection.Find(ctx, filter, opts)
+	log.Printf("Fetching orders for restaurant ID: %s", restaurantID)
+	log.Printf("Order filter: %v, Options: %+v", filter, options.Find().SetLimit(int64(limit)).SetSkip(int64(skip)))
+
+	// Fetch orders based on filter
+	cursor, err := orderCollection.Find(ctx, filter, options.Find().SetLimit(int64(limit)).SetSkip(int64(skip)))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch orders"})
 		return
@@ -265,19 +268,22 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 		return
 	}
 
-	userCache := make(map[string]bson.M)
-	productCache := make(map[string]string)
-	restaurantData := bson.M{}
-	restaurantName := ""
+	log.Printf("Orders retrieved: %d", len(orders))
 
+	// Fetch restaurant name
+	var restaurantData bson.M
 	if err := restaurantCollection.FindOne(ctx, bson.M{"_id": restaurantID}).Decode(&restaurantData); err == nil {
-		restaurantName, _ = restaurantData["name"].(string)
+		log.Printf("Restaurant name fetched: %s", restaurantData["name"])
 	}
 
+	restaurantName := restaurantData["name"].(string)
 	groupedOrders := make(map[string]map[string]*GroupedOrder)
+	userCache := make(map[string]bson.M)
+	productCache := make(map[string]string)
 
+	// Process each order
 	for _, order := range orders {
-		orderID := order.OrderID
+		log.Printf("Processing order for UserID: %s, OrderID: %s", order.UserID, order.OrderID)
 
 		// Fetch user data
 		userData, exists := userCache[order.UserID]
@@ -310,7 +316,7 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 			var address bson.M
 			err := addressCollection.FindOne(ctx, bson.M{"userId": order.UserID, "isDefaultShipping": true}).Decode(&address)
 			if err != nil {
-				log.Printf("Error fetching address for user %s: %v", order.UserID, err)
+				log.Printf("Error fetching default address for user %s: %v", order.UserID, err)
 				return
 			}
 			city = address["city"].(string)
@@ -322,11 +328,15 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 				continue
 			}
 		}
+
+		// Group orders by UserID and OrderID
 		if _, exists := groupedOrders[order.UserID]; !exists {
 			groupedOrders[order.UserID] = make(map[string]*GroupedOrder)
 		}
-		if _, exists := groupedOrders[order.UserID][orderID]; !exists {
-			groupedOrders[order.UserID][orderID] = &GroupedOrder{
+
+		// Ensure unique grouping by OrderID for each user
+		if _, exists := groupedOrders[order.UserID][order.OrderID]; !exists {
+			groupedOrders[order.UserID][order.OrderID] = &GroupedOrder{
 				CreatedAt:      order.CreatedAt,
 				UserID:         order.UserID,
 				OrderId:        order.OrderID,
@@ -345,7 +355,7 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 			}
 		}
 
-		groupedOrder := groupedOrders[order.UserID][orderID]
+		groupedOrder := groupedOrders[order.UserID][order.OrderID]
 		groupedOrder.Orders = append(groupedOrder.Orders, order)
 		groupedOrder.TotalAmount += order.TotalBill
 
@@ -367,14 +377,20 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 		}
 	}
 
+	log.Printf("Grouped orders count: %d", len(groupedOrders))
+
+	// Prepare response
 	var response []GroupedOrder
 	for _, userGroups := range groupedOrders {
 		for _, groupedOrder := range userGroups {
-			groupedOrder.TotalAmount = groupedOrder.TotalAmount + groupedOrder.DeliveryFee
+			groupedOrder.TotalAmount += groupedOrder.DeliveryFee
 			response = append(response, *groupedOrder)
 		}
 	}
 
+	log.Printf("Response size: %d grouped orders", len(response))
+
+	// Return response
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
 		"data":   response,
