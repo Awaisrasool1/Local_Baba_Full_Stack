@@ -45,7 +45,7 @@ const SettingScreen = (props: any) => {
     {
       id: Constants.ORDER_TOP_TAB,
       title: 'My Orders',
-      icon: 'star-outline',
+      icon: Theme.icons.order_number,
       section: 3,
     },
     {

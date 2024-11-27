@@ -29,6 +29,17 @@ export const SETTING_SCREEN = 'SETTING_SCREEN';
 export const CART_SCREEN = 'CartScreen';
 export const HOME_SCREEN = 'HOME_SCREEN';
 
+//rider Navigation
+//bottom tabs navigation
+export const RIDER_BOTTOM_TAB = 'RIDER_BOTTOM_TAB';
+export const RIDER_HOME_SCREEN = 'RIDER_HOME_SCREEN';
+export const RIDER_PROFILE_SCREEN = 'RIDER_PROFILE_SCREEN';
+export const RIDER_LOCATION_SCREEN = 'RIDER_LOCATION_SCREEN';
+export const RIDER_NOTIFICATION_SCREEN = 'RIDER_NOTIFICATION_SCREEN'
+export const RIDER_PROFILE_INFO_SCREEN = 'RIDER_PROFILE_INFO_SCREEN'
+
+
+
 
 
 

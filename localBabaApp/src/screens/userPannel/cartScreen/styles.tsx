@@ -22,6 +22,12 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
   },
+  notFound:{
+    fontSize:Theme.responsiveSize.size14,
+    color:Theme.colors.black,
+    textAlign: 'center',
+    marginTop: Theme.responsiveSize.size50,
+  }
 });
 
 export default styles;

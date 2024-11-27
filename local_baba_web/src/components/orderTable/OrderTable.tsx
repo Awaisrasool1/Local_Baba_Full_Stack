@@ -118,7 +118,7 @@ const styles: TableStyles = {
 
 const OrderTable: React.FC<Props> = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [tableData, setTableData] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
   const [role, setRole] = useState<number>();
@@ -153,6 +153,7 @@ const OrderTable: React.FC<Props> = (props) => {
           }
         } else {
           const res = await get_penging_orders(currentPage, rowsPerPage);
+          console.log(res.data)
           if (res.status == 200) {
             console.log(res.data);
             setTableData(res?.data?.data);

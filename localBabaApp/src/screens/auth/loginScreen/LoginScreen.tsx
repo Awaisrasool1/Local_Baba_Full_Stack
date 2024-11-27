@@ -30,7 +30,7 @@ type SignInResponse = {
 
 const LoginScreen = (props: any) => {
   const {showToast} = useToast();
-  const [textEmail, setTextEmail] = useState<string>('awais@gmail.com');
+  const [textEmail, setTextEmail] = useState<string>('usama@gmail.com'); //rider usama@gmail.com   user ar@gmail.com
   const [textPassword, setTextPassword] = useState<string>('Helo*1234');
   const [errorEmail, setErrorEmail] = useState<string>('');
   const [errorPassword, setErrorPassword] = useState<string>('');
@@ -61,8 +61,8 @@ const LoginScreen = (props: any) => {
     mutationFn: SignIn,
     onSuccess: async response => {
       const data = response.data;
-      if (data && (Number(data.role) === 4 || Number(data.role) === 4)) {
-        await saveToken(data.token, '', data.name);
+      if (data && (Number(data.role) === 3 || Number(data.role) === 4)) {
+        await saveToken(data.token, Number(data.role), data.name);
         await saveDataToCachedWithKey(
           AppConstants.AsyncKeyLiterals.loginToken,
           data.token,
@@ -79,11 +79,22 @@ const LoginScreen = (props: any) => {
           AppConstants.AsyncKeyLiterals.userName,
           data.name,
         );
+        await saveDataToCachedWithKey(
+          AppConstants.AsyncKeyLiterals.role,
+          Number(data.role),
+        );
         showToast(data.message, 'success', 'top', 1000);
-        props.navigation.reset({
-          index: 0,
-          routes: [{name: Constants.DRAWER_NAVIGATION}],
-        });
+        if (Number(data.role) === 4) {
+          props.navigation.reset({
+            index: 0,
+            routes: [{name: Constants.DRAWER_NAVIGATION}],
+          });
+        } else {
+          props.navigation.reset({
+            index: 0,
+            routes: [{name: Constants.RIDER_BOTTOM_TAB}],
+          });
+        }
       } else {
         console.log('Invalid user role.');
       }
