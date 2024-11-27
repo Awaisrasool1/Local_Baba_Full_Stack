@@ -42,12 +42,14 @@ const OrderDetails = (props: any) => {
   });
   return (
     <ScrollView style={styles.OrderContainer}>
-      <Header
-        isBack
-        isBackTitle="Order Summary"
-        onlyBack
-        onBack={() => navigation.goBack()}
-      />
+      <View style={{paddingHorizontal: Theme.responsiveSize.size10}}>
+        <Header
+          isBack
+          isBackTitle="Order Summary"
+          onlyBack
+          onBack={() => navigation.goBack()}
+        />
+      </View>
       <View style={styles.marginV10} />
       <View style={styles.header}>
         <Image

@@ -15,7 +15,7 @@ import {saveToken} from '../../../api/api';
 const SettingScreen = (props: any) => {
   const navigation: any = useNavigation();
   const {showToast} = useToast();
-  // const isFocused = useIsFocused();
+  const isFocused = useIsFocused();
   
   const menuItems = [
     {
@@ -78,7 +78,7 @@ const SettingScreen = (props: any) => {
         return null;
       }
     },
-    // enabled:isFocused
+    enabled:isFocused
   });
 
   const logOut = async () => {
