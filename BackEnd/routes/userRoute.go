@@ -4,6 +4,7 @@ import (
 	"foodApp/handlers"
 	"foodApp/handlers/admin"
 	"foodApp/handlers/restaurant"
+	"foodApp/handlers/rider"
 	"foodApp/handlers/user"
 	"foodApp/utils"
 	"net/http"
@@ -70,6 +71,15 @@ func SetUpRoutes() *gin.Engine {
 		restaurantRoutes.GET("Order/get-pending-orders", restaurant.GetOrdersByRestaurant)
 		restaurantRoutes.GET("Order/get-nonPending-orders", restaurant.GetNonPendingOrdersByRestaurant)
 		restaurantRoutes.POST("Order/update-order-status", restaurant.UpdateOrderStatus)
+	}
+
+	//rider pannel routes
+	riderRoutes := router.Group("/rider")
+	riderRoutes.Use(utils.RoleAuthorization(3))
+	{
+		//order
+		riderRoutes.GET("Order/get-pending-orders", rider.Get_accepted_order)
+		riderRoutes.PUT("Order/assigned-orders", rider.Order_assigned_for_rider)
 	}
 
 	//user pannel routes
