@@ -81,7 +81,7 @@ func Order_assigned_for_rider(c *gin.Context) {
 		return
 	}
 
-	_, err := utils.ValidateToken(token)
+	claims, err := utils.ValidateToken(token)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
 		return
@@ -99,9 +99,11 @@ func Order_assigned_for_rider(c *gin.Context) {
 	collection := database.GetCollection("order")
 	ctx := context.Background()
 
+	riderID := (*claims)["userId"].(string)
 	update := bson.M{
 		"$set": bson.M{
-			"status": "Assigned",
+			"status":   "Assigned",
+			"rider_id": riderID,
 		},
 	}
 

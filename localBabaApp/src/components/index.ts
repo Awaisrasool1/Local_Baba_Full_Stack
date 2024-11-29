@@ -16,6 +16,7 @@ import {PopUp} from './popUp';
 import {OrderProgress} from './orderProgress';
 import {OrderCard} from './orderCard';
 import {RiderChart} from './riderChart';
+import {DeliveryPopup} from './deliveryPopup';
 
 export {
   CustomButton,
@@ -36,4 +37,5 @@ export {
   OrderProgress,
   OrderCard,
   RiderChart,
+  DeliveryPopup,
 };

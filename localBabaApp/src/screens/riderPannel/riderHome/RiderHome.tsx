@@ -1,8 +1,10 @@
 import {View, Text} from 'react-native';
-import React from 'react';
-import {RiderChart} from '../../../components';
+import React, {useState} from 'react';
+import {DeliveryPopup, RiderChart} from '../../../components';
 
 const RiderHome = () => {
+  const [visible, setVisible] = useState(true)
+
   const chartData = [
     {time: '10AM', value: 2020},
     {time: '11AM', value: 200},
@@ -14,7 +16,8 @@ const RiderHome = () => {
   ];
   return (
     <View>
-      <RiderChart data={chartData} totalRevenue={120}  />
+      <RiderChart data={chartData} totalRevenue={120} />
+      <DeliveryPopup setIsVisible={setVisible} isVisible={visible} />
     </View>
   );
 };
