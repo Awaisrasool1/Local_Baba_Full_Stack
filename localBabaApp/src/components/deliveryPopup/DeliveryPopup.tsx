@@ -1,15 +1,6 @@
-import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  Modal,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import {View, Text, Modal, ScrollView, TouchableOpacity} from 'react-native';
 import styles from './styles';
-import Theme from '../../theme/Theme';
-import {CustomButton} from '../customButton';
+import {DeliveryCard} from '../deliveryCard';
 
 interface Props {
   isVisible: boolean;
@@ -59,74 +50,7 @@ const DeliveryPopup = (props: Props) => {
         <View style={styles.popupContainer}>
           <ScrollView>
             {deliveryItems.map((item, index) => (
-              <View key={index} style={styles.card}>
-                <Text style={styles.sectionTitle}>{'Delivery Details'}</Text>
-                <View style={styles.row}>
-                  <View style={styles.flexRow}>
-                    <Image source={Theme.icons.vector} />
-                    <Text style={styles.label}>{'Pickup'}</Text>
-                  </View>
-                  <Text style={styles.info}>
-                    {item.pickup.distance} ~ {item.pickup.time}
-                  </Text>
-                </View>
-
-                <View
-                  style={[
-                    styles.flexRow,
-                    {
-                      marginLeft: Theme.responsiveSize.size5,
-                      marginVertical: Theme.responsiveSize.size8,
-                    },
-                  ]}>
-                  <View style={styles.line} />
-                  <View>
-                    <Text style={styles.text}>{item.pickup.location}</Text>
-                    <Text style={styles.subtext}>{item.pickup.address}</Text>
-                  </View>
-                </View>
-
-                <View style={styles.row}>
-                  <View style={styles.flexRow}>
-                    <Image source={Theme.icons.vector} />
-                    <Text style={styles.label}>{'Drop-Off'}</Text>
-                  </View>
-                  <Text style={styles.info}>
-                    {item.dropoff.distance} ~ {item.dropoff.time}
-                  </Text>
-                </View>
-
-                <View
-                  style={[
-                    styles.flexRow,
-                    {
-                      marginLeft: Theme.responsiveSize.size10,
-                      marginVertical: Theme.responsiveSize.size8,
-                    },
-                  ]}>
-                  <View />
-                  <View>
-                    <Text style={styles.text}>{item.dropoff.location}</Text>
-                    <Text style={styles.subtext}>{item.dropoff.address}</Text>
-                  </View>
-                </View>
-
-                <View style={styles.details}>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.bold}>{'Order Id:'}</Text>
-                    <Text style={styles.detailText}>{item.orderId}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.bold}>{'Total Bill:'}</Text>
-                    <Text style={styles.detailText}>{item.totalBill}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.bold}>{'Payment Method:'}</Text>
-                    <Text style={styles.detailText}>{item.paymentMethod}</Text>
-                  </View>
-                </View>
-                <CustomButton title="Accept" onClick={() => {}} />
-              </View>
+              <DeliveryCard key={index} {...item} />
             ))}
           </ScrollView>
           <TouchableOpacity

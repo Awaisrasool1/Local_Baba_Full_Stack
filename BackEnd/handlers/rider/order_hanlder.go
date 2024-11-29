@@ -120,3 +120,56 @@ func Order_assigned_for_rider(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"status": "success", "message": "Order status updated successfully"})
 }
+
+func Get_completed_orders_count(c *gin.Context) {
+	token := c.GetHeader("Authorization")
+	if token == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "token missing"})
+		return
+	}
+
+	claims, err := utils.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
+		return
+	}
+
+	collection := database.GetCollection("order")
+	ctx := context.Background()
+	riderID := (*claims)["userId"].(string)
+
+	filter := bson.M{"status": "Delivered", "rider_id": riderID}
+	count, err := collection.CountDocuments(ctx, filter)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to count orders"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "success", "totalOrders": count})
+}
+
+func Get_new_orders_count(c *gin.Context) {
+	token := c.GetHeader("Authorization")
+	if token == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "token missing"})
+		return
+	}
+
+	_, err := utils.ValidateToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "error", "message": "invalid token"})
+		return
+	}
+
+	collection := database.GetCollection("order")
+	ctx := context.Background()
+
+	filter := bson.M{"status": "Accepted"}
+	count, err := collection.CountDocuments(ctx, filter)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to count orders"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "success", "totalOrders": count})
+}

@@ -27,7 +27,7 @@ const Theme = {
     bgColor16: '#FFF3F0',
     bgColor17: '#D3D3D3',
     bgColor18: '#C5D0FF26',
-    bgColor19: ' #f9f9f9',
+    bgColor19: ' #f9f9f4',
 
    
 
@@ -59,6 +59,7 @@ const Theme = {
     textColor26: '#32343E',
     textColor27: '#6D6D6D',
     textColor28: '#888',
+    textColor29: '#838799',
 
     borderColor1: '#444',
     borderColor2: '#E4E0E9',

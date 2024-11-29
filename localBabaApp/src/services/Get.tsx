@@ -63,12 +63,29 @@ async function get_user_order_status(orderId: string) {
 }
 
 async function get_order_details(orderId: string) {
-  console.log(orderId)
+  console.log(orderId);
   const res = await API.get(`/user/Order/get-order-details?orderId=${orderId}`);
   return res.data;
 }
 
+async function get_accpted_order_buy_rider() {
+  const res = await API.get('/rider/Order/get-accepted-orders');
+  return res.data;
+}
+
+async function get_completed_order_count() {
+  const res = await API.get('/rider/Order/completed-orders-count');
+  return res.data;
+}
+
+async function get_new_order_count() {
+  const res = await API.get('/rider/Order/new-orders-count');
+  return res.data;
+}
+
 export {
+  get_completed_order_count,
+  get_new_order_count,
   get_categories,
   get_nearby_restaurants,
   get_all_restaurants,
@@ -80,4 +97,5 @@ export {
   get_all_address,
   get_user_order_status,
   get_order_details,
+  get_accpted_order_buy_rider,
 };
