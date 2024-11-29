@@ -12,6 +12,9 @@ import {
   get_user_onGoing_order,
   get_user_order_status,
   get_order_details,
+  get_accpted_order_buy_rider,
+  get_completed_order_count,
+  get_new_order_count,
 } from './Get';
 import {
   add_to_cart,
@@ -26,6 +29,8 @@ import {
 import {delete_address, delete_cart_item} from './Delete';
 
 export {
+  get_new_order_count,
+  get_completed_order_count,
   place_order_By_Cart,
   place_order_By_product,
   get_user_order_status,
@@ -50,4 +55,5 @@ export {
   upload_image,
   get_user_onGoing_order,
   get_order_details,
+  get_accpted_order_buy_rider,
 };

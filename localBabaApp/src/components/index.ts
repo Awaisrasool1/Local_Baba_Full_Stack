@@ -17,8 +17,12 @@ import {OrderProgress} from './orderProgress';
 import {OrderCard} from './orderCard';
 import {RiderChart} from './riderChart';
 import {DeliveryPopup} from './deliveryPopup';
+import {DeliveryCard} from './deliveryCard';
+import {CountBox} from './countBox';
 
 export {
+  DeliveryCard,
+  CountBox,
   CustomButton,
   InputText,
   LoginBg,
