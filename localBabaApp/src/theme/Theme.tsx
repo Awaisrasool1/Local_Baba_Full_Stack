@@ -27,6 +27,9 @@ const Theme = {
     bgColor16: '#FFF3F0',
     bgColor17: '#D3D3D3',
     bgColor18: '#C5D0FF26',
+    bgColor19: ' #f9f9f9',
+
+   
 
     textColor1: '#FFFFFF',
     textColor2: '#787878',
@@ -55,8 +58,9 @@ const Theme = {
     textColor25: '#A0A5BA',
     textColor26: '#32343E',
     textColor27: '#6D6D6D',
+    textColor28: '#888',
 
-    borderColor1: '#310676',
+    borderColor1: '#444',
     borderColor2: '#E4E0E9',
     borderColor3: '#310676',
     borderColor4: '#EBEBEB',
