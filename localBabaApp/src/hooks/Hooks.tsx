@@ -3,6 +3,7 @@ import {checkPermission} from '../api/api';
 import GetLocation from 'react-native-get-location';
 
 Geocoder.init('');
+const GOOGLE_API_KEY = '';
 
 export const getAddress = async (latitude: any, longitude: any) => {
   try {
@@ -32,6 +33,39 @@ export const GetCurrentLocation = async () => {
     }
   } catch (err) {
     console.log(err);
+  }
+};
+
+export const fetchAddress = async (latLong: string): Promise<string> => {
+  const [lat, lng] = latLong.split(',');
+  
+  const response = await fetch(
+    `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_API_KEY}`,
+  );
+  const data = await response.json();
+  if (data.status === 'OK' && data.results.length > 0) {
+    return data.results[0].formatted_address;
+  } else {
+    throw new Error('Failed to fetch address');
+  }
+};
+
+export const fetchDistanceAndDuration = async (
+  origin: string,
+  destination: string,
+): Promise<{distance: string; time: string}> => {
+  const response = await fetch(
+    `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destination}&key=${GOOGLE_API_KEY}`,
+  );
+  const data = await response.json();
+  if (data.status === 'OK' && data.rows.length > 0) {
+    const element = data.rows[0].elements[0];
+    return {
+      distance: element.distance.text,
+      time: element.duration.text,
+    };
+  } else {
+    throw new Error('Failed to fetch distance and duration');
   }
 };
 
