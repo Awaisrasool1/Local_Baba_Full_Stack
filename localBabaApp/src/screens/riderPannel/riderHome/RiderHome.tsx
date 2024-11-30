@@ -14,7 +14,6 @@ import {Constants} from '../../../constants';
 
 const RiderHome = (props: any) => {
   const {showToast} = useToast();
-  const [visible, setVisible] = useState(true);
   const [city, setCity] = useState<string>('');
 
   const chartData = [
@@ -120,7 +119,6 @@ const RiderHome = (props: any) => {
       </View>
       <Text style={styles.totalRevenue}>₹ {120}</Text>
       <RiderChart data={chartData} />
-      <DeliveryPopup setIsVisible={setVisible} isVisible={visible} />
     </View>
   );
 };

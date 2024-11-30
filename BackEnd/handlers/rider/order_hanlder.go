@@ -47,7 +47,7 @@ func Get_accepted_order(c *gin.Context) {
 
 	groupedOrders := make(map[string]gin.H)
 	for _, order := range orders {
-		if err := restaurantCollection.FindOne(ctx, bson.M{"_id": order.RestaurantID}).Decode(&restaurant); err == nil {
+		if err := restaurantCollection.FindOne(ctx, bson.M{"_id": order.RestaurantID}).Decode(&restaurant); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Restaurant not found"})
 			return
 		}
