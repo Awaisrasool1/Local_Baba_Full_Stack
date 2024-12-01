@@ -19,6 +19,7 @@ import {
   OrderSuccess,
   OrderDetails,
   RiderProInfo,
+  OrderRequests,
 } from '../screens';
 import SignUpScreen from '../screens/auth/signupScreen';
 import DrawerNavigation from './DrawerNavigation';
@@ -140,6 +141,11 @@ const AppNavigator = () => {
         <Stack.Screen
           name={Constants.RIDER_PROFILE_INFO_SCREEN}
           component={RiderProInfo}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Constants.ORDER_REQUEST_SCREEN}
+          component={OrderRequests}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func Get_accepted_order(c *gin.Context) {
@@ -164,12 +165,42 @@ func Get_new_orders_count(c *gin.Context) {
 	collection := database.GetCollection("order")
 	ctx := context.Background()
 
-	filter := bson.M{"status": "Accepted"}
-	count, err := collection.CountDocuments(ctx, filter)
+	pipeline := mongo.Pipeline{
+		{
+			{Key: "$match", Value: bson.D{{Key: "status", Value: "Accepted"}}},
+		},
+		{
+			{Key: "$group", Value: bson.D{
+				{Key: "_id", Value: "$orderId"},
+			}},
+		},
+		{
+			{Key: "$count", Value: "totalOrders"},
+		},
+	}
+
+	cursor, err := collection.Aggregate(ctx, pipeline)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to count orders"})
 		return
 	}
+	defer cursor.Close(ctx)
 
-	c.JSON(http.StatusOK, gin.H{"status": "success", "totalOrders": count})
+	// Extract the totalOrders count from the cursor
+	var result []bson.M
+	if err = cursor.All(ctx, &result); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to parse aggregation result"})
+		return
+	}
+
+	// Default to 0 if no orders found
+	totalOrders := 0
+	if len(result) > 0 {
+		// Convert the value to int
+		if count, ok := result[0]["totalOrders"].(int32); ok {
+			totalOrders = int(count)
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "success", "totalOrders": totalOrders})
 }
