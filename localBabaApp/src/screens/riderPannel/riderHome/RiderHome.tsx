@@ -82,6 +82,7 @@ const RiderHome = (props: any) => {
       console.log(err);
     }
   };
+
   return (
     <View style={styles.container}>
       <View
@@ -110,8 +111,19 @@ const RiderHome = (props: any) => {
         </TouchableOpacity>
       </View>
       <View style={styles.boxContainer}>
-        <CountBox title="Completed Orders" count={data} />
-        <CountBox title="Order Requests" count={completedOrderCount} />
+        <CountBox
+          title="Completed Orders"
+          count={completedOrderCount}
+          isDisabled={true}
+        />
+        <CountBox
+          title="Order Requests"
+          count={data}
+          isDisabled={false}
+          onPress={() =>
+            props.navigation.navigate(Constants.ORDER_REQUEST_SCREEN)
+          }
+        />
       </View>
       <View style={styles.header}>
         <Text style={styles.title}>{'Total Revenue'}</Text>
