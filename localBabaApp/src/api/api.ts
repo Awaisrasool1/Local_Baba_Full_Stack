@@ -9,6 +9,7 @@ let token: any;
 let role: any;
 let name: any;
 
+
 export const API = axios.create({
   baseURL: API_BASE_URL,
   timeout: 6000,
