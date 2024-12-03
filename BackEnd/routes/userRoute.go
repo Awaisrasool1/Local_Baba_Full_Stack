@@ -9,6 +9,7 @@ import (
 	"foodApp/utils"
 	"net/http"
 
+	firebase "firebase.google.com/go"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,7 +28,7 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-func SetUpRoutes() *gin.Engine {
+func SetUpRoutes(app *firebase.App) *gin.Engine {
 	router := gin.Default()
 	router.Use(CORSMiddleware())
 
@@ -36,6 +37,9 @@ func SetUpRoutes() *gin.Engine {
 	//public routes
 	router.POST("Auth/user-signup", handlers.SignUp)
 	router.POST("Auth/login", handlers.SignIn)
+	router.POST("Save-FCM-Token", handlers.SaveFCMTokenHandler)
+	router.POST("Get-FCM-Token", handlers.GetFCMTokenHandler)
+
 	router.GET("Categories/get-All-Categories", handlers.GetCategories)
 	router.GET("profile/get-profile", handlers.Get_Profile)
 
@@ -70,7 +74,9 @@ func SetUpRoutes() *gin.Engine {
 		//order
 		restaurantRoutes.GET("Order/get-pending-orders", restaurant.GetOrdersByRestaurant)
 		restaurantRoutes.GET("Order/get-nonPending-orders", restaurant.GetNonPendingOrdersByRestaurant)
-		restaurantRoutes.POST("Order/update-order-status", restaurant.UpdateOrderStatus)
+		restaurantRoutes.POST("Order/update-order-status", func(c *gin.Context) {
+			restaurant.UpdateOrderStatus(c, app)
+		})
 	}
 
 	//rider pannel routes

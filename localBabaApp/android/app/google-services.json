@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "786416784583",
+    "project_id": "localbaba-4ee69",
+    "storage_bucket": "localbaba-4ee69.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:786416784583:android:19dbab332f870953789ae2",
+        "android_client_info": {
+          "package_name": "com.localbabaapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoVWFydnEqOuahTxX1IkmE47N8aak4BPc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

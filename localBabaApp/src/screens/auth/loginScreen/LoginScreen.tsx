@@ -13,11 +13,15 @@ import styles from './styles';
 import {Constants, Validations} from '../../../constants';
 import Theme from '../../../theme/Theme';
 import {CustomButton, InputText, LoginBg} from '../../../components';
-import {SignIn} from '../../../services';
+import {Add_FCM, SignIn} from '../../../services';
 import {saveToken} from '../../../api/api';
-import {saveDataToCachedWithKey} from '../../../module/cacheData';
+import {
+  getDataFromCachedWithKey,
+  saveDataToCachedWithKey,
+} from '../../../module/cacheData';
 import {AppConstants} from '../../../module';
 import {useToast} from 'react-native-toasty-toast';
+import messaging from '@react-native-firebase/messaging';
 
 type SignInData = {Email: string; Password: string};
 type SignInResponse = {
@@ -63,6 +67,33 @@ const LoginScreen = (props: any) => {
       const data = response.data;
       if (data && (Number(data.role) === 3 || Number(data.role) === 4)) {
         await saveToken(data.token, Number(data.role), data.name);
+        let fcmToken = await getDataFromCachedWithKey(
+          AppConstants.AsyncKeyLiterals.fcmtoken,
+        );
+        if (
+          (!fcmToken || fcmToken == null || fcmToken == undefined) &&
+          data.userId &&
+          data.userId !== null &&
+          data.userId !== undefined
+        ) {
+          try {
+            let fcmtoken = await messaging().getToken();
+            if (fcmtoken) {
+              const newData: any = {
+                user_id: data.userId,
+                fcm_token: fcmtoken,
+              };
+              console.log(newData);
+              const res: any = await Add_FCM(newData);
+              saveDataToCachedWithKey(
+                AppConstants.AsyncKeyLiterals.fcmtoken,
+                fcmtoken,
+              );
+            }
+          } catch (error: any) {
+            console.log(error.response.data, ' ERROR! Error in FCM TOKEN');
+          }
+        }
         await saveDataToCachedWithKey(
           AppConstants.AsyncKeyLiterals.loginToken,
           data.token,

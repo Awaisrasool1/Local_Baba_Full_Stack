@@ -18,3 +18,9 @@ type Address struct {
 	UserId            string `json:"userId" bson:"userId"`
 	IsDefaultShipping bool   `json:"isDefaultShipping" bson:"isDefaultShipping"`
 }
+
+type FCMToken struct {
+	ID       string `json:"id" bson:"_id"`
+	UserID   string `json:"user_id" bson:"user_id"`
+	FCMToken string `json:"fcm_token" bson:"fcm_token"`
+}

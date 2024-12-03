@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {Provider as PaperProvider} from 'react-native-paper';
@@ -7,10 +7,19 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {GlobalProvider} from './src/contexts/GlobalContext';
 import AppNavigator from './src/navigation/AppNavigator';
 import {ToastProvider} from 'react-native-toasty-toast';
+import {
+  NotificationListener,
+  requestUserPermission,
+} from './src/hooks/NotificationHook';
 
 const queryClient = new QueryClient();
 
 const App = () => {
+  useEffect(() => {
+    requestUserPermission();
+    NotificationListener();
+  }, []);
+  
   return (
     <QueryClientProvider client={queryClient}>
       <PaperProvider>
