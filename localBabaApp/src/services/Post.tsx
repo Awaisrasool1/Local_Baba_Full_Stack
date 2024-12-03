@@ -63,6 +63,10 @@ async function Order_cancel(id: any) {
   return res.data;
 }
 
+async function Add_FCM(data: any) {
+  const res = await API.post(`Save-FCM-Token`, data);
+  return res.data.data;
+}
 export {
   add_to_cart,
   add_to_address,
@@ -72,4 +76,5 @@ export {
   place_order_By_product,
   place_order_By_Cart,
   Order_cancel,
+  Add_FCM,
 };

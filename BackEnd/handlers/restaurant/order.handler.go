@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"time"
 
+	firebase "firebase.google.com/go"
+	"firebase.google.com/go/messaging"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -397,12 +399,16 @@ func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 	})
 }
 
-func UpdateOrderStatus(c *gin.Context) {
+func UpdateOrderStatus(c *gin.Context, firebaseApp *firebase.App) {
 	var body struct {
 		Id     string `json:"id"`
 		Status string `json:"status"`
 	}
-
+	if firebaseApp == nil {
+		log.Println("Firebase app is nil. Please check initialization.")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Firebase app is not initialized"})
+		return
+	}
 	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
@@ -416,22 +422,54 @@ func UpdateOrderStatus(c *gin.Context) {
 	collection := database.GetCollection("order")
 	ctx := context.Background()
 
+	var order models.Order
+	if err := collection.FindOne(ctx, bson.M{"orderId": body.Id}).Decode(&order); err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Order not found"})
+		return
+	}
+
 	update := bson.M{
 		"$set": bson.M{
 			"status": body.Status,
 		},
 	}
 
-	result, err := collection.UpdateMany(ctx, bson.M{"orderId": body.Id}, update)
+	_, err := collection.UpdateOne(ctx, bson.M{"orderId": body.Id}, update)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update order"})
 		return
 	}
 
-	if result.MatchedCount == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Order not found"})
+	userTokenCollection := database.GetCollection("fcm_tokens")
+	var userToken models.FCMToken
+	if err := userTokenCollection.FindOne(ctx, bson.M{"user_id": order.UserID}).Decode(&userToken); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve user FCM token"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"status": "success", "message": "Order status updated successfully"})
+	client, err := firebaseApp.Messaging(ctx)
+	if err != nil {
+		log.Printf("Failed to get Messaging client: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   "Failed to initialize Firebase messaging client",
+			"details": err.Error(),
+		})
+		return
+	}
+
+	message := &messaging.Message{
+		Token: userToken.FCMToken,
+		Notification: &messaging.Notification{
+			Title: "Order Status Update",
+			Body:  "Your order status has been updated to " + body.Status,
+		},
+	}
+
+	_, err = client.Send(ctx, message)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send notification"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Order status updated and notification sent"})
 }

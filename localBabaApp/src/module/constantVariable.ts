@@ -3,8 +3,9 @@ const AppConstants = {
     isLoggedIn: 'isLoggedIn',
     loginToken: 'loginToken',
     userId: 'userId',
-    userName:'userName',
-    role:'role'
+    userName: 'userName',
+    role: 'role',
+    fcmtoken: 'fcmtoken',
   },
 };
 

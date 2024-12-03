@@ -5,12 +5,14 @@ import (
 	"foodApp/database"
 	"foodApp/models"
 	"foodApp/utils"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -112,4 +114,65 @@ func Get_Profile(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"status": "success", "data": user})
+}
+
+func SaveFCMTokenHandler(c *gin.Context) {
+	var input models.FCMToken
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
+		return
+	}
+
+	collection := database.GetCollection("fcm_tokens")
+	var existingToken models.FCMToken
+	ctx := context.Background()
+
+	err := collection.FindOne(ctx, bson.M{"user_id": input.UserID}).Decode(&existingToken)
+	if err == nil {
+		_, err = collection.UpdateOne(
+			ctx,
+			bson.D{{Key: "user_id", Value: input.UserID}},
+			bson.D{{Key: "$set", Value: bson.D{{Key: "fcm_token", Value: input.FCMToken}}}},
+		)
+		if err != nil {
+			log.Println("Error updating FCM token:", err)
+			c.JSON(http.StatusOK, gin.H{"status": "error", "message": err.Error()})
+			return
+		}
+	} else if err == mongo.ErrNoDocuments {
+		input.ID = uuid.NewString()
+		_, err := collection.InsertOne(ctx, input)
+		if err != nil {
+			log.Println("Error inserting FCM token:", err)
+			c.JSON(http.StatusOK, gin.H{"status": "error", "message": err.Error()})
+			return
+		}
+	} else {
+		log.Println("Error checking existing FCM token:", err)
+		c.JSON(http.StatusOK, gin.H{"status": "error", "message": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "FCM token saved successfully"})
+}
+
+func GetFCMTokenHandler(c *gin.Context) {
+	userID := c.Param("user_id")
+
+	var result models.FCMToken
+	collection := database.GetCollection("fcm_tokens")
+
+	err := collection.FindOne(context.Background(), bson.M{"user_id": userID}).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusOK, gin.H{"status": "error", "message": err.Error()})
+			return
+		}
+		log.Printf("Error retrieving FCM token: %v", err)
+		c.JSON(http.StatusOK, gin.H{"status": "error", "message": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "success", "fcm_token": result})
 }

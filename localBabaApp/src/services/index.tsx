@@ -25,10 +25,12 @@ import {
   place_order_By_Cart,
   place_order_By_product,
   Order_cancel,
+  Add_FCM,
 } from './Post';
 import {delete_address, delete_cart_item} from './Delete';
 
 export {
+  Add_FCM,
   get_new_order_count,
   get_completed_order_count,
   place_order_By_Cart,
