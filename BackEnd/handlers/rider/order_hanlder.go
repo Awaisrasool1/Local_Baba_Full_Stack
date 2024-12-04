@@ -135,18 +135,49 @@ func Get_completed_orders_count(c *gin.Context) {
 		return
 	}
 
-	collection := database.GetCollection("order")
-	ctx := context.Background()
 	riderID := (*claims)["userId"].(string)
 
-	filter := bson.M{"status": "Delivered", "rider_id": riderID}
-	count, err := collection.CountDocuments(ctx, filter)
+	collection := database.GetCollection("order")
+	ctx := context.Background()
+
+	pipeline := mongo.Pipeline{
+		{
+			{Key: "$match", Value: bson.D{
+				{Key: "status", Value: "Delivered"},
+				{Key: "rider_id", Value: riderID},
+			}},
+		},
+		{
+			{Key: "$group", Value: bson.D{
+				{Key: "_id", Value: "$orderId"},
+			}},
+		},
+		{
+			{Key: "$count", Value: "totalOrders"},
+		},
+	}
+
+	cursor, err := collection.Aggregate(ctx, pipeline)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to count orders"})
 		return
 	}
+	defer cursor.Close(ctx)
 
-	c.JSON(http.StatusOK, gin.H{"status": "success", "totalOrders": count})
+	var result []bson.M
+	if err = cursor.All(ctx, &result); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to parse aggregation result"})
+		return
+	}
+
+	totalOrders := 0
+	if len(result) > 0 {
+		if count, ok := result[0]["totalOrders"].(int32); ok {
+			totalOrders = int(count)
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "success", "totalOrders": totalOrders})
 }
 
 func Get_new_orders_count(c *gin.Context) {
@@ -186,17 +217,14 @@ func Get_new_orders_count(c *gin.Context) {
 	}
 	defer cursor.Close(ctx)
 
-	// Extract the totalOrders count from the cursor
 	var result []bson.M
 	if err = cursor.All(ctx, &result); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to parse aggregation result"})
 		return
 	}
 
-	// Default to 0 if no orders found
 	totalOrders := 0
 	if len(result) > 0 {
-		// Convert the value to int
 		if count, ok := result[0]["totalOrders"].(int32); ok {
 			totalOrders = int(count)
 		}

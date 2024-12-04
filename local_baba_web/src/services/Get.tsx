@@ -51,6 +51,16 @@ async function get_penging_orders(page: number, limit: number) {
   return res;
 }
 
+async function get_admin_dashboard() {
+  const res = await API.get('/admin/Dashboard/dashboard-counts');
+  return res;
+}
+
+async function get_restaurant_dashboard() {
+  const res = await API.get('/restaurant/Dashboard/dashboard-count');
+  return res;
+}
+
 export {
   get_categories,
   get_restaurant,
@@ -59,4 +69,6 @@ export {
   get_restaurant_products,
   get_nonPenging_orders,
   get_penging_orders,
+  get_admin_dashboard,
+  get_restaurant_dashboard,
 };

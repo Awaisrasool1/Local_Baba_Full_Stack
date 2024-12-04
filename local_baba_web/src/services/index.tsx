@@ -14,9 +14,12 @@ import {
   get_restaurant_products,
   get_nonPenging_orders,
   get_penging_orders,
+  get_admin_dashboard,
+  get_restaurant_dashboard,
 } from "./Get";
 
 export {
+  get_restaurant_dashboard,
   SignIn,
   add_restaurant,
   get_categories,
@@ -31,4 +34,5 @@ export {
   get_nonPenging_orders,
   get_penging_orders,
   order_status_change,
+  get_admin_dashboard,
 };

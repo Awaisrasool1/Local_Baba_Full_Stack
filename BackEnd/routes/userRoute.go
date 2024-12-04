@@ -54,6 +54,8 @@ func SetUpRoutes(app *firebase.App) *gin.Engine {
 	adminRoutes := router.Group("/admin")
 	adminRoutes.Use(utils.RoleAuthorization(1))
 	{
+		//dashboard routes
+		adminRoutes.GET("Dashboard/dashboard-counts", admin.Get_admin_dashboard_counts)
 		//Restaurant
 		adminRoutes.POST("Restaurants/Add-Restaurant", admin.Admin_add_restaurant)
 		adminRoutes.GET("Restaurant/get-all-restaurant", admin.Get_admin_restaurant)
@@ -69,6 +71,9 @@ func SetUpRoutes(app *firebase.App) *gin.Engine {
 	restaurantRoutes := router.Group("/restaurant")
 	restaurantRoutes.Use(utils.RoleAuthorization(2))
 	{
+		//dashboard routes
+		restaurantRoutes.GET("Dashboard/dashboard-count", restaurant.Get_restu_dashboard_counts)
+		//product routes
 		restaurantRoutes.POST("Product/add-product", restaurant.Create_restaurant_product)
 		restaurantRoutes.GET("Product/get-products", restaurant.Get_restaurant_products)
 		//order
