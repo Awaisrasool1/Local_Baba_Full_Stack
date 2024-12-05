@@ -19,6 +19,7 @@ import {
   RestaurantReview,
   RestaurantMenu,
   AddMenu,
+  LandingPage,
 } from "../pages";
 import Sidebar from "../components/SideBar.tsx/SideBar";
 import {
@@ -38,9 +39,9 @@ const AppNavigation = () => {
   });
   const [role, setRole] = useState<number>();
 
-  const handleLogin = (role:any) => {
+  const handleLogin = (role: any) => {
     setIsLoggedIn(true);
-    setRole(role)
+    setRole(role);
     localStorage.setItem("isLoggedIn", "true");
   };
 
@@ -110,7 +111,7 @@ const AppNavigation = () => {
           />
         )}
 
-        <div style={{ flexGrow: 1, padding: "20px" }}>
+        <div style={{ flexGrow: 1,  }}>
           <Routes>
             <Route
               path="/"
@@ -122,35 +123,60 @@ const AppNavigation = () => {
                     <Navigate to="/restaurant-DashBoard" />
                   )
                 ) : (
-                  <LoginScreen onLogin={handleLogin} />
+                  <LandingPage />
                 )
               }
             />
+            <Route
+              path="/loginScreen"
+              element={<LoginScreen onLogin={handleLogin} />}
+            />
             {isLoggedIn ? (
               <>
-              {/* Admin routes */}
-              {role === 1 && (
-                <>
-                  <Route path="/admin-DashBoard" element={<DashBoard />} />
-                  <Route path="/admin-Orders" element={<OrderList />} />
-                  <Route path="/admin-Order-History" element={<OrderHistory />} />
-                  <Route path="/admin-Restaurants" element={<Restaurants />} />
-                  <Route path="/admin-Customers" element={<Customers />} />
-                  <Route path="/admin-Riders" element={<Riders />} />
-                </>
-              )}
-              {/* Restaurant routes */}
-              {role === 2 && (
-                <>
-                  <Route path="/restaurant-DashBoard" element={<RestaurantDashBoard />} />
-                  <Route path="/restaurant-Orders" element={<RestaurantOrder />} />
-                  <Route path="/restaurant-Order-History" element={<RestaurantOrderHistory />} />
-                  <Route path="/restaurant-Review" element={<RestaurantReview />} />
-                  <Route path="/restaurant-Menu" element={<RestaurantMenu />} />
-                  <Route path="/add-Menu" element={<AddMenu />} />
-                </>
-              )}
-            </>
+                {/* Admin routes */}
+                {role === 1 && (
+                  <>
+                    <Route path="/admin-DashBoard" element={<DashBoard />} />
+                    <Route path="/admin-Orders" element={<OrderList />} />
+                    <Route
+                      path="/admin-Order-History"
+                      element={<OrderHistory />}
+                    />
+                    <Route
+                      path="/admin-Restaurants"
+                      element={<Restaurants />}
+                    />
+                    <Route path="/admin-Customers" element={<Customers />} />
+                    <Route path="/admin-Riders" element={<Riders />} />
+                  </>
+                )}
+                {/* Restaurant routes */}
+                {role === 2 && (
+                  <>
+                    <Route
+                      path="/restaurant-DashBoard"
+                      element={<RestaurantDashBoard />}
+                    />
+                    <Route
+                      path="/restaurant-Orders"
+                      element={<RestaurantOrder />}
+                    />
+                    <Route
+                      path="/restaurant-Order-History"
+                      element={<RestaurantOrderHistory />}
+                    />
+                    <Route
+                      path="/restaurant-Review"
+                      element={<RestaurantReview />}
+                    />
+                    <Route
+                      path="/restaurant-Menu"
+                      element={<RestaurantMenu />}
+                    />
+                    <Route path="/add-Menu" element={<AddMenu />} />
+                  </>
+                )}
+              </>
             ) : (
               <Route path="*" element={<Navigate to="/" />} />
             )}

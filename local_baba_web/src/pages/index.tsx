@@ -7,6 +7,7 @@ import {
   Customers,
 } from "./AdminPannel";
 import { LoginScreen } from "./LoginScreen";
+import { LandingPage } from "./LandingPage";
 
 import {
   RestaurantDashBoard,
@@ -14,10 +15,11 @@ import {
   RestaurantOrder,
   RestaurantOrderHistory,
   RestaurantReview,
-  AddMenu
+  AddMenu,
 } from "./RestaurantPannel";
 
 export {
+  LandingPage,
   DashBoard,
   LoginScreen,
   OrderHistory,
@@ -30,5 +32,5 @@ export {
   RestaurantOrder,
   RestaurantMenu,
   RestaurantDashBoard,
-  AddMenu
+  AddMenu,
 };

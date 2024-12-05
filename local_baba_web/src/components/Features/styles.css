@@ -1,0 +1,23 @@
+/* Set equal height for all cards */
+.feature-card {
+    height: 100%; /* Ensure the card stretches to the height of its container */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space out the content */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 15px;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .feature-image img {
+    transition: transform 0.3s ease;
+  }
+  
+  .feature-card:hover .feature-image img {
+    transform: scale(1.1);
+  }
+  
