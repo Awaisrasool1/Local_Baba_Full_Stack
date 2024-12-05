@@ -7,8 +7,14 @@ import { PopupForm, RiderPopup } from "./popup";
 import { CountCard } from "./countCard";
 import { OrderTable } from "./orderTable";
 import { OrderPopup } from "./orderPopup";
+import { LandingNavBar } from "./landingNavBar";
+import { Features } from "./Features";
+import { HeroSection } from "./heroSection";
 
 export {
+  HeroSection,
+  Features,
+  LandingNavBar,
   SideBar,
   CustomButton,
   CustomInput,

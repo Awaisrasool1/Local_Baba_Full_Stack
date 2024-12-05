@@ -20,6 +20,7 @@ import {
   OrderDetails,
   RiderProInfo,
   OrderRequests,
+  OrderLocationScreen,
 } from '../screens';
 import SignUpScreen from '../screens/auth/signupScreen';
 import DrawerNavigation from './DrawerNavigation';
@@ -146,6 +147,11 @@ const AppNavigator = () => {
         <Stack.Screen
           name={Constants.ORDER_REQUEST_SCREEN}
           component={OrderRequests}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Constants.ORDER_LOCATION_SCREEN}
+          component={OrderLocationScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
