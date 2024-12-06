@@ -10,8 +10,17 @@ import { OrderPopup } from "./orderPopup";
 import { LandingNavBar } from "./landingNavBar";
 import { Features } from "./Features";
 import { HeroSection } from "./heroSection";
+import { BusinessPartnerSection } from "./BusinessPartnerSection";
+import { Slider } from "./slider";
+import { Testimonial } from "./Testimonial";
+import { DownloadAppSection } from "./DownloadAppSection";
+import { Footer } from "./Footer";
 
 export {
+  BusinessPartnerSection,
+  Footer,
+  Testimonial,
+  Slider,
   HeroSection,
   Features,
   LandingNavBar,
@@ -25,4 +34,5 @@ export {
   CountCard,
   OrderTable,
   OrderPopup,
+  DownloadAppSection,
 };

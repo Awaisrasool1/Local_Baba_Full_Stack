@@ -1,0 +1,11 @@
+/* Set a fixed height for the carousel */
+.carousel-item img {
+    height: 400px; /* Set your desired height */
+    object-fit: cover; /* Ensures the image scales nicely */
+  }
+  
+  /* Optional: Adjust the caption positioning for better appearance */
+  .carousel-caption {
+    bottom: 20px;
+  }
+  
