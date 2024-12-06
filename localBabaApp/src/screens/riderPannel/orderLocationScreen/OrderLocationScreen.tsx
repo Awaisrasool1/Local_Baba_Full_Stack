@@ -13,7 +13,7 @@ interface Location {
   longitude: number;
 }
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyBgQRFgYaylySLYTxiFEuilE1dSzVDLL5U';
+const GOOGLE_MAPS_API_KEY = '';
 
 const OrderLocationScreen = (props: any) => {
   const mapRef = useRef<MapView | null>(null);
