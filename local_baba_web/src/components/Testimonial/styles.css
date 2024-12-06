@@ -1,0 +1,9 @@
+.carousel-item {
+  text-align: center;
+}
+
+.carousel .carousel-control-prev-icon,
+.carousel .carousel-control-next-icon {
+  background-color: #333;
+  border-radius: 50%;
+}

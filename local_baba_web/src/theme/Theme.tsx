@@ -13,6 +13,13 @@ const Theme = {
     service3: require("../assets/img/service3.png"),
     call_icon: require("../assets/img/call-icon.png"),
     user_avatar: require("../assets/img/user_avatar.png"),
+    slider_icon1: require("../assets/img/slider1.jpg"),
+    slider_icon2: require("../assets/img/slider2.jpg"),
+    slider_icon3: require("../assets/img/slider3.jpg"),
+    user_icon1: require("../assets/img/user1.jpeg"),
+    user_icon2: require("../assets/img/user2.jpeg"),
+    user_icon3: require("../assets/img/user3.jpeg"),
+    bg1: require("../assets/img/bg1.png"),
   },
 };
 export default Theme;
