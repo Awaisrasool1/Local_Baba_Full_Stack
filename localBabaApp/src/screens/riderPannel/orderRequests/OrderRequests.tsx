@@ -10,9 +10,10 @@ import {
 import {useToast} from 'react-native-toasty-toast';
 import {useQuery} from '@tanstack/react-query';
 import {isNetworkAvailable} from '../../../api';
-import {get_accpted_order_buy_rider} from '../../../services';
+import {get_accpted_order_buy_rider, order_assigned} from '../../../services';
 import MapView, {Region} from 'react-native-maps';
 import styles from './styles';
+import {Constants} from '../../../constants';
 
 interface Location {
   latitude: number;
@@ -92,6 +93,7 @@ const OrderRequests = (props: any) => {
               totalBill: `$${order.totalPrice.toFixed(2)}`,
               paymentMethod: 'Cash On Delivery',
               pickup: {
+                restaurantLocation: '30.7288951,72.6583164',
                 location: order.restaurantName,
                 address: pickupAddress,
                 distance: pickupDistance,
@@ -99,6 +101,7 @@ const OrderRequests = (props: any) => {
               },
               dropoff: {
                 location: 'User Location',
+                userLocation: '30.7297798,72.6437397',
                 address: dropoffAddress,
                 distance: dropoffDistance,
                 time: dropoffTime,
@@ -113,6 +116,28 @@ const OrderRequests = (props: any) => {
 
     processOrders();
   }, [data]);
+
+  const sendData = async (item: any) => {
+    try {
+      let data = {
+        id: item.orderId,
+      };
+      const res = await order_assigned(data);
+      console.log('res', res);
+      props.navigation.navigate(Constants.ORDER_LOCATION_SCREEN, {
+        restData: {
+          RestAddress: item.pickup.address,
+          locationRest: item.pickup.restaurantLocation,
+        },
+        userData: {
+          userAddress: item.dropoff.address,
+          userLocation: item.dropoff.userLocation,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.marginV10}>
@@ -126,7 +151,7 @@ const OrderRequests = (props: any) => {
       <View style={styles.marginV5} />
       <ScrollView>
         {deliveryItems?.map((item, index) => (
-          <DeliveryCard key={index} {...item} />
+          <DeliveryCard key={index} {...item} onAccept={() => sendData(item)} />
         ))}
       </ScrollView>
     </View>

@@ -73,7 +73,7 @@ const DeliveryCard = (props: Props) => {
           <Text style={styles.detailText}>{'Cash On Delivery'}</Text>
         </View>
       </View>
-      <CustomButton title="Accept" onClick={() => {}} />
+      <CustomButton title="Accept" onClick={() => props.onAccept()} />
     </View>
   );
 };

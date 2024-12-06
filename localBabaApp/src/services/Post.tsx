@@ -67,6 +67,12 @@ async function Add_FCM(data: any) {
   const res = await API.post(`Save-FCM-Token`, data);
   return res.data.data;
 }
+
+async function order_assigned(data: any) {
+  const res = await API.put(`/rider/Order/assigned-orders`, data);
+  return res.data;
+}
+
 export {
   add_to_cart,
   add_to_address,
@@ -77,4 +83,5 @@ export {
   place_order_By_Cart,
   Order_cancel,
   Add_FCM,
+  order_assigned,
 };
