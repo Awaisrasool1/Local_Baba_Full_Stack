@@ -2,8 +2,8 @@ import Geocoder from 'react-native-geocoding';
 import {checkPermission} from '../api/api';
 import GetLocation from 'react-native-get-location';
 
-Geocoder.init('');
-const GOOGLE_API_KEY = '';
+Geocoder.init('AIzaSyBgQRFgYaylySLYTxiFEuilE1dSzVDLL5U');
+const GOOGLE_API_KEY = 'AIzaSyBgQRFgYaylySLYTxiFEuilE1dSzVDLL5U';
 
 export const getAddress = async (latitude: any, longitude: any) => {
   try {

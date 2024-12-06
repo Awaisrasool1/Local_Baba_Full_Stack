@@ -110,6 +110,7 @@ const RiderLocationScreen = () => {
               totalBill: `$${order.totalPrice.toFixed(2)}`,
               paymentMethod: 'Cash On Delivery',
               pickup: {
+                restaurantLocation: '30.7288951,72.6583164',
                 location: order.restaurantName,
                 address: pickupAddress,
                 distance: pickupDistance,
@@ -117,6 +118,7 @@ const RiderLocationScreen = () => {
               },
               dropoff: {
                 location: 'User Location',
+                userLocation: '30.7297798,72.6437397',
                 address: dropoffAddress,
                 distance: dropoffDistance,
                 time: dropoffTime,
@@ -173,6 +175,8 @@ const RiderLocationScreen = () => {
           setVisible(false);
           setIsOnline(false);
         }}
+        setIsOnline={setIsOnline}
+        setVisible={setVisible}
         isVisible={visible}
       />
     </View>

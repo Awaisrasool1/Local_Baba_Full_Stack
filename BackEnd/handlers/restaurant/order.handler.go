@@ -404,17 +404,21 @@ func UpdateOrderStatus(c *gin.Context, firebaseApp *firebase.App) {
 		Id     string `json:"id"`
 		Status string `json:"status"`
 	}
+
 	if firebaseApp == nil {
 		log.Println("Firebase app is nil. Please check initialization.")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Firebase app is not initialized"})
 		return
 	}
+
 	if err := c.ShouldBindJSON(&body); err != nil {
+		log.Printf("Invalid request body: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
 
 	if body.Status != "Accepted" && body.Status != "Cancelled" {
+		log.Println("Invalid status. Allowed values: 'Accepted', 'Cancelled'")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid status. Allowed values: 'Accepted', 'Cancelled'"})
 		return
 	}
@@ -424,28 +428,33 @@ func UpdateOrderStatus(c *gin.Context, firebaseApp *firebase.App) {
 
 	var order models.Order
 	if err := collection.FindOne(ctx, bson.M{"orderId": body.Id}).Decode(&order); err != nil {
+		log.Printf("Order not found: %v", err)
 		c.JSON(http.StatusNotFound, gin.H{"error": "Order not found"})
 		return
 	}
+	log.Printf("Order found: OrderID = %s, UserID = %s", order.OrderID, order.UserID)
 
 	update := bson.M{
 		"$set": bson.M{
 			"status": body.Status,
 		},
 	}
-
 	_, err := collection.UpdateOne(ctx, bson.M{"orderId": body.Id}, update)
 	if err != nil {
+		log.Printf("Failed to update order status: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update order"})
 		return
 	}
+	log.Println("Order status updated successfully")
 
 	userTokenCollection := database.GetCollection("fcm_tokens")
 	var userToken models.FCMToken
 	if err := userTokenCollection.FindOne(ctx, bson.M{"user_id": order.UserID}).Decode(&userToken); err != nil {
+		log.Printf("Failed to retrieve user FCM token: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve user FCM token"})
 		return
 	}
+	log.Printf("FCM token found for user %s", order.UserID)
 
 	client, err := firebaseApp.Messaging(ctx)
 	if err != nil {
@@ -456,6 +465,7 @@ func UpdateOrderStatus(c *gin.Context, firebaseApp *firebase.App) {
 		})
 		return
 	}
+	log.Println("Firebase messaging client initialized")
 
 	message := &messaging.Message{
 		Token: userToken.FCMToken,
@@ -467,9 +477,11 @@ func UpdateOrderStatus(c *gin.Context, firebaseApp *firebase.App) {
 
 	_, err = client.Send(ctx, message)
 	if err != nil {
+		log.Printf("Failed to send notification: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send notification"})
 		return
 	}
+	log.Println("Notification sent successfully")
 
 	c.JSON(http.StatusOK, gin.H{"message": "Order status updated and notification sent"})
 }

@@ -17,6 +17,7 @@ type Props = {
   paymentMethod: string;
   pickup: Pickup;
   dropoff: Dropoff;
+  onAccept: () => void;
 };
 
 export type {Props, Dropoff, Pickup};
