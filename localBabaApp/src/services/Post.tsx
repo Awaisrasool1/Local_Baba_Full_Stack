@@ -73,7 +73,18 @@ async function order_assigned(data: any) {
   return res.data;
 }
 
+async function picked_order(data: any) {
+  const res = await API.put(`/rider/Order/Picked-order`, data);
+  return res.data;
+}
+
+async function Deliverd_order(data: any) {
+  const res = await API.put(`/rider/Order/Deliverd-order`, data);
+  return res.data;
+}
+
 export {
+  Deliverd_order,
   add_to_cart,
   add_to_address,
   remove_quantity,
@@ -84,4 +95,5 @@ export {
   Order_cancel,
   Add_FCM,
   order_assigned,
+  picked_order,
 };

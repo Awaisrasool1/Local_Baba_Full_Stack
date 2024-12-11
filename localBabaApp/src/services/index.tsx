@@ -15,6 +15,7 @@ import {
   get_accpted_order_buy_rider,
   get_completed_order_count,
   get_new_order_count,
+  get_rider_assigned_order,
 } from './Get';
 import {
   add_to_cart,
@@ -27,10 +28,15 @@ import {
   Order_cancel,
   Add_FCM,
   order_assigned,
+  picked_order,
+  Deliverd_order,
 } from './Post';
 import {delete_address, delete_cart_item} from './Delete';
 
 export {
+  Deliverd_order,
+  picked_order,
+  get_rider_assigned_order,
   order_assigned,
   Add_FCM,
   get_new_order_count,

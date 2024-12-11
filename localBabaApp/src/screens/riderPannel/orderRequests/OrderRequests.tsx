@@ -125,6 +125,7 @@ const OrderRequests = (props: any) => {
       const res = await order_assigned(data);
       console.log('res', res);
       props.navigation.navigate(Constants.ORDER_LOCATION_SCREEN, {
+        orderId: item.orderId,
         restData: {
           RestAddress: item.pickup.address,
           locationRest: item.pickup.restaurantLocation,

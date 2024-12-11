@@ -92,10 +92,16 @@ func SetUpRoutes(app *firebase.App) *gin.Engine {
 		riderRoutes.GET("Order/get-accepted-orders", rider.Get_accepted_order)
 		riderRoutes.GET("Order/completed-orders-count", rider.Get_completed_orders_count)
 		riderRoutes.GET("Order/new-orders-count", rider.Get_new_orders_count)
+		riderRoutes.GET("Order/get-rider-assigned-orders", rider.Get_rider_assigned_order)
 		riderRoutes.PUT("Order/assigned-orders", func(c *gin.Context) {
 			rider.Order_assigned_for_rider(c, app)
 		})
-
+		riderRoutes.PUT("Order/Picked-order", func(c *gin.Context) {
+			rider.Picked_order(c, app)
+		})
+		riderRoutes.PUT("Order/Deliverd-order", func(c *gin.Context) {
+			rider.Deliverd_order(c, app)
+		})
 	}
 
 	//user pannel routes

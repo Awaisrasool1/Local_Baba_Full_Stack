@@ -29,8 +29,6 @@ const Theme = {
     bgColor18: '#C5D0FF26',
     bgColor19: ' #f9f9f4',
 
-   
-
     textColor1: '#FFFFFF',
     textColor2: '#787878',
     textColor3: '#000000',
@@ -209,15 +207,19 @@ const Theme = {
     clipBoard: require('../resource/images/clip.png'),
     cash: require('../resource/images/cash.png'),
     //rider
-    rider1:require('../resource/images/rider1.png'),
-    rider2:require('../resource/images/rider2.png'),
-    rider3:require('../resource/images/rider3.png'),
-    rider4:require('../resource/images/rider4.png'),
-    riderActive1:require('../resource/images/riderActive1.png'),
-    riderActive2:require('../resource/images/riderActive2.png'),
-    riderActive3:require('../resource/images/riderActive3.png'),
-    riderActive4:require('../resource/images/riderActive4.png'),
-    order_number:require('../resource/images/ordersNumber.png')
+    rider1: require('../resource/images/rider1.png'),
+    rider2: require('../resource/images/rider2.png'),
+    rider3: require('../resource/images/rider3.png'),
+    rider4: require('../resource/images/rider4.png'),
+    riderActive1: require('../resource/images/riderActive1.png'),
+    riderActive2: require('../resource/images/riderActive2.png'),
+    riderActive3: require('../resource/images/riderActive3.png'),
+    riderActive4: require('../resource/images/riderActive4.png'),
+    order_number: require('../resource/images/ordersNumber.png'),
+    pop_Up_Icon: require('../resource/images/deliverdTick.png'),
+    rider_icon_location: require('../resource/images/riderlocation.png'),
+    rest_location_icon: require('../resource/images/restLocation.png'),
+    deliverd_icon: require('../resource/images/Pinlet_Marker.png'),
   },
 };
 export default Theme;

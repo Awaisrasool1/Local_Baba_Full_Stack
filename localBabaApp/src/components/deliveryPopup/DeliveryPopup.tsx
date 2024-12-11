@@ -25,6 +25,7 @@ const DeliveryPopup = (props: Props) => {
       props.setIsOnline(false);
       props.setVisible(false);
       nav.navigate(Constants.ORDER_LOCATION_SCREEN, {
+        orderId: item.orderId,
         restData: {
           RestAddress: item.pickup.address,
           locationRest: item.pickup.restaurantLocation,
@@ -35,7 +36,7 @@ const DeliveryPopup = (props: Props) => {
         },
       });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
 

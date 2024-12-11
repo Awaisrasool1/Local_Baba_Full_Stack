@@ -1,12 +1,14 @@
 import React, {useRef, useState, useEffect} from 'react';
-import {View, Text, Alert} from 'react-native';
-import MapView, {Marker, Polyline} from 'react-native-maps';
+import {View, Image} from 'react-native';
+import MapView, {Marker} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import MapViewDirections from 'react-native-maps-directions';
 import styles from './styles';
-import {CustomButton, InputText} from '../../../components';
+import {CustomButton, InputText, RiderPopup} from '../../../components';
 import Theme from '../../../theme/Theme';
 import {GetCurrentLocation} from '../../../hooks/Hooks';
+import {Deliverd_order, picked_order} from '../../../services';
+import {useNavigation} from '@react-navigation/native';
 
 interface Location {
   latitude: number;
@@ -20,8 +22,10 @@ const OrderLocationScreen = (props: any) => {
   const [riderLocation, setRiderLocation] = useState<Location | null>(null);
   const [destination, setDestination] = useState<Location | null>(null);
   const [status, setStatus] = useState<'Pickup' | 'Delivered'>('Pickup');
+  const [visible, setVisible] = useState(false);
+  const nav: any = useNavigation();
 
-  const {restData, userData} = props.route.params;
+  const {restData, userData, orderId} = props.route.params;
   const {userAddress, userLocation} = userData;
   const {RestAddress, locationRest} = restData;
 
@@ -64,12 +68,34 @@ const OrderLocationScreen = (props: any) => {
     }
   }, [status, riderLocation, destination]);
 
-  const handlePickup = () => {
+  const handlePickup = async () => {
     if (status === 'Pickup') {
-      setStatus('Delivered')
-      setDestination(userDeliveryLocation);
+      try {
+        let data = {
+          Id: orderId,
+        };
+        const res = await picked_order(data);
+        console.log(res);
+        if (res.status == 'success') {
+          setStatus('Delivered');
+          setDestination(userDeliveryLocation);
+        }
+      } catch (err: any) {
+        console.log(err.response.data);
+      }
     } else {
-      Alert.alert('Info', 'Order already delivered!');
+      try {
+        let data = {
+          Id: orderId,
+        };
+        const res = await Deliverd_order(data);
+        console.log(res);
+        if (res.status == 'success') {
+          setVisible(true);
+        }
+      } catch (err: any) {
+        console.log(err.response.data);
+      }
     }
   };
 
@@ -91,8 +117,9 @@ const OrderLocationScreen = (props: any) => {
           <Marker
             coordinate={riderLocation}
             title="Rider"
-            description="Your current location"
-          />
+            description="Your current location">
+            <Image source={Theme.icons.rider_icon_location} />
+          </Marker>
         )}
 
         {destination && (
@@ -101,8 +128,15 @@ const OrderLocationScreen = (props: any) => {
             title={status === 'Pickup' ? 'Restaurant' : 'User'}
             description={
               status === 'Pickup' ? 'Restaurant Location' : 'User Location'
-            }
-          />
+            }>
+            <Image
+              source={
+                status === 'Pickup'
+                  ? Theme.icons.rest_location_icon
+                  : Theme.icons.deliverd_icon
+              }
+            />
+          </Marker>
         )}
 
         {riderLocation && destination && (
@@ -130,6 +164,7 @@ const OrderLocationScreen = (props: any) => {
           onClick={handlePickup}
         />
       </View>
+      <RiderPopup isVisible={visible} setVisible={setVisible} />
     </View>
   );
 };
