@@ -83,7 +83,13 @@ async function get_new_order_count() {
   return res.data;
 }
 
+async function get_rider_assigned_order() {
+  const res = await API.get('/rider/Order/get-rider-assigned-orders');
+  return res.data;
+}
+
 export {
+  get_rider_assigned_order,
   get_completed_order_count,
   get_new_order_count,
   get_categories,

@@ -19,8 +19,10 @@ import {RiderChart} from './riderChart';
 import {DeliveryPopup} from './deliveryPopup';
 import {DeliveryCard} from './deliveryCard';
 import {CountBox} from './countBox';
+import {RiderPopup} from './riderPopUp';
 
 export {
+  RiderPopup,
   DeliveryCard,
   CountBox,
   CustomButton,
