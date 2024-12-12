@@ -36,6 +36,20 @@ async function upload_image(formData: any) {
   return res.data;
 }
 
+async function upload_rider_image(formData: any) {
+  const token = getToken();
+  const res = await axios.put(
+    'http://192.168.100.252:8080/rider/upload-image',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  return res.data;
+}
 async function place_order_By_Cart(data: {
   quantity: number;
   latLong: string;
@@ -84,6 +98,7 @@ async function Deliverd_order(data: any) {
 }
 
 export {
+  upload_rider_image,
   Deliverd_order,
   add_to_cart,
   add_to_address,

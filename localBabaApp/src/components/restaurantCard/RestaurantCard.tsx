@@ -30,10 +30,6 @@ const RestaurantCard = (props: Props) => {
           {props.name}
         </Text>
         <Text style={styles.typeText}>{props.serviesType}</Text>
-        <View style={styles.flexRow}>
-          <Image source={Theme.icons.star} />
-          <Text style={styles.typeText}>{props.rating}</Text>
-        </View>
       </View>
     </TouchableOpacity>
   );
