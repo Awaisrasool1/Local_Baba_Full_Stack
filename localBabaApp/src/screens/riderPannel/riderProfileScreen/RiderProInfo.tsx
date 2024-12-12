@@ -12,24 +12,27 @@ import {
 } from '../../../components';
 import Theme from '../../../theme/Theme';
 import {checkPermission} from '../../../api/api';
+import {upload_rider_image} from '../../../services';
+import {useToast} from 'react-native-toasty-toast';
 
 const RiderProInfo = ({route, navigation}: any) => {
   const {data} = route?.params;
+  const {showToast} = useToast();
 
-  const [name, setName] = useState('');
-  const [phoneNo, setPhoneNo] = useState('');
+  const [name, setName] = useState(data.name);
+  const [phoneNo, setPhoneNo] = useState(data.phone);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
-  const [imageData, setImageData] = useState<string | undefined>();
+  const [imageData, setImageData] = useState<string | undefined>(data.image);
   const [isEditing, setEditing] = useState(false);
   const [nameError, setNameError] = useState('');
 
   const menuItems = [
-    {id: 1, title: 'Full Name', subTitle: '', icon: Theme.icons.profile},
-    {id: 2, title: 'Email', subTitle: '', icon: Theme.icons.email},
+    {id: 1, title: 'Full Name', subTitle: data.name, icon: Theme.icons.profile},
+    {id: 2, title: 'Email', subTitle: data.email, icon: Theme.icons.email},
     {
       id: 3,
       title: 'Phone Number',
-      subTitle: '',
+      subTitle: data.phone,
       icon: Theme.icons.PhoneNo,
     },
   ];
@@ -68,16 +71,19 @@ const RiderProInfo = ({route, navigation}: any) => {
         type: image.mime,
         name: filename,
       });
-    } catch (error) {
-      console.error('Image upload failed:', error);
+      const response = await upload_rider_image(formData);
+      showToast('Image uploaded successfully:', 'success', 'top', 1000);
+      console.log('Image uploaded successfully:', response);
+    } catch (error: any) {
+      console.error('Image upload failed:', error.response.data);
     }
   };
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     setImageData(data.image);
-  //   }, [data.image]),
-  // );
+  useFocusEffect(
+    React.useCallback(() => {
+      setImageData(data.image);
+    }, [data.image]),
+  );
 
   return (
     <ScrollView style={styles.container}>
@@ -107,7 +113,14 @@ const RiderProInfo = ({route, navigation}: any) => {
               </TouchableOpacity>
             </View>
           </View>
-
+          <View style={styles.marginTop} />
+          <InputText
+            value={data.email}
+            title="Email"
+            placeholder="Enter your Email"
+            isEditable={false}
+          />
+          <View style={styles.marginTop} />
           <InputText
             value={name}
             title="Full Name"
@@ -115,19 +128,14 @@ const RiderProInfo = ({route, navigation}: any) => {
             onChangeText={setName}
             placeholder="Enter your Name"
           />
+          <View style={styles.marginTop} />
           <InputText
-            value={''}
-            title="Email"
-            placeholder="Enter your Email"
-            isEditable={false}
-          />
-          <InputText
-            value={''}
+            value={phoneNo}
             title="Phone Number"
             onChangeText={setPhoneNo}
             placeholder="Enter your Phone Number"
           />
-
+          <View style={styles.marginTop} /> <View style={styles.marginTop} />
           <CustomButton title="Save" onClick={() => setEditing(false)} />
         </View>
       ) : (
@@ -140,8 +148,8 @@ const RiderProInfo = ({route, navigation}: any) => {
               style={styles.profileImage}
             />
             <View>
-              <Text style={styles.name}>{}</Text>
-              <Text style={styles.email}>{}</Text>
+              <Text style={styles.name}>{data.name}</Text>
+              <Text style={styles.email}>{data.email}</Text>
             </View>
             <TouchableOpacity onPress={() => setEditing(true)}>
               <Text style={styles.editText}>Edit</Text>

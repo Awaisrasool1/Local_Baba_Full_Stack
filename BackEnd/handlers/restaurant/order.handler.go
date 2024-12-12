@@ -477,11 +477,49 @@ func UpdateOrderStatus(c *gin.Context, firebaseApp *firebase.App) {
 
 	_, err = client.Send(ctx, message)
 	if err != nil {
-		log.Printf("Failed to send notification: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send notification"})
+		log.Printf("Failed to send user notification: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send user notification"})
 		return
 	}
-	log.Println("Notification sent successfully")
+	log.Println("User notification sent successfully")
 
-	c.JSON(http.StatusOK, gin.H{"message": "Order status updated and notification sent"})
+	userCollection := database.GetCollection("user")
+	cursor, err := userCollection.Find(ctx, bson.M{"role": 3})
+	if err != nil {
+		log.Printf("Failed to retrieve riders: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve riders"})
+		return
+	}
+	defer cursor.Close(ctx)
+
+	for cursor.Next(ctx) {
+		var rider models.User
+		if err := cursor.Decode(&rider); err != nil {
+			log.Printf("Failed to decode rider data: %v", err)
+			continue
+		}
+
+		var riderToken models.FCMToken
+		if err := userTokenCollection.FindOne(ctx, bson.M{"user_id": rider.ID}).Decode(&riderToken); err != nil {
+			log.Printf("Failed to retrieve FCM token for rider %s: %v", rider.ID, err)
+			continue
+		}
+
+		riderMessage := &messaging.Message{
+			Token: riderToken.FCMToken,
+			Notification: &messaging.Notification{
+				Title: "New Order Arrived",
+				Body:  "A new order is ready. Please check your orders.",
+			},
+		}
+
+		_, err := client.Send(ctx, riderMessage)
+		if err != nil {
+			log.Printf("Failed to send notification to rider %s: %v", rider.ID, err)
+			continue
+		}
+		log.Printf("Notification sent successfully to rider %s", rider.ID)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Order status updated and notifications sent"})
 }

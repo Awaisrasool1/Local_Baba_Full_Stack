@@ -36,23 +36,6 @@ const FoodCard = (props: Props) => {
           {props.name}
         </Text>
         <Text style={styles.typeText}>{props.type}</Text>
-        <View
-          style={[
-            styles.flexRow,
-            {
-              justifyContent: 'space-between',
-              marginTop: Theme.responsiveSize.size7,
-            },
-          ]}>
-          <View style={styles.flexRow}>
-            <Image source={Theme.icons.star} />
-            <Text style={styles.ratingText}>{props.rating}</Text>
-          </View>
-          <View style={styles.flexRow}>
-            <Image source={Theme.icons.Delivery_Truk} />
-            <Text style={styles.ratingText}>{props.time}</Text>
-          </View>
-        </View>
       </View>
     </TouchableOpacity>
   );

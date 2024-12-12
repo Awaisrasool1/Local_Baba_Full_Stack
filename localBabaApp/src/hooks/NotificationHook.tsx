@@ -4,8 +4,9 @@ import {
   saveDataToCachedWithKey,
 } from '../module/cacheData';
 import {AppConstants} from '../module';
-import notifee, {EventType} from '@notifee/react-native';
+import notifee, {EventType, AndroidImportance} from '@notifee/react-native';
 import {Add_FCM} from '../services';
+import NavigationService from '../navigation/NavigationService';
 
 export async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -60,8 +61,10 @@ async function onDisplayNotification(data: any) {
   await notifee.requestPermission();
 
   const channelId = await notifee.createChannel({
-    id: 'default',
-    name: 'Default Channel',
+    id: 'default1',
+    name: 'Default Channel1',
+    sound:'default',
+    importance: AndroidImportance.HIGH,
   });
 
   await notifee.displayNotification({
@@ -69,6 +72,7 @@ async function onDisplayNotification(data: any) {
     body: data.notification.body,
     android: {
       channelId,
+      smallIcon: 'ic_launcher',
       pressAction: {
         id: 'default',
       },
@@ -96,7 +100,7 @@ export function NotificationListener() {
     onDisplayNotification(remoteMessage);
     console.log(
       'Notification caused app to open from background state:',
-      JSON.stringify(remoteMessage),
+      JSON.stringify(remoteMessage?.data),
     );
   });
 

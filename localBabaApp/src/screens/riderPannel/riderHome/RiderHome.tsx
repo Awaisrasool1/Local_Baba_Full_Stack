@@ -7,13 +7,16 @@ import {useToast} from 'react-native-toasty-toast';
 import {
   get_completed_order_count,
   get_new_order_count,
+  get_profile,
 } from '../../../services';
 import styles from './styles';
 import {getAddress, GetCurrentLocation} from '../../../hooks/Hooks';
 import {Constants} from '../../../constants';
+import {useIsFocused} from '@react-navigation/native';
 
 const RiderHome = (props: any) => {
   const {showToast} = useToast();
+  const isFocused = useIsFocused();
   const [city, setCity] = useState<string>('');
 
   const chartData = [
@@ -67,6 +70,31 @@ const RiderHome = (props: any) => {
       }
     },
   });
+
+  const {data: prifile} = useQuery({
+    queryKey: ['homeprofile'],
+    queryFn: async () => {
+      try {
+        const isConnected = await isNetworkAvailable();
+        if (!isConnected) {
+          showToast('Check your internet!', 'error', 'bottom', 1000);
+          return null;
+        }
+        const res = await get_profile();
+        return res.data;
+      } catch (err: any) {
+        console.log(err.response?.data?.message || 'Error fetching profile');
+        showToast(
+          err.response?.data?.message || 'Error fetching profile',
+          'error',
+          'bottom',
+          1000,
+        );
+        return null;
+      }
+    },
+    enabled: isFocused,
+  });
   useEffect(() => {
     getLocation();
   }, []);
@@ -104,7 +132,7 @@ const RiderHome = (props: any) => {
           }>
           <Image
             source={{
-              uri: 'https://via.placeholder.com/100',
+              uri: prifile?.image || 'https://via.placeholder.com/100',
             }}
             style={styles.profileImage}
           />

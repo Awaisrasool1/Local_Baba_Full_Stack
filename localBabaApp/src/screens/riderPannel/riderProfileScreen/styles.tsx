@@ -72,6 +72,9 @@ const styles = StyleSheet.create({
     bottom: Theme.responsiveSize.size5,
     right: 0,
   },
+  marginTop:{
+    marginTop:Theme.responsiveSize.size10,
+  }
 });
 
 export default styles;

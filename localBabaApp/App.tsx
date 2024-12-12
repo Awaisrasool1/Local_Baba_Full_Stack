@@ -11,6 +11,7 @@ import {
   NotificationListener,
   requestUserPermission,
 } from './src/hooks/NotificationHook';
+import NavigationService from './src/navigation/NavigationService';
 
 const queryClient = new QueryClient();
 
@@ -19,14 +20,15 @@ const App = () => {
     requestUserPermission();
     NotificationListener();
   }, []);
-  
+
   return (
     <QueryClientProvider client={queryClient}>
       <PaperProvider>
         <SafeAreaProvider>
           <GlobalProvider>
             <ToastProvider>
-              <NavigationContainer>
+              <NavigationContainer
+                ref={(ref: any) => NavigationService.setTopLevelNavigator(ref)}>
                 <AppNavigator />
               </NavigationContainer>
             </ToastProvider>

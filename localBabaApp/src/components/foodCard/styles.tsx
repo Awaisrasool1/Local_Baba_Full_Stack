@@ -3,7 +3,7 @@ import Theme from '../../theme/Theme';
 
 const styles = StyleSheet.create({
   container: {
-    width: '48%',
+    width: '46%',
     backgroundColor: Theme.colors.white,
     marginTop: Theme.responsiveSize.size5,
   },
