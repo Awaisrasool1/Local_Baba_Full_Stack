@@ -37,12 +37,6 @@ const SettingScreen = (props: any) => {
       section: 2,
     },
     {
-      id: Constants.NOTIFICATION_SCREEN,
-      title: 'Notifications',
-      icon: Theme.icons.notification,
-      section: 2,
-    },
-    {
       id: Constants.ORDER_TOP_TAB,
       title: 'My Orders',
       icon: Theme.icons.order_number,

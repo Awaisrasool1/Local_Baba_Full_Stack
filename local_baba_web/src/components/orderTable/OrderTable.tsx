@@ -48,7 +48,7 @@ const styles: TableStyles = {
   foterTableContainer: {
     fontFamily: "Arial, sans-serif",
     margin: "20px auto",
-    maxWidth: screenWidth - 350,
+    maxWidth: screenWidth >= 1024 ? screenWidth - 350 : screenWidth - 40,
     boxShadow: "0 0 10px rgba(0,0,0,0.1)",
     backgroundColor: "white",
   },
@@ -153,7 +153,7 @@ const OrderTable: React.FC<Props> = (props) => {
           }
         } else {
           const res = await get_penging_orders(currentPage, rowsPerPage);
-          console.log(res.data)
+          console.log(res.data);
           if (res.status == 200) {
             console.log(res.data);
             setTableData(res?.data?.data);

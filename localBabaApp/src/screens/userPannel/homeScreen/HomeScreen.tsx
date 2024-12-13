@@ -125,12 +125,6 @@ const HomeScreen = (props: any) => {
         <Text style={styles.MorningText}>{', Good Morning!'}</Text>
       </Text>
       <View style={styles.marginV5} />
-      <InputText
-        img={Theme.icons.Search}
-        placeholder="Search dishes, restaurants"
-        viewStyle={{paddingLeft: Theme.responsiveSize.size10}}
-      />
-      <View style={styles.marginV5} />
       <SeeAllBtn title="Categories" onPress={() => {}} />
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {categorieData?.map(rendercategories)}

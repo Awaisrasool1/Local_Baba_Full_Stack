@@ -127,10 +127,7 @@ const AppNavigation = () => {
                 )
               }
             />
-            <Route
-              path="/loginScreen"
-              element={<LoginScreen onLogin={handleLogin} />}
-            />
+           
             {isLoggedIn ? (
               <>
                 {/* Admin routes */}
@@ -180,6 +177,10 @@ const AppNavigation = () => {
             ) : (
               <Route path="*" element={<Navigate to="/" />} />
             )}
+             <Route
+              path="/loginScreen"
+              element={<LoginScreen onLogin={handleLogin} />}
+            />
           </Routes>
         </div>
       </div>

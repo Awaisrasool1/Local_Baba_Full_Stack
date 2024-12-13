@@ -19,7 +19,6 @@
   border: transparent;
 }
 
-/* Logo styles */
 .logo-container {
   transition: all 0.3s ease;
 }
@@ -32,7 +31,6 @@
   transform: scale(1.05);
 }
 
-/* Navigation item styles */
 .sidebar-nav-item {
   position: relative;
   transition: all 0.3s ease;
@@ -65,7 +63,6 @@
   background: rgba(var(--bs-primary-rgb), 0.1);
 }
 
-/* Icon animations */
 .sidebar-nav-item button span {
   transition: all 0.3s ease;
 }
@@ -78,7 +75,6 @@
   transform: scale(1.2);
 }
 
-/* Add Restaurant Card styles */
 .add-restaurant-card {
   transition: all 0.3s ease;
   border: 2px solid transparent;
@@ -97,7 +93,6 @@
   transform: scale(1.1) rotate(5deg);
 }
 
-/* Add Restaurant Button styles */
 .add-restaurant-button {
   transition: all 0.3s ease;
   overflow: hidden;
@@ -148,5 +143,128 @@
   .add-restaurant-card:hover,
   .chef-icon:hover {
     transform: none;
+  }
+}
+
+
+/* Sidebar.css */
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.animate-bounce {
+  animation: bounce 0.5s ease-in-out;
+}
+
+.sidebar-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-container::-webkit-scrollbar-thumb {
+  background-color: rgba(155, 155, 155, 0.5);
+  border-radius: 20px;
+  border: transparent;
+}
+
+/* Rest of the previous CSS remains the same... */
+
+.sidebar-toggle-btn {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.sidebar-mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 280px;
+  background-color: white;
+  border-right: 1px solid #ddd;
+  z-index: 999;
+  animation: slideIn 0.3s ease-out;
+}
+
+.sidebar-desktop {
+  position: static;
+  height: 100vh;
+  width: 280px !important;
+  background-color: white;
+  border-right: 1px solid #ddd;
+}
+
+.sidebar-closed {
+  width: 0 !important;
+  visibility: hidden;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.sidebar-open {
+  width: 280px !important;
+  visibility: visible;
+  overflow: auto;
+  opacity: 1;
+}
+
+/* Large screens (desktop/tablet) */
+@media (min-width: 1024px) {
+  .sidebar-toggle-btn {
+    display: none; /* Hide toggle button on large screens */
+  }
+
+  .sidebar-container {
+    position: static;
+    width: 280px !important;
+    visibility: visible;
+  }
+}
+
+/* Small screens (mobile) */
+@media (max-width: 1023px) {
+  .sidebar-toggle-btn {
+    display: block; /* Show toggle button on smaller screens */
+  }
+
+  .sidebar-mobile {
+    position: fixed;
+    z-index: 1000;
+  }
+}
+
+/* Reduce motion if user prefers */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-container,
+  .sidebar-toggle-btn,
+  .animate-bounce {
+    animation: none;
+    transition: none;
   }
 }

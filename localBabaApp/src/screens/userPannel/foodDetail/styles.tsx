@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
   },
   flexRow: {
     flexDirection: 'row',
-    alignItems: 'center',
     gap: Theme.responsiveSize.size5,
   },
   categoryText: {

@@ -72,9 +72,14 @@ const LoginScreen = ({ onLogin }: any) => {
           localStorage.setItem("userId", res.data.userId);
           localStorage.setItem("name", res.data.name);
           onLogin(res.data.role);
+          if (res.data.role == 1) {
+            nav("/admin-DashBoard");
+          } else {
+            nav("/restaurant-DashBoard");
+          }
         } else {
-          setError('')
-          toast('You do not have access to this resource');
+          setError("");
+          toast("You do not have access to this resource");
         }
       }
     } catch (err: any) {
@@ -123,6 +128,7 @@ const LoginScreen = ({ onLogin }: any) => {
             <div className="form-group mb-4">
               <CustomInput
                 label="Email Address"
+                type="email"
                 placeholder="Enter your email"
                 error={errors.email}
                 value={inputValues.email}

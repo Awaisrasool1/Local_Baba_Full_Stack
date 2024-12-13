@@ -113,7 +113,7 @@ const ProfileScreen = ({route, navigation}:any) => {
               </TouchableOpacity>
             </View>
           </View>
-
+          <View style={styles.marginV10}/>
           <InputText
             value={name}
             title="Full Name"
@@ -121,18 +121,21 @@ const ProfileScreen = ({route, navigation}:any) => {
             onChangeText={setName}
             placeholder="Enter your Name"
           />
+          <View style={styles.marginV5}/>
           <InputText
             value={data.email}
             title="Email"
             placeholder="Enter your Email"
             isEditable={false}
           />
+          <View style={styles.marginV5}/>
           <InputText
             value={phoneNo}
             title="Phone Number"
             onChangeText={setPhoneNo}
             placeholder="Enter your Phone Number"
           />
+          <View style={styles.marginV10}/>
 
           <CustomButton title="Save" onClick={() => setEditing(false)} />
         </View>

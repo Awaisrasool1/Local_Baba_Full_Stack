@@ -100,7 +100,7 @@ const OrderRequests = (props: any) => {
                 time: pickupTime,
               },
               dropoff: {
-                location: 'User Location',
+                location: order.userName,
                 userLocation: '30.7297798,72.6437397',
                 address: dropoffAddress,
                 distance: dropoffDistance,

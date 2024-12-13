@@ -17,6 +17,8 @@ import {
   get_new_order_count,
   get_rider_assigned_order,
   get_notification,
+  get_today_order,
+  get_rider_chart,
 } from './Get';
 import {
   add_to_cart,
@@ -36,6 +38,8 @@ import {
 import {delete_address, delete_cart_item} from './Delete';
 
 export {
+  get_rider_chart,
+  get_today_order,
   upload_rider_image,
   get_notification,
   Deliverd_order,

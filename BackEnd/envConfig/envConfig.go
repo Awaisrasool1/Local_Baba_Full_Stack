@@ -14,6 +14,6 @@ func LoadEnv() {
 	}
 }
 
-func GetEnvVars() (string, string, string, string, string) {
-	return os.Getenv("S3_REGION"), os.Getenv("ACCESS_KEY_ID"), os.Getenv("S3_BUCKET"), os.Getenv("SECRET_KEY"), os.Getenv("apiKey")
+func GetEnvVars() (string, string, string, string, string, string, string) {
+	return os.Getenv("S3_REGION"), os.Getenv("ACCESS_KEY_ID"), os.Getenv("S3_BUCKET"), os.Getenv("SECRET_KEY"), os.Getenv("apiKey"), os.Getenv("PORT"), os.Getenv("MongoDB_URL")
 }
