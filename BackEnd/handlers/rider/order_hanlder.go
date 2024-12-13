@@ -7,6 +7,7 @@ import (
 	"foodApp/models"
 	"foodApp/utils"
 	"net/http"
+	"time"
 
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/messaging"
@@ -35,6 +36,7 @@ func Get_accepted_order(c *gin.Context) {
 	ctx := context.Background()
 	collection := database.GetCollection("order")
 	restaurantCollection := database.GetCollection("restaurants")
+	userCollection := database.GetCollection("user")
 
 	filter := bson.M{"status": "Accepted"}
 	fmt.Println("Fetching orders with filter:", filter)
@@ -48,6 +50,7 @@ func Get_accepted_order(c *gin.Context) {
 
 	var orders []models.Order
 	var restaurant models.Restaurant
+	var user models.User
 
 	if err := cursor.All(ctx, &orders); err != nil {
 		fmt.Println("Failed to parse orders:", err)
@@ -66,6 +69,11 @@ func Get_accepted_order(c *gin.Context) {
 			return
 		}
 		fmt.Println("Restaurant found:", restaurant)
+		if err := userCollection.FindOne(ctx, bson.M{"_id": order.UserID}).Decode(&user); err != nil {
+			fmt.Println("Failed to find user for order:", order.OrderID, "Error:", err)
+			c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "User not found"})
+			return
+		}
 
 		if _, exists := groupedOrders[order.OrderID]; !exists {
 			groupedOrders[order.OrderID] = gin.H{
@@ -73,6 +81,7 @@ func Get_accepted_order(c *gin.Context) {
 				"userLatLong":       order.LatLong,
 				"restaurantLatLong": restaurant.Location,
 				"restaurantName":    restaurant.Name,
+				"userName":          user.Name,
 				"totalPrice":        0.0,
 				"status":            order.Status,
 				"createdAt":         order.CreatedAt,
@@ -591,6 +600,102 @@ func Get_notification(c *gin.Context) {
 				"userName":          user.Name,
 				"restaurantLatLong": restaurant.Location,
 				"restaurantName":    restaurant.Name,
+				"totalPrice":        0.0,
+				"status":            order.Status,
+				"createdAt":         order.CreatedAt,
+			}
+		}
+
+		groupedOrders[order.OrderID]["totalPrice"] = groupedOrders[order.OrderID]["totalPrice"].(float64) + order.Price
+		fmt.Println("Updated totalPrice for order:", order.OrderID, "New totalPrice:", groupedOrders[order.OrderID]["totalPrice"])
+	}
+
+	var response []gin.H
+	for _, groupedOrder := range groupedOrders {
+		response = append(response, groupedOrder)
+	}
+	fmt.Println("Final grouped orders response:", response)
+
+	c.JSON(http.StatusOK, gin.H{"status": "success", "data": response})
+}
+
+func GetTodayDeliveredOrders(c *gin.Context) {
+	token := c.GetHeader("Authorization")
+	fmt.Println("Received token:", token)
+
+	if token == "" {
+		fmt.Println("Token is missing")
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Token missing"})
+		return
+	}
+
+	_, err := utils.ValidateToken(token)
+	if err != nil {
+		fmt.Println("Invalid token:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Invalid token"})
+		return
+	}
+
+	ctx := context.Background()
+	collection := database.GetCollection("order")
+	restaurantCollection := database.GetCollection("restaurants")
+	userCollection := database.GetCollection("user")
+
+	now := time.Now()
+	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+	endOfDay := startOfDay.Add(24 * time.Hour)
+
+	filter := bson.M{
+		"status": "Accepted",
+		"createdAt": bson.M{
+			"$gte": startOfDay,
+			"$lt":  endOfDay,
+		},
+	}
+	fmt.Println("Fetching orders with filter:", filter)
+
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		fmt.Println("Failed to fetch orders:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch orders"})
+		return
+	}
+	defer cursor.Close(ctx)
+
+	var orders []models.Order
+	if err := cursor.All(ctx, &orders); err != nil {
+		fmt.Println("Failed to parse orders:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to parse orders"})
+		return
+	}
+	fmt.Println("Orders fetched successfully:", orders)
+
+	groupedOrders := make(map[string]gin.H)
+	for _, order := range orders {
+		fmt.Println("Processing order:", order)
+
+		var restaurant models.Restaurant
+		if err := restaurantCollection.FindOne(ctx, bson.M{"_id": order.RestaurantID}).Decode(&restaurant); err != nil {
+			fmt.Println("Failed to find restaurant for order:", order.OrderID, "Error:", err)
+			c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Restaurant not found"})
+			return
+		}
+		fmt.Println("Restaurant found:", restaurant)
+
+		var user models.User
+		if err := userCollection.FindOne(ctx, bson.M{"_id": order.UserID}).Decode(&user); err != nil {
+			fmt.Println("Failed to find user for order:", order.OrderID, "Error:", err)
+			c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "User not found"})
+			return
+		}
+
+		if _, exists := groupedOrders[order.OrderID]; !exists {
+			groupedOrders[order.OrderID] = gin.H{
+				"orderId":           order.OrderID,
+				"userLatLong":       order.LatLong,
+				"restaurantLatLong": restaurant.Location,
+				"restaurantName":    restaurant.Name,
+				"userName":          user.Name,
 				"totalPrice":        0.0,
 				"status":            order.Status,
 				"createdAt":         order.CreatedAt,

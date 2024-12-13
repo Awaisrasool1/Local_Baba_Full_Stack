@@ -49,7 +49,7 @@ func main() {
 		return
 	}
 	router := routes.SetUpRoutes(firebaseApp)
-
+	_, _, _, _, _, PORT, _ := envConfig.GetEnvVars()
 	log.Println("Server is running on port 8080")
-	log.Fatal(router.Run(":8080"))
+	log.Fatal(router.Run(PORT))
 }

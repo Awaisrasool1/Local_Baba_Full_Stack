@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"foodApp/envConfig"
 	"log"
 	"time"
 
@@ -14,9 +15,12 @@ var client *mongo.Client
 func init() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+	envConfig.LoadEnv()
+
+	_, _, _, _, _, _, MongoDB_URL := envConfig.GetEnvVars()
 
 	var err error
-	client, err = mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	client, err = mongo.Connect(ctx, options.Client().ApplyURI(MongoDB_URL))
 	if err != nil {
 		log.Fatal(err)
 	}

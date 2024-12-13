@@ -49,6 +49,52 @@ const styles = StyleSheet.create({
     marginTop: Theme.responsiveSize.size5,
     marginBottom: Theme.responsiveSize.size8,
   },
+  label: {
+    fontSize: Theme.responsiveSize.size14,
+    fontWeight: '500',
+    color: Theme.colors.appColor,
+  },
+  boxDeliveredContainer: {
+    borderBottomWidth: 0.6,
+    borderColor: Theme.colors.textColor8,
+    paddingVertical: Theme.responsiveSize.size10,
+  },
+  info: {
+    fontSize: Theme.responsiveSize.size12,
+    color: Theme.colors.textColor28,
+    marginLeft: Theme.responsiveSize.size16,
+  },
+  flexRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Theme.responsiveSize.size5,
+  },
+  restName: {
+    fontSize: Theme.responsiveSize.size12,
+    color: Theme.colors.black,
+  },
+  boxLine: {
+    width: Theme.responsiveSize.size1,
+    height: Theme.responsiveSize.size30,
+    backgroundColor: Theme.colors.black,
+    borderRadius: Theme.responsiveSize.size2,
+    position: 'absolute',
+    top: -20,
+    left: Theme.responsiveSize.size5,
+  },
+  orderIdContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  deliveryBox: {
+    width: Theme.responsiveSize.size50,
+    height: Theme.responsiveSize.size20,
+    backgroundColor: '#F5F7FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: Theme.responsiveSize.size5,
+  },
 });
 
 export default styles;

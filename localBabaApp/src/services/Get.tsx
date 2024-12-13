@@ -92,7 +92,19 @@ async function get_notification() {
   return res.data;
 }
 
+async function get_today_order() {
+  const res = await API.get('/rider/Order/get-today-delivered-orders');
+  return res.data;
+}
+
+async function get_rider_chart() {
+  const res = await API.get('/rider/dashboard/rider-dashboard-chart');
+  return res.data;
+}
+
 export {
+  get_rider_chart,
+  get_today_order,
   get_notification,
   get_rider_assigned_order,
   get_completed_order_count,

@@ -44,7 +44,7 @@ type GroupedOrder struct {
 
 func GetOrdersByRestaurant(c *gin.Context) {
 	token := c.GetHeader("Authorization")
-	_, _, _, _, apiKey := envConfig.GetEnvVars()
+	_, _, _, _, apiKey, _, _ := envConfig.GetEnvVars()
 
 	if token == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "token missing"})
@@ -223,7 +223,7 @@ func GetOrdersByRestaurant(c *gin.Context) {
 
 func GetNonPendingOrdersByRestaurant(c *gin.Context) {
 	token := c.GetHeader("Authorization")
-	_, _, _, _, apiKey := envConfig.GetEnvVars()
+	_, _, _, _, apiKey, _, _ := envConfig.GetEnvVars()
 
 	if token == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "token missing"})

@@ -61,6 +61,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  togleBtn: {
+    position: 'absolute',
+    top: Theme.responsiveSize.size5,
+    left: Theme.responsiveSize.size10,
+  },
 });
 
 export default styles;

@@ -600,7 +600,7 @@ func Order_cancel(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "success", "message": "Order status updated successfully"})
 }
 func Get_order_details_byID(c *gin.Context) {
-	_, _, _, _, apiKey := envConfig.GetEnvVars()
+	_, _, _, _, apiKey, _, _ := envConfig.GetEnvVars()
 
 	type OrderItem struct {
 		Name       string  `json:"name"`

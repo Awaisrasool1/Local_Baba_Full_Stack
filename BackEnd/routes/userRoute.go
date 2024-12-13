@@ -94,6 +94,9 @@ func SetUpRoutes(app *firebase.App) *gin.Engine {
 		riderRoutes.GET("Order/new-orders-count", rider.Get_new_orders_count)
 		riderRoutes.GET("Order/get-rider-assigned-orders", rider.Get_rider_assigned_order)
 		riderRoutes.GET("Order/get-notificatioon", rider.Get_notification)
+		riderRoutes.GET("dashboard/rider-dashboard-chart", rider.RiderDashboardChart)
+		riderRoutes.GET("Order/get-today-delivered-orders", rider.GetTodayDeliveredOrders)
+
 		riderRoutes.PUT("upload-image", user.Upload_Image)
 		riderRoutes.PUT("Order/assigned-orders", func(c *gin.Context) {
 			rider.Order_assigned_for_rider(c, app)

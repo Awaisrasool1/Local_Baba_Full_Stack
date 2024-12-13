@@ -71,6 +71,9 @@ const styles = StyleSheet.create({
   marginV10: {
     marginVertical: Theme.responsiveSize.size10,
   },
+  marginV5: {
+    marginVertical: Theme.responsiveSize.size5,
+  },
   padingH10:{
     paddingHorizontal:Theme.responsiveSize.size10
   }

@@ -43,12 +43,7 @@ const CustomInput = forwardRef<HTMLInputElement, InputProps>(
             <div
               className="position-absolute top-50 translate-middle-y"
               style={{ right: "15px" }}
-            >
-              <AlertCircle
-                className="text-danger"
-                style={{ width: "16px", height: "16px" }}
-              />
-            </div>
+            ></div>
           )}
         </div>
         {(helperText || error || success) && (
